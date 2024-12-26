@@ -1,0 +1,118 @@
+.dashboard {
+  padding: 20px;
+  background-color: #f0f2f5;
+  font-size: 18px;
+  color: #333;
+}
+
+.navbar {
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  font-size: 2.5rem;
+  background-color: #f5f5f5;
+  color: #333;
+}
+
+.navbarTitle {
+  font-weight: bold;
+  color: #333;
+  font-size: inherit;
+}
+
+.actions {
+  text-align: right;
+}
+
+.customActionButton {
+  font-size: 1.2rem;
+  border: 2px solid #92613A;
+  color: #92613A;
+  background: transparent;
+  border-radius: 6px;
+  padding: 10px 20px;
+  transition: all 0.3s;
+}
+
+.customActionButton:hover {
+  color: white !important;
+  background: #92613A !important;
+}
+
+.sidebar {
+  position: relative;
+  background-color: #dcdcdc;
+  height: 100vh;
+  opacity: 1;
+  visibility: visible;
+  border-radius: .4rem;
+  width: 300px;
+  padding: .5rem;
+}
+
+.collapsedSidebar {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.sidebarToggle {
+  position: fixed;
+  top: 50%;
+  left: 10.5rem;
+  transform: translateY(-50%);
+  background-color: #b48564;
+  border-radius: 50%;
+  font-size: 1.9rem;
+  cursor: pointer;
+  z-index: 9999;
+  color: white;
+  transition: left 0.35s ease, transform 0.35s ease;
+  padding: 1rem;
+}
+
+.collapsedSidebar + .sidebarToggle {
+  left: -1.3rem;
+  transform: translateY(-50%);
+}
+
+.sidebarContent {
+  height: inherit;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+}
+
+.sidebarButton {
+  font-size: 1.125rem;
+  border: 2px solid #92613A;
+  color: #92613A;
+  background: transparent;
+  border-radius: 6px;
+  padding: 1.5rem;
+  transition: all 0.3s;
+  display: inline-flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.sidebarButton:hover {
+  color: white !important;
+  background: #9a735d !important;
+  border-color: #9a735d !important;
+}
+
+.sidebarButton:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.sidebarButton .anticon {
+  gap: 1rem;
+}
+
+.navigation {
+  display: flex;
+  flex-direction: column;
+  padding-top: 5rem;
+  gap: .5rem;
+}

@@ -1,0 +1,61 @@
+.tableHeader {
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 1.125rem;
+  background-color: #f5f5f5;
+  color: #333;
+  font-weight: bold;
+  border-bottom: 2px solid #d9d9d9;
+
+  .tableCell {
+    flex: 1;
+    padding: 12px;
+    text-align: center;
+    font-size: inherit;
+    background-color: #fafafa;
+  }
+}
+
+.transparentRow {
+  background-color: transparent;
+}
+
+.tableRow {
+  display: flex;
+  flex-wrap: wrap;
+  background: white;
+  font-size: 1.125rem;
+  color: #333;
+  border-bottom: 1px solid #f0f0f0;
+
+  .tableCell {
+    flex: 1;
+    padding: 12px;
+    text-align: center;
+    font-size: inherit;
+  }
+
+  &:nth-child(even) {
+    background-color: #f5f5f5;
+  }
+}
+
+.actionIcon {
+  color: #92613A;
+  font-size: 1.5rem;
+
+  :hover {
+    color: #92613A !important;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+

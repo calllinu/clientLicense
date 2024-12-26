@@ -1,0 +1,32 @@
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import {LoginUser, LogoutRequest, LogoutResponse, User, UserResponse} from "../interfaces/UserInterfaces.tsx";
+
+export const userApi = createApi({
+    reducerPath: 'userApi',
+    baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:8080' }),
+    endpoints: (builder) => ({
+        createUser: builder.mutation<UserResponse, User>({
+            query: (user) => ({
+                url: '/register',
+                method: 'POST',
+                body: user,
+            }),
+        }),
+        authenticateUser: builder.mutation<UserResponse, LoginUser>({
+            query: (user) => ({
+                url: '/login',
+                method: 'POST',
+                body: user,
+            }),
+        }),
+        logoutUser: builder.mutation<LogoutResponse, LogoutRequest>({
+            query: (request) => ({
+                url: '/log-out',
+                method: 'POST',
+                body: request,
+            }),
+        }),
+    }),
+});
+
+export const { useCreateUserMutation, useAuthenticateUserMutation , useLogoutUserMutation} = userApi;
