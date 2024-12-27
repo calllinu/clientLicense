@@ -1,5 +1,12 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import {LoginUser, LogoutRequest, LogoutResponse, User, UserResponse} from "../interfaces/UserInterfaces.tsx";
+import {
+    LoginResponse,
+    LoginUser,
+    LogoutRequest,
+    LogoutResponse,
+    User,
+    UserResponse
+} from "../interfaces/UserInterfaces.tsx";
 
 export const userApi = createApi({
     reducerPath: 'userApi',
@@ -12,7 +19,7 @@ export const userApi = createApi({
                 body: user,
             }),
         }),
-        authenticateUser: builder.mutation<UserResponse, LoginUser>({
+        authenticateUser: builder.mutation<LoginResponse, LoginUser>({
             query: (user) => ({
                 url: '/login',
                 method: 'POST',

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { Col, Row, Input, Button, Spin } from "antd";
@@ -20,22 +20,22 @@ const LoginSchema = Yup.object().shape({
         .required("Required"),
 });
 
-const Login: React.FC = () => {
+const Login = () => {
     const [showPassword, setShowPassword] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
     const navigate = useNavigate();
     const [authenticateUser] = useAuthenticateUserMutation();
 
-    const togglePasswordVisibility = () => {
-        setShowPassword(!showPassword);
-    };
+    const togglePasswordVisibility = useCallback(() => {
+        setShowPassword((prevShowPassword) => !prevShowPassword);
+    }, []);
 
-    const initialValues: FormValues = {
+    const initialValues = useMemo(() => ({
         email: "",
         password: "",
-    };
+    }), []);
 
-    const handleSubmit = async (values: FormValues) => {
+    const handleSubmit = useCallback(async (values: FormValues) => {
         setLoading(true);
         try {
             const response = await authenticateUser({
@@ -52,8 +52,7 @@ const Login: React.FC = () => {
         } finally {
             setLoading(false);
         }
-    };
-
+    }, [authenticateUser, navigate]);
 
     return (
         <Row className={styles.container}>

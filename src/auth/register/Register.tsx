@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import {Col, Row, Input, Button, Spin} from "antd";
@@ -28,7 +28,7 @@ const SignupSchema = Yup.object().shape({
         .required("Required"),
 });
 
-const Register: React.FC = () => {
+const Register = () => {
     const navigate = useNavigate();
     const [loading, setLoading] = useState<boolean>(false);
     const [showPassword, setShowPassword] = useState<boolean>(false);
