@@ -16,7 +16,7 @@ interface FormValues {
     password: string;
     confirmPassword: string;
     selectedOrganization: string;
-    selectedSubsidiary: string;
+    selectedSubsidiary: number | null;
 }
 
 const SignupSchema = Yup.object().shape({
@@ -42,7 +42,7 @@ const Register = () => {
     const { data: organizations, isError } = useGetAllOrganizationsQuery();
 
     const [selectedOrganization, setSelectedOrganization] = useState<string>("");
-    const [selectedSubsidiary, setSelectedSubsidiary] = useState<string>("");
+    const [selectedSubsidiary, setSelectedSubsidiary] = useState<number | null>(null);
     const [subsidiaries, setSubsidiaries] = useState<Subsidiary[]>([]);
 
     const handleSubmit = async (values: FormValues, { resetForm }: { resetForm: () => void }) => {
@@ -53,6 +53,7 @@ const Register = () => {
                 email: values.email,
                 fullName: values.fullName,
                 password: values.password,
+                subsidiaryId: values.selectedSubsidiary,
             }).unwrap();
             resetForm();
             navigate("/login");
@@ -74,7 +75,7 @@ const Register = () => {
         password: "",
         confirmPassword: "",
         selectedOrganization: "",
-        selectedSubsidiary: "",
+        selectedSubsidiary: null,
     };
 
     return (
@@ -200,7 +201,7 @@ const Register = () => {
                                         }}
                                         placeholder={<span style={{ fontSize: "1.2rem" }}>Select an subsidiary</span>}
                                         className={`${errors.selectedSubsidiary && touched.selectedSubsidiary ? styles.errorBorder : ""}`}
-                                        onChange={(value: string) => {
+                                        onChange={(value: number) => {
                                             setFieldValue("selectedSubsidiary", value).then(() => {
                                                 setSelectedSubsidiary(value);
                                             });
@@ -214,7 +215,7 @@ const Register = () => {
                                             </Select.Option>
                                         ) : (
                                             subsidiaries.map((subsidiary: Subsidiary) => (
-                                                <Select.Option key={subsidiary.subsidiaryCode} value={`${subsidiary.address}, ${subsidiary.city}, ${subsidiary.country}`}>
+                                                <Select.Option key={subsidiary.id} value={subsidiary.id}>
                                                     {subsidiary.address}, {subsidiary.city}, {subsidiary.country}
                                                 </Select.Option>
 

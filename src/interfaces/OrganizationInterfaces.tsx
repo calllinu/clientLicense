@@ -29,6 +29,7 @@ export interface OrganizationAddRequest {
 }
 
 export interface Subsidiary {
+    id: number;
     subsidiaryCode: number;
     country: string;
     city: string;

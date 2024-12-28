@@ -3,6 +3,7 @@ export interface User {
     email: string;
     fullName: string;
     password: string;
+    subsidiaryId: number | null;
 }
 
 export interface LoginUser {
