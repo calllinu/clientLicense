@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import {Col, Row, Input, Button, Spin} from "antd";
-import {EyeOutlined, EyeInvisibleOutlined, UserOutlined} from "@ant-design/icons";
+import { Col, Row, Input, Button, Spin, Select } from "antd";
+import { EyeOutlined, EyeInvisibleOutlined, UserOutlined } from "@ant-design/icons";
 import styles from './register.module.scss';
-import {Link, useNavigate} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useCreateUserMutation } from "../../services/userApi.tsx";
+import { useGetAllOrganizationsQuery } from "../../services/organizationApi";
+import {Organization, Subsidiary} from "../../interfaces/OrganizationInterfaces";
 
 interface FormValues {
     email: string;
@@ -13,6 +15,8 @@ interface FormValues {
     fullName: string;
     password: string;
     confirmPassword: string;
+    selectedOrganization: string;
+    selectedSubsidiary: string;
 }
 
 const SignupSchema = Yup.object().shape({
@@ -26,6 +30,8 @@ const SignupSchema = Yup.object().shape({
     confirmPassword: Yup.string()
         .oneOf([Yup.ref("password")], "Passwords must match")
         .required("Required"),
+    selectedOrganization: Yup.string().required("Please select an organization"),
+    selectedSubsidiary: Yup.string().required("Please select a subsidiary"),
 });
 
 const Register = () => {
@@ -33,9 +39,14 @@ const Register = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [showPassword, setShowPassword] = useState<boolean>(false);
     const [createUser] = useCreateUserMutation();
+    const { data: organizations, isError } = useGetAllOrganizationsQuery();
+
+    const [selectedOrganization, setSelectedOrganization] = useState<string>("");
+    const [selectedSubsidiary, setSelectedSubsidiary] = useState<string>("");
+    const [subsidiaries, setSubsidiaries] = useState<Subsidiary[]>([]);
 
     const handleSubmit = async (values: FormValues, { resetForm }: { resetForm: () => void }) => {
-        setLoading(true)
+        setLoading(true);
         try {
             await createUser({
                 username: values.username,
@@ -62,6 +73,8 @@ const Register = () => {
         fullName: "",
         password: "",
         confirmPassword: "",
+        selectedOrganization: "",
+        selectedSubsidiary: "",
     };
 
     return (
@@ -74,9 +87,11 @@ const Register = () => {
                         validationSchema={SignupSchema}
                         onSubmit={handleSubmit}
                     >
-                        {({ errors, touched }) => (
+                        {({ errors, touched, setFieldValue }) => (
                             <Form className={styles.formContainer}>
-                                <Col className={styles.imageContainer}><UserOutlined className={styles.iconUser}/></Col>
+                                <Col className={styles.imageContainer}>
+                                    <UserOutlined className={styles.iconUser} />
+                                </Col>
                                 <Col className={styles.inputContainer}>
                                     <label htmlFor="email" className={styles.label}>Email</label>
                                     <Field
@@ -124,7 +139,6 @@ const Register = () => {
                                     <ErrorMessage name="password" component="div" className={styles.error} />
                                 </Col>
 
-
                                 <Col className={styles.inputContainer}>
                                     <label htmlFor="confirmPassword" className={styles.label}>Confirm Password</label>
                                     <Field
@@ -133,14 +147,88 @@ const Register = () => {
                                         as={Input.Password}
                                         placeholder="Confirm your password"
                                         className={`${errors.confirmPassword && touched.confirmPassword ? styles.errorBorder : ""} ${styles.noBorder}`}
-                                        iconRender={(visible:boolean) => visible ? <EyeOutlined onClick={togglePasswordVisibility} /> : <EyeInvisibleOutlined onClick={togglePasswordVisibility} />}
+                                        iconRender={(visible: boolean) => visible ? <EyeOutlined onClick={togglePasswordVisibility} /> : <EyeInvisibleOutlined onClick={togglePasswordVisibility} />}
                                     />
                                     <ErrorMessage name="confirmPassword" component="div" className={styles.error} />
                                 </Col>
 
+                                <Col className={styles.inputContainer}>
+                                    <label htmlFor="selectedOrganization" className={styles.label}>
+                                        Select Organization
+                                    </label>
+                                    <Select
+                                        id="selectedOrganization"
+                                        style={{
+                                            width: "100%"
+                                        }}
+                                        placeholder={<span style={{ fontSize: "1.2rem" }}>Select an organization</span>}
+                                        className={`${errors.selectedOrganization && touched.selectedOrganization ? styles.errorBorder : ""}`}
+                                        onChange={(value: string) => {
+                                            setFieldValue("selectedOrganization", value).then(() => {
+                                                setSelectedOrganization(value);
+                                                setSubsidiaries(organizations?.find((org: Organization) => org.name === value)?.subsidiaries || []);
+                                            });
+                                        }}
+                                        value={selectedOrganization || null}
+                                        variant="borderless"
+                                    >
+                                        {isError ? (
+                                            <Select.Option value="" disabled>
+                                                Error fetching organizations
+                                            </Select.Option>
+                                        ) : (
+                                            organizations?.map((org: Organization) => (
+                                                <Select.Option key={org.id} value={org.name}>
+                                                    {org.name}
+                                                </Select.Option>
+                                            ))
+                                        )}
+                                    </Select>
+                                    {errors.selectedOrganization && touched.selectedOrganization && (
+                                        <div className={styles.error}>{errors.selectedOrganization}</div>
+                                    )}
+                                </Col>
+
+                                <Col className={styles.inputContainer}>
+                                    <label htmlFor="selectedSubsidiary" className={styles.label}>
+                                        Select Subsidiary
+                                    </label>
+                                    <Select
+                                        id="selectedSubsidiary"
+                                        style={{
+                                            width: "100%"
+                                        }}
+                                        placeholder={<span style={{ fontSize: "1.2rem" }}>Select an subsidiary</span>}
+                                        className={`${errors.selectedSubsidiary && touched.selectedSubsidiary ? styles.errorBorder : ""}`}
+                                        onChange={(value: string) => {
+                                            setFieldValue("selectedSubsidiary", value).then(() => {
+                                                setSelectedSubsidiary(value);
+                                            });
+                                        }}
+                                        value={selectedSubsidiary || null}
+                                        variant="borderless"
+                                    >
+                                        {isError ? (
+                                            <Select.Option value="" disabled>
+                                                Error fetching organizations
+                                            </Select.Option>
+                                        ) : (
+                                            subsidiaries.map((subsidiary: Subsidiary) => (
+                                                <Select.Option key={subsidiary.subsidiaryCode} value={`${subsidiary.address}, ${subsidiary.city}, ${subsidiary.country}`}>
+                                                    {subsidiary.address}, {subsidiary.city}, {subsidiary.country}
+                                                </Select.Option>
+
+                                            ))
+                                        )}
+                                    </Select>
+                                    {errors.selectedOrganization && touched.selectedOrganization && (
+                                        <div className={styles.error}>{errors.selectedOrganization}</div>
+                                    )}
+                                </Col>
+
                                 <Col className={styles.button}>
                                     <Button type="primary" htmlType="submit" className={styles.submitButton}>
-                                        {loading ? <Spin/> : "Create Account"}
+                                        {loading ? <Spin /> : "Create Account"}
                                     </Button>
                                 </Col>
 
