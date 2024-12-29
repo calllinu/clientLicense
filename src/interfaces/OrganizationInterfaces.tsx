@@ -1,23 +1,26 @@
+import {Industry} from "./IndustryInterfaces.tsx";
+import {Subsidiary} from "./SubsidiaryInterfaces.tsx";
+
 export interface OrganizationUpdateRequest {
     updatedFields: Partial<Organization>;
     registerCode: string;
 }
 
 export interface Organization {
-    id: number;
-    registerCode: string;
+    organizationId: number;
+    organizationCode: string;
     name: string;
     yearOfEstablishment: number;
-    industry: string;
+    industry: Industry;
     subsidiaries: Subsidiary[];
 }
 
 export interface OrganizationResponse {
-    id: number;
-    registerCode: string;
+    organizationId: number;
+    organizationCode: string;
     name: string;
     yearOfEstablishment: number;
-    industry: string;
+    industry: Industry;
     subsidiaries: Subsidiary[];
 }
 
@@ -25,14 +28,13 @@ export interface OrganizationAddRequest {
     registerCode: string;
     name: string;
     yearOfEstablishment: number;
-    industry: string;
+    industry: Industry;
 }
 
-export interface Subsidiary {
-    id: number;
-    subsidiaryCode: number;
-    country: string;
-    city: string;
-    address: string;
-    organization: Organization;
+export interface Employee {
+    employeeId: number;
+    name: string;
+    position: string;
+    department: string;
+    subsidiary: Subsidiary;
 }

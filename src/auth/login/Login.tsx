@@ -1,24 +1,18 @@
 import { useState, useCallback, useMemo } from "react";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
+import { Formik, Form, Field, ErrorMessage, FormikHelpers } from "formik";
 import { Col, Row, Input, Button, Spin } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons";
 import styles from './login.module.scss';
 import { Link, useNavigate } from "react-router-dom";
 import { useAuthenticateUserMutation } from "../../services/userApi.tsx";
+import { LoginSchema } from "./utils/validationSchema.tsx";
+import { initialValues } from "./utils/initialValues.tsx";
 
 interface FormValues {
     email: string;
     password: string;
 }
-
-const LoginSchema = Yup.object().shape({
-    email: Yup.string().email("Invalid email").required("Required"),
-    password: Yup.string()
-        .min(8, "Password must be at least 8 characters")
-        .required("Required"),
-});
 
 const Login = () => {
     const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -30,29 +24,41 @@ const Login = () => {
         setShowPassword((prevShowPassword) => !prevShowPassword);
     }, []);
 
-    const initialValues = useMemo(() => ({
-        email: "",
-        password: "",
-    }), []);
+    const memoizedInitialValues = useMemo(() => initialValues, []);
+    const memoizedValidationSchema = useMemo(() => LoginSchema, []);
 
-    const handleSubmit = useCallback(async (values: FormValues) => {
-        setLoading(true);
-        try {
-            const response = await authenticateUser({
-                email: values.email,
-                password: values.password,
-            }).unwrap();
-            if (response.accessToken && response.refreshToken) {
-                sessionStorage.setItem('accessToken', response.accessToken);
-                sessionStorage.setItem('refreshToken', response.refreshToken);
+    const handleSubmit = useCallback(
+        async (values: FormValues, { setErrors }: FormikHelpers<FormValues>) => {
+            setLoading(true);
+            try {
+                const response = await authenticateUser({
+                    email: values.email,
+                    password: values.password,
+                }).unwrap();
+                if (response.accessToken && response.refreshToken) {
+                    sessionStorage.setItem('accessToken', response.accessToken);
+                    sessionStorage.setItem('refreshToken', response.refreshToken);
+                }
+                navigate("/");
+            } catch (error: unknown) {
+                console.log(error)
+                if (error instanceof Error) {
+                    if (error.message === "User not found") {
+                        setErrors({ email: "User not found. Please register." });
+                    } else if (error.message === "Invalid credentials") {
+                        setErrors({ password: "Invalid password. Please try again." });
+                    } else {
+                        console.error("Login failed:", error);
+                    }
+                } else {
+                    console.error("Unknown error:", error);
+                }
+            } finally {
+                setLoading(false);
             }
-            navigate("/");
-        } catch (error) {
-            console.error("Login failed:", error);
-        } finally {
-            setLoading(false);
-        }
-    }, [authenticateUser, navigate]);
+        },
+        [authenticateUser, navigate]
+    );
 
     return (
         <Row className={styles.container}>
@@ -60,13 +66,15 @@ const Login = () => {
                 <Row>
                     <Col className={styles.logIn}>Welcome Back</Col>
                     <Formik
-                        initialValues={initialValues}
-                        validationSchema={LoginSchema}
+                        initialValues={memoizedInitialValues}  // Use memoized initial values
+                        validationSchema={memoizedValidationSchema}  // Use memoized validation schema
                         onSubmit={handleSubmit}
                     >
                         {({ errors, touched }) => (
                             <Form className={styles.formContainer}>
-                                <Col className={styles.imageContainer}><UserOutlined className={styles.iconUser} /></Col>
+                                <Col className={styles.imageContainer}>
+                                    <UserOutlined className={styles.iconUser} />
+                                </Col>
                                 <Col className={styles.inputContainer}>
                                     <label htmlFor="email" className={styles.label}>Email</label>
                                     <Field

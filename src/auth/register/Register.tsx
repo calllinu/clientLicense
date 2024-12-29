@@ -1,49 +1,47 @@
-import { useState } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
 import { Col, Row, Input, Button, Spin, Select } from "antd";
 import { EyeOutlined, EyeInvisibleOutlined, UserOutlined } from "@ant-design/icons";
 import styles from './register.module.scss';
 import { Link, useNavigate } from "react-router-dom";
 import { useCreateUserMutation } from "../../services/userApi.tsx";
 import { useGetAllOrganizationsQuery } from "../../services/organizationApi";
-import {Organization, Subsidiary} from "../../interfaces/OrganizationInterfaces";
+import { Organization } from "../../interfaces/OrganizationInterfaces";
+import { Subsidiary } from "../../interfaces/SubsidiaryInterfaces";
+import { SignupSchema } from "./utils/validationSchema.tsx";
+import { initialValues } from "./utils/initialValues.tsx";
 
-interface FormValues {
+export interface FormValues {
     email: string;
     username: string;
     fullName: string;
     password: string;
     confirmPassword: string;
-    selectedOrganization: string;
+    selectedOrganization: number | null;
     selectedSubsidiary: number | null;
 }
 
-const SignupSchema = Yup.object().shape({
-    email: Yup.string().email("Invalid email").required("Required"),
-    username: Yup.string().min(3, "Too Short!").required("Required"),
-    fullName: Yup.string().min(2, "Too Short!").required("Required"),
-    password: Yup.string()
-        .min(8, "Password must be at least 8 characters")
-        .matches(/[!@#$%^&*(),.?":{}|<>]/, "Password must contain at least one special character")
-        .required("Required"),
-    confirmPassword: Yup.string()
-        .oneOf([Yup.ref("password")], "Passwords must match")
-        .required("Required"),
-    selectedOrganization: Yup.string().required("Please select an organization"),
-    selectedSubsidiary: Yup.string().required("Please select a subsidiary"),
-});
-
 const Register = () => {
     const navigate = useNavigate();
-    const [loading, setLoading] = useState<boolean>(false);
-    const [showPassword, setShowPassword] = useState<boolean>(false);
+    const [loading, setLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     const [createUser] = useCreateUserMutation();
-    const { data: organizations, isError } = useGetAllOrganizationsQuery();
-
-    const [selectedOrganization, setSelectedOrganization] = useState<string>("");
+    const [selectedOrganization, setSelectedOrganization] = useState<number | null>(null);
     const [selectedSubsidiary, setSelectedSubsidiary] = useState<number | null>(null);
-    const [subsidiaries, setSubsidiaries] = useState<Subsidiary[]>([]);
+
+    const { data: organizations, isError: isOrgError } = useGetAllOrganizationsQuery();
+
+    const selectedOrganizationSubsidiaries = useMemo(() => {
+        const organization = organizations?.find(
+            (org: Organization) => org.organizationId === selectedOrganization
+        );
+        return organization?.subsidiaries || [];
+    }, [selectedOrganization, organizations]);
+
+    const handleOrganizationChange = useCallback((value: number) => {
+        setSelectedOrganization(value);
+        setSelectedSubsidiary(null);
+    }, []);
 
     const handleSubmit = async (values: FormValues, { resetForm }: { resetForm: () => void }) => {
         setLoading(true);
@@ -64,19 +62,10 @@ const Register = () => {
         }
     };
 
-    const togglePasswordVisibility = () => {
-        setShowPassword(!showPassword);
-    };
+    const togglePasswordVisibility = useCallback(() => {
+        setShowPassword((prev) => !prev);
+    }, []);
 
-    const initialValues: FormValues = {
-        email: "",
-        username: "",
-        fullName: "",
-        password: "",
-        confirmPassword: "",
-        selectedOrganization: "",
-        selectedSubsidiary: null,
-    };
 
     return (
         <Row className={styles.container}>
@@ -93,6 +82,7 @@ const Register = () => {
                                 <Col className={styles.imageContainer}>
                                     <UserOutlined className={styles.iconUser} />
                                 </Col>
+
                                 <Col className={styles.inputContainer}>
                                     <label htmlFor="email" className={styles.label}>Email</label>
                                     <Field
@@ -154,77 +144,61 @@ const Register = () => {
                                 </Col>
 
                                 <Col className={styles.inputContainer}>
-                                    <label htmlFor="selectedOrganization" className={styles.label}>
-                                        Select Organization
-                                    </label>
+                                    <label htmlFor="selectedOrganization" className={styles.label}>Select Organization</label>
                                     <Select
                                         id="selectedOrganization"
-                                        style={{
-                                            width: "100%"
-                                        }}
+                                        style={{ width: "100%" }}
                                         placeholder={<span style={{ fontSize: "1.2rem" }}>Select an organization</span>}
-                                        className={`${errors.selectedOrganization && touched.selectedOrganization ? styles.errorBorder : ""}`}
-                                        onChange={(value: string) => {
-                                            setFieldValue("selectedOrganization", value).then(() => {
-                                                setSelectedOrganization(value);
-                                                setSubsidiaries(organizations?.find((org: Organization) => org.name === value)?.subsidiaries || []);
-                                            });
+                                        className={`${errors.selectedOrganization && touched.selectedOrganization ? styles.errorBorder : ""} ${styles.noBorder}`}
+                                        onChange={(value) => {
+                                            setFieldValue("selectedOrganization", value);
+                                            handleOrganizationChange(value);
                                         }}
                                         value={selectedOrganization || null}
                                         variant="borderless"
                                     >
-                                        {isError ? (
+                                        {isOrgError ? (
                                             <Select.Option value="" disabled>
                                                 Error fetching organizations
                                             </Select.Option>
                                         ) : (
                                             organizations?.map((org: Organization) => (
-                                                <Select.Option key={org.id} value={org.name}>
+                                                <Select.Option key={org.organizationId} value={org.organizationId}>
                                                     {org.name}
                                                 </Select.Option>
                                             ))
                                         )}
                                     </Select>
-                                    {errors.selectedOrganization && touched.selectedOrganization && (
-                                        <div className={styles.error}>{errors.selectedOrganization}</div>
-                                    )}
+                                    <ErrorMessage name="selectedOrganization" component="div" className={styles.error} />
                                 </Col>
 
                                 <Col className={styles.inputContainer}>
-                                    <label htmlFor="selectedSubsidiary" className={styles.label}>
-                                        Select Subsidiary
-                                    </label>
+                                    <label htmlFor="selectedSubsidiary" className={styles.label}>Select Subsidiary</label>
                                     <Select
                                         id="selectedSubsidiary"
-                                        style={{
-                                            width: "100%"
-                                        }}
-                                        placeholder={<span style={{ fontSize: "1.2rem" }}>Select an subsidiary</span>}
-                                        className={`${errors.selectedSubsidiary && touched.selectedSubsidiary ? styles.errorBorder : ""}`}
-                                        onChange={(value: number) => {
-                                            setFieldValue("selectedSubsidiary", value).then(() => {
-                                                setSelectedSubsidiary(value);
-                                            });
+                                        style={{ width: "100%" }}
+                                        placeholder={<span style={{ fontSize: "1.2rem" }}>Select a subsidiary</span>}
+                                        className={`${errors.selectedSubsidiary && touched.selectedSubsidiary ? styles.errorBorder : ""} ${styles.noBorder}`}
+                                        onChange={(value) => {
+                                            setFieldValue("selectedSubsidiary", value);
+                                            setSelectedSubsidiary(value);
                                         }}
                                         value={selectedSubsidiary || null}
                                         variant="borderless"
                                     >
-                                        {isError ? (
+                                        {selectedOrganizationSubsidiaries.length === 0 ? (
                                             <Select.Option value="" disabled>
-                                                Error fetching organizations
+                                                No subsidiaries available
                                             </Select.Option>
                                         ) : (
-                                            subsidiaries.map((subsidiary: Subsidiary) => (
-                                                <Select.Option key={subsidiary.id} value={subsidiary.id}>
+                                            selectedOrganizationSubsidiaries.map((subsidiary: Subsidiary) => (
+                                                <Select.Option key={subsidiary.subsidiaryId} value={subsidiary.subsidiaryId}>
                                                     {subsidiary.address}, {subsidiary.city}, {subsidiary.country}
                                                 </Select.Option>
-
                                             ))
                                         )}
                                     </Select>
-                                    {errors.selectedOrganization && touched.selectedOrganization && (
-                                        <div className={styles.error}>{errors.selectedOrganization}</div>
-                                    )}
+                                    <ErrorMessage name="selectedSubsidiary" component="div" className={styles.error} />
                                 </Col>
 
                                 <Col className={styles.button}>
@@ -233,9 +207,7 @@ const Register = () => {
                                     </Button>
                                 </Col>
 
-                                <Col className={styles.content} span={32}>
-                                    - or -
-                                </Col>
+                                <Col className={styles.content} span={32}>- or -</Col>
                                 <Col className={styles.alreadyAccount}>
                                     Already have an account?
                                     <Link to="/login" className={styles.navLink}>
