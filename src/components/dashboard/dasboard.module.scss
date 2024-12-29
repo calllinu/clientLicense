@@ -1,8 +1,8 @@
 .dashboard {
   padding: 20px;
-  background-color: #f0f2f5;
+  background-color: var(--blue-light);
   font-size: 18px;
-  color: #333;
+  color: var(--neutral-black);
 }
 
 .navbar {
@@ -10,13 +10,13 @@
   display: flex;
   align-items: center;
   font-size: 2.5rem;
-  background-color: #f5f5f5;
-  color: #333;
+  background-color: var(--neutral-white);
+  color: var(--neutral-black);
 }
 
 .navbarTitle {
   font-weight: bold;
-  color: #333;
+  color: var(--neutral-black);
   font-size: inherit;
 }
 
@@ -26,8 +26,8 @@
 
 .customActionButton {
   font-size: 1.2rem;
-  border: 2px solid #92613A;
-  color: #92613A;
+  border: 2px solid var(--blue-medium);
+  color: var(--blue-medium);
   background: transparent;
   border-radius: 6px;
   padding: 10px 20px;
@@ -35,17 +35,16 @@
 }
 
 .customActionButton:hover {
-  color: white !important;
-  background: #92613A !important;
+  color: var(--neutral-white) !important;
+  background: var(--blue-medium) !important;
 }
 
 .sidebar {
   position: relative;
-  background-color: #dcdcdc;
+  background-color: var(--blue-dark);
   height: 100vh;
   opacity: 1;
   visibility: visible;
-  border-radius: .4rem;
   width: 300px;
   padding: .5rem;
 }
@@ -60,13 +59,13 @@
   top: 50%;
   left: 10.5rem;
   transform: translateY(-50%);
-  background-color: #b48564;
+  background-color: var(--blue-medium);
   border-radius: 50%;
   font-size: 1.9rem;
   cursor: pointer;
   z-index: 9999;
-  color: white;
-  transition: left 0.35s ease, transform 0.35s ease;
+  color: var(--neutral-white);
+  transition: left 0.25s ease, transform 0.35s ease;
   padding: 1rem;
 }
 
@@ -84,8 +83,8 @@
 
 .sidebarButton {
   font-size: 1.125rem;
-  border: 2px solid #92613A;
-  color: #92613A;
+  border: 2px solid var(--blue-medium);
+  color: var(--neutral-white);
   background: transparent;
   border-radius: 6px;
   padding: 1.5rem;
@@ -96,14 +95,14 @@
 }
 
 .sidebarButton:hover {
-  color: white !important;
-  background: #9a735d !important;
-  border-color: #9a735d !important;
+  color: var(--neutral-white) !important;
+  background: var(--blue-medium) !important;
+  border-color: var(--blue-medium) !important;
 }
 
 .sidebarButton:focus {
   outline: none !important;
-  box-shadow: none !important;
+  box-shadow: 0 0 5px var(--shadow-color) !important;
 }
 
 .sidebarButton .anticon {

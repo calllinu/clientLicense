@@ -2,8 +2,8 @@ import {useMemo} from 'react';
 
 const useOrgAdminRole = () => {
     return useMemo(() => {
-        const role = localStorage.getItem('role');
-        return role === 'ORG_ADMIN';
+        const role = sessionStorage.getItem('role');
+        return role === 'ORG_ADMIN' || role === 'OWNER';
     }, [])
 };
 

@@ -21,8 +21,8 @@
     justify-content: center;
     width: 100%;
     font-weight: bold;
-    color: #92613A;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    color: var(--blue-dark);
+    text-shadow: 2px 2px 4px var(--shadow-color);
     border-radius: 8px;
     transition: transform 0.2s;
   }
@@ -33,19 +33,19 @@
     align-items: center;
     padding: 2rem 4rem;
     border-radius: 1rem;
-    box-shadow: 0 4px 15px rgba(146, 97, 58, 0.5);
+    box-shadow: 0 4px 15px rgba(54, 106, 150, 0.5);
 
-    .imageContainer{
+    .imageContainer {
       padding-bottom: 2rem;
       justify-content: center;
       align-items: center;
       display: flex;
 
-      .iconUser{
+      .iconUser {
         font-size: 5rem;
         padding: 2rem;
         border-radius: 50%;
-        box-shadow: 0 4px 15px rgba(146, 97, 58, 0.5);
+        box-shadow: 0 4px 15px rgba(54, 106, 150, 0.5);
         justify-content: center;
         align-items: center;
       }
@@ -56,7 +56,7 @@
     position: relative;
     margin-bottom: 24px;
     padding: 10px;
-    border: 1px solid #757575;
+    border: 1px solid var(--text-muted);
     border-radius: 1.5rem;
 
     .noBorder {
@@ -66,12 +66,12 @@
       background-color: transparent;
     }
 
-    label{
+    label {
       font-size: .9rem;
-      color: #757575;
+      color: var(--text-muted);
     }
 
-    Input{
+    Input {
       border: none;
       font-size: 1.2rem;
       background-color: transparent;
@@ -86,57 +86,57 @@
     position: absolute;
     top: -10px;
     left: 12px;
-    background-color: #fff;
+    background-color: var(--neutral-white);
     padding: 0 8px;
     font-size: 12px;
-    color: #888;
+    color: var(--text-muted);
   }
 
   .errorBorder {
-    border-color: red;
+    border-color: var(--error-red);
   }
 
   .error {
-    color: red;
+    color: var(--error-red);
     font-size: .9rem;
     margin-top: 4px;
   }
 
-  .button{
+  .button {
     align-items: center;
     display: flex;
     justify-content: center;
 
-   .submitButton {
-     width: 70%;
-     font-size: 1.2rem;
-     align-items: center;
-     justify-content: center;
-     border-radius: 1.4rem;
-     background-color: #FCE2CE;
-     color: #92613A;
-     padding: 1.5rem;
+    .submitButton {
+      width: 70%;
+      font-size: 1.2rem;
+      align-items: center;
+      justify-content: center;
+      border-radius: 1.4rem;
+      background-color: var(--blue-light);
+      color: var(--neutral-white);
+      padding: 1.5rem;
 
-     &:hover {
-       background-color: #92613A;
-       color: #FCE2CE;
-     }
-   }
+      &:hover {
+        background-color: var(--blue-medium);
+        color: var(--neutral-white);
+      }
+    }
   }
 
-  .content, .alreadyAccount{
+  .content,
+  .alreadyAccount {
     display: flex;
     width: 100%;
     font-size: 1rem;
     justify-content: center;
     align-items: center;
     padding-top: 1.2rem;
-    color: #553922;
+    color: var(--blue-dark);
 
-    .navLink{
-      color: #C3824E;
+    .navLink {
+      color: var(--blue-medium);
       padding-left: .7rem;
     }
   }
 }
-
