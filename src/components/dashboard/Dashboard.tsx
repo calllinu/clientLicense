@@ -4,16 +4,14 @@ import { DatabaseOutlined, BarChartOutlined, LogoutOutlined, RightOutlined, Left
 import styles from './dasboard.module.scss'
 import DataContent from "../data-content/DataContent.tsx";
 import Statistics from "../statistics/Statistics.tsx";
-import { useNavigate } from 'react-router-dom';
-import { useLogoutUserMutation } from "../../services/userApi.tsx";
+import useLogout from "../../auth/authHooks/useLogOut.tsx";
 
 const { Sider, Content } = Layout;
 
 const Dashboard = () => {
     const [collapsed, setCollapsed] = useState(true);
     const [activeContent, setActiveContent] = useState('data');
-    const navigate = useNavigate();
-    const [logout] = useLogoutUserMutation();
+    const handleLogout = useLogout()
 
     const dummyEntries = useMemo(() => [
         { id: 1, organization: 'Organization A', cnp: '1234567890123', salary: 'Yes', engagement: 'PHYSICALLY', overtime: 'Yes', equipment: 'Yes', safety: 'Yes', protection: 'Yes', dangerTimes: '>1' },
@@ -37,21 +35,6 @@ const Dashboard = () => {
     const toggleSidebar = useCallback(() => {
         setCollapsed((prevCollapsed) => !prevCollapsed);
     }, []);
-
-    const handleLogout = useCallback(async () => {
-        try {
-            await logout({
-                accessToken: sessionStorage.getItem('accessToken') || undefined,
-                refreshToken: sessionStorage.getItem('refreshToken') || undefined,
-            }).unwrap().then(() => {
-                sessionStorage.removeItem('accessToken');
-                sessionStorage.removeItem('refreshToken');
-                navigate('/login');
-            });
-        } catch (error) {
-            console.error('Logout failed:', error);
-        }
-    }, [logout, navigate]);
 
     const handleContentSwitch = useCallback((contentType: string) => {
         setActiveContent(contentType);

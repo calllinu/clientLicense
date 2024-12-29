@@ -2,19 +2,27 @@ import { Route, Routes } from 'react-router-dom';
 import Login from './auth/login/Login.tsx';
 import Register from './auth/register/Register.tsx';
 import Dashboard from './components/dashboard/Dashboard.tsx';
-import AuthProtectedRoute from "./AuthProtectedRoute.tsx";
+import AuthProtectedRoute from "./ProtectedRoutes/AuthProtectedRoute.tsx";
+import Profile from "./components/profile/Profile.tsx";
+import AdminProtectedRoute from "./ProtectedRoutes/AdminProtectedRoute.tsx";
 
 function App() {
-
     return (
         <Routes>
-
             <Route
-                path="/"
+                path="/profile"
                 element={
                     <AuthProtectedRoute>
-                        <Dashboard />
+                        <Profile />
                     </AuthProtectedRoute>
+                }
+            />
+            <Route
+                path="/dashboard"
+                element={
+                    <AdminProtectedRoute>
+                        <Dashboard />
+                    </AdminProtectedRoute>
                 }
             />
             <Route path="/login" element={ <Login />} />

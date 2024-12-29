@@ -38,8 +38,13 @@ const Login = () => {
                 if (response.accessToken && response.refreshToken) {
                     sessionStorage.setItem('accessToken', response.accessToken);
                     sessionStorage.setItem('refreshToken', response.refreshToken);
+                    localStorage.setItem('role', response.role);
                 }
-                navigate("/");
+                if (response.role === "ORG_ADMIN" || response.role === "OWNER") {
+                    navigate("/dashboard");
+                } else {
+                    navigate("/profile");
+                }
             } catch (error: unknown) {
                 console.log(error)
                 if (error instanceof Error) {
