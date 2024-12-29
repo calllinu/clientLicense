@@ -26,8 +26,8 @@
 
 .customActionButton {
   font-size: 1.2rem;
-  border: 2px solid var(--blue-medium);
-  color: var(--blue-medium);
+  border: 2px solid var(--blue-dark);
+  color: var(--blue-dark);
   background: transparent;
   border-radius: 6px;
   padding: 10px 20px;
@@ -36,7 +36,7 @@
 
 .customActionButton:hover {
   color: var(--neutral-white) !important;
-  background: var(--blue-medium) !important;
+  background: var(--blue-dark) !important;
 }
 
 .sidebar {
@@ -59,7 +59,7 @@
   top: 50%;
   left: 10.5rem;
   transform: translateY(-50%);
-  background-color: var(--blue-medium);
+  background-color: var(--blue-dark);
   border-radius: 50%;
   font-size: 1.9rem;
   cursor: pointer;
@@ -83,7 +83,7 @@
 
 .sidebarButton {
   font-size: 1.125rem;
-  border: 2px solid var(--blue-medium);
+  border: 2px solid var(--blue-darker);
   color: var(--neutral-white);
   background: transparent;
   border-radius: 6px;

@@ -20,7 +20,7 @@
     align-items: center;
     justify-content: center;
     font-weight: bold;
-    color: var(--blue-dark);
+    color: var(--blue-darker);
     width: 100%;
     text-shadow: 5px 5px 5px var(--shadow-color);
     border-radius: 8px;
@@ -33,7 +33,7 @@
     align-items: center;
     padding: 4rem;
     border-radius: 1rem;
-    box-shadow: 0 4px 15px rgba(54, 106, 150, 0.5);
+    box-shadow: 0 4px 15px var(--blue-medium);
 
     .imageContainer {
       padding-bottom: 2rem;
@@ -45,7 +45,7 @@
         font-size: 5rem;
         padding: 2rem;
         border-radius: 50%;
-        box-shadow: 0 4px 15px rgba(54, 106, 150, 0.5);
+        box-shadow: 0 4px 15px var(--blue-medium);
         justify-content: center;
         align-items: center;
       }
@@ -114,12 +114,12 @@
       align-items: center;
       justify-content: center;
       border-radius: 1.4rem;
-      background-color: var(--blue-light);
+      background-color: var(--blue-medium);
       color: var(--neutral-white);
       padding: 1.5rem;
 
       &:hover {
-        background-color: var(--blue-medium);
+        background-color: var(--blue-dark);
         color: var(--neutral-white);
       }
     }
@@ -133,10 +133,10 @@
     justify-content: center;
     align-items: center;
     padding-top: 1rem;
-    color: var(--blue-dark);
+    color: var(--blue-darker);
 
     .navLink {
-      color: var(--blue-medium);
+      color: var(--blue-dark);
       padding-left: .7rem;
     }
   }

@@ -2,8 +2,9 @@
 
 :root {
     --blue-light: #6fa8dc;
-    --blue-medium: #4682b4;
-    --blue-dark: #356a96;
+    --blue-medium: #06507c;
+    --blue-dark: #1f3c61;
+    --blue-darker: #102e4c;
     --neutral-black: #333;
     --neutral-white: #fff;
     --shadow-color: rgba(0, 0, 0, 0.1);
