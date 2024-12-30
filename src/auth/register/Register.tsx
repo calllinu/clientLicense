@@ -69,7 +69,8 @@ const Register = () => {
 
     return (
         <Row className={styles.container}>
-            <Col className={styles.mainContainer} span={24}>
+            {/* Main Form Section */}
+            <Col xs={24} sm={24} md={10} className={styles.mainContainer}>
                 <Row>
                     <Col className={styles.createAccount}>Create Account</Col>
                     <Formik
@@ -217,6 +218,13 @@ const Register = () => {
                             </Form>
                         )}
                     </Formik>
+                </Row>
+            </Col>
+
+            <Col xs={0} sm={0} md={14} className={styles.rightContainer}>
+                <Row className={styles.createAccountContainer}>
+                    <div className={styles.createAccount}>Create Account</div>
+                    <div className={styles.companyText}>SafetyNet AI</div>
                 </Row>
             </Col>
         </Row>

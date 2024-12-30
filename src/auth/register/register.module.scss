@@ -21,8 +21,7 @@
     justify-content: center;
     width: 100%;
     font-weight: bold;
-    color: var(--blue-darker);
-    text-shadow: 2px 2px 4px var(--shadow-color);
+    color: white;
     border-radius: 8px;
     transition: transform 0.2s;
   }
@@ -33,7 +32,6 @@
     align-items: center;
     padding: 2rem 4rem;
     border-radius: 1rem;
-    box-shadow: 0 4px 15px var(--blue-medium);
 
     .imageContainer {
       padding-bottom: 2rem;
@@ -140,3 +138,46 @@
     }
   }
 }
+
+.rightContainer {
+  background-color: var(--blue-medium);
+  color: var(--neutral-white);
+  display: flex;
+  padding: 20rem 10rem;
+  width: 60%;
+  height: 100%;
+
+  .createAccountContainer{
+    display: flex;
+    text-align: center;
+    padding: 1rem;
+    text-shadow: 5px 5px 5px var(--shadow-color);
+    width: 100%;
+    flex-direction: column;
+    justify-content: right;
+  }
+
+  .createAccount{
+    display: flex;
+    justify-content: right;
+    font-size: 3rem;
+    font-weight: bold;
+    text-align: center;
+    padding: 1rem;
+    text-shadow: 5px 5px 5px var(--shadow-color);
+    width: 100%;
+  }
+
+  .companyText{
+    display: flex;
+    font-size: 2rem;
+    padding: 0 1rem;
+    justify-content: right;
+  }
+}
+@media screen and (max-width: 768px){
+  .rightContainer{
+    display: none;
+  }
+}
+

@@ -1,23 +1,34 @@
+import { Row, Col } from "antd";
+import { UserOutlined, CommentOutlined } from "@ant-design/icons";
 import styles from "./Navbar.module.scss";
-import { UserOutlined, CommentOutlined, FundOutlined } from "@ant-design/icons";
 
 const Navbar = () => {
     return (
         <header className={styles.navbar}>
-            <div className={styles.logo}>
-                <FundOutlined />
-                <span>Company Name</span>
-            </div>
-            <div className={styles.navItems}>
-                <div className={styles.navItem}>
-                    <UserOutlined className={styles.icon} />
-                    <span>Profile</span>
-                </div>
-                <div className={styles.navItem}>
-                    <CommentOutlined className={styles.icon} />
-                    <span>Feedback</span>
-                </div>
-            </div>
+            <Row align="middle" justify="space-between" style={{ width: "100%" }}>
+                <Col>
+                    <div className={styles.logo}>
+                        <span>SafetyNet AI</span>
+                    </div>
+                </Col>
+
+                <Col>
+                    <Row align="middle" gutter={20}>
+                        <Col>
+                            <div className={`${styles.navItem} ${styles.active}`}>
+                                <UserOutlined className={styles.icon} />
+                                <span>Profile</span>
+                            </div>
+                        </Col>
+                        <Col>
+                            <div className={styles.navItem}>
+                                <CommentOutlined className={styles.icon} />
+                                <span>Feedback</span>
+                            </div>
+                        </Col>
+                    </Row>
+                </Col>
+            </Row>
         </header>
     );
 };

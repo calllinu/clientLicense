@@ -1,0 +1,87 @@
+.profileContainer {
+  width: 50rem;
+  margin: 20px auto;
+  padding: 20px;
+  border: 1px solid #f0f0f0;
+  border-radius: 8px;
+  height: calc(100vh - 186px);
+  font-size: 1.2rem;
+  box-shadow: 0 0 10px 5px var(--shadow-color);
+}
+
+.profileTitle {
+  text-align: center;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.formItem {
+  margin-bottom: 20px;
+  padding: .5rem;
+
+  .select{
+    width: 100%;
+    height: 3rem;
+  }
+
+  .input{
+    width: 100%;
+    border-radius: 8px;
+    padding: .7rem;
+    font-size: 1.2rem;
+  }
+
+  label{
+    font-size: 1.1rem;
+  }
+
+  Select, Input {
+    border-radius: 8px;
+    padding: .7rem;
+    font-size: 1.1rem;
+  }
+}
+
+.label {
+  margin-bottom: 8px;
+  display: block;
+}
+
+.error {
+  color: var(--error-red);
+  font-size: 12px;
+}
+
+.buttonsContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  margin-top: 2rem;
+}
+
+.submitButton {
+  width: 50%;
+  font-size: 1.2rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1.4rem;
+  background-color: var(--blue-medium);
+  color: var(--neutral-white);
+  padding: 1.5rem;
+
+  &:hover {
+    background-color: var(--blue-dark);
+    color: var(--neutral-white);
+  }
+}
+
+.logoutButton {
+  width: 50%;
+  margin-top: 10px;
+}

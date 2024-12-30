@@ -8,6 +8,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuthenticateUserMutation } from "../../services/userApi.tsx";
 import { LoginSchema } from "./utils/validationSchema.tsx";
 import { initialValues } from "./utils/initialValues.tsx";
+import { Role } from "../../interfaces/Role.tsx";
 
 interface FormValues {
     email: string;
@@ -40,13 +41,13 @@ const Login = () => {
                     sessionStorage.setItem('refreshToken', response.refreshToken);
                     sessionStorage.setItem('role', response.role);
                 }
-                if (response.role === "ORG_ADMIN" || response.role === "OWNER") {
+                if (response.role === Role.ORG_ADMIN || response.role === Role.OWNER) {
                     navigate("/dashboard");
                 } else {
                     navigate("/profile");
                 }
             } catch (error: unknown) {
-                console.log(error)
+                console.log(error);
                 if (error instanceof Error) {
                     if (error.message === "User not found") {
                         setErrors({ email: "User not found. Please register." });
@@ -67,12 +68,15 @@ const Login = () => {
 
     return (
         <Row className={styles.container}>
-            <Col className={styles.mainContainer} span={24}>
-                <Row>
-                    <Col className={styles.logIn}>Welcome Back</Col>
+            <Col className={styles.leftPanel} span={14}>
+                <div className={styles.welcomeText}>Welcome Back</div>
+                <div className={styles.companyText}>SafetyNet AI</div>
+            </Col>
+            <Col className={styles.rightPanel} span={10}>
+                <Row className={styles.login}>
                     <Formik
-                        initialValues={memoizedInitialValues}  // Use memoized initial values
-                        validationSchema={memoizedValidationSchema}  // Use memoized validation schema
+                        initialValues={memoizedInitialValues}
+                        validationSchema={memoizedValidationSchema}
                         onSubmit={handleSubmit}
                     >
                         {({ errors, touched }) => (
@@ -87,6 +91,7 @@ const Login = () => {
                                         type="email"
                                         as={Input}
                                         placeholder="Enter your email"
+                                        variant="borderless"
                                         className={errors.email && touched.email ? styles.errorBorder : ""}
                                     />
                                     <ErrorMessage name="email" component="div" className={styles.error} />
