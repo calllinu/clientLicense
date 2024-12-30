@@ -1,6 +1,11 @@
 .container {
   display: flex;
   height: 100vh;
+  margin: 0;
+  padding: 0;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
 }
 
 .leftPanel {
@@ -11,8 +16,9 @@
   width: 60%;
   height: 100%;
   flex-direction: column;
+  transition: all 0.3s ease;
 
-  .welcomeText{
+  .welcomeText {
     display: flex;
     justify-content: left;
     font-size: 3rem;
@@ -23,7 +29,7 @@
     width: 80%;
   }
 
-  .companyText{
+  .companyText {
     display: flex;
     font-size: 2rem;
     padding: 0 1rem;
@@ -36,6 +42,7 @@
   align-items: center;
   width: 40%;
   height: 100%;
+  transition: all 0.3s ease;
 }
 
 .logIn {
@@ -46,7 +53,7 @@
   width: 100%;
   text-shadow: 5px 5px 5px var(--shadow-color);
   border-radius: 8px;
-  transition: transform 0.2s;
+  transition: transform 0.3s ease;
 }
 
 .formContainer {
@@ -128,22 +135,22 @@ Input {
   align-items: center;
   display: flex;
   justify-content: center;
-  padding-top: 1rem;
-}
 
-.submitButton {
-  width: 70%;
-  font-size: 1.2rem;
-  align-items: center;
-  justify-content: center;
-  border-radius: 1.4rem;
-  background-color: var(--blue-medium);
-  color: var(--neutral-white);
-  padding: 1.5rem;
-
-  &:hover {
-    background-color: var(--blue-dark);
+  .submitButton {
+    width: 70%;
+    font-size: 1.2rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 1.4rem;
+    background-color: var(--blue-medium);
     color: var(--neutral-white);
+    padding: 1.5rem;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: var(--blue-dark);
+      color: var(--neutral-white);
+    }
   }
 }
 
@@ -160,5 +167,11 @@ Input {
   .navLink {
     color: var(--blue-dark);
     padding-left: .7rem;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .leftPanel {
+    display: none;
   }
 }

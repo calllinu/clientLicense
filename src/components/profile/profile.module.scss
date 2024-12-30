@@ -1,87 +1,113 @@
 .profileContainer {
-  width: 50rem;
+  width: 100%;
+  max-width: 50rem;
   margin: 20px auto;
   padding: 20px;
   border: 1px solid #f0f0f0;
   border-radius: 8px;
-  height: calc(100vh - 186px);
+  min-height: calc(100vh - 203px);
   font-size: 1.2rem;
   box-shadow: 0 0 10px 5px var(--shadow-color);
+  background-color: var(--neutral-white);
 }
 
 .profileTitle {
   text-align: center;
+  font-size: 2rem;
+  margin-bottom: 1rem;
 }
 
 .form {
   display: flex;
   flex-direction: column;
+  gap: 1rem;
 }
 
 .formItem {
   margin-bottom: 20px;
-  padding: .5rem;
 
-  .select{
+  .select, .input {
     width: 100%;
     height: 3rem;
+    font-size: 1rem;
+    padding: 0.5rem;
   }
 
-  .input{
-    width: 100%;
-    border-radius: 8px;
-    padding: .7rem;
-    font-size: 1.2rem;
+  label {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    display: block;
   }
-
-  label{
-    font-size: 1.1rem;
-  }
-
-  Select, Input {
-    border-radius: 8px;
-    padding: .7rem;
-    font-size: 1.1rem;
-  }
-}
-
-.label {
-  margin-bottom: 8px;
-  display: block;
-}
-
-.error {
-  color: var(--error-red);
-  font-size: 12px;
 }
 
 .buttonsContainer {
   display: flex;
-  justify-content: center;
-  align-items: center;
   flex-direction: column;
-  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.submitButton, .logoutButton {
   width: 100%;
-  margin-top: 2rem;
+  max-width: 300px;
+  font-size: 1.1rem;
+  border-radius: 0.8rem;
+  padding: 1.5rem;
 }
 
 .submitButton {
-  width: 50%;
-  font-size: 1.2rem;
-  align-items: center;
-  justify-content: center;
-  border-radius: 1.4rem;
   background-color: var(--blue-medium);
   color: var(--neutral-white);
-  padding: 1.5rem;
-
+  border: none;
   &:hover {
-    background-color: var(--blue-dark);
+    background-color: var(--blue-dark) !important;
+  }
+}
+
+
+
+.logoutButton {
+  border: 1px solid var(--blue-medium);
+  background-color: var(--neutral-white);
+  color: var(--blue-medium);
+  &:hover {
+    background-color: var(--blue-light);
     color: var(--neutral-white);
   }
 }
 
-.logoutButton {
-  width: 50%;
-  margin-top: 10px;
+@media (max-width: 768px) {
+  .profileContainer {
+    width: 90%;
+    padding: 1rem;
+  }
+
+  .form {
+    gap: 0.5rem;
+  }
+
+  .formItem {
+    margin-bottom: 1rem;
+
+    .select, .input {
+      font-size: 0.9rem;
+      height: 2.5rem;
+    }
+
+    label {
+      font-size: 0.9rem;
+    }
+  }
+
+  .submitButton, .logoutButton {
+    width: 100%;
+    max-width: 100%;
+    font-size: 0.9rem;
+  }
+
+  .profileTitle {
+    font-size: 1.5rem;
+  }
 }

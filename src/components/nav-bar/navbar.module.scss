@@ -3,7 +3,7 @@
   justify-content: space-between;
   align-items: center;
   background-color: var(--blue-dark);
-  padding: 2.2rem 1rem;
+  padding: 2.7rem 1.5rem;
   height: 60px;
   color: white;
 }
@@ -24,6 +24,10 @@
   display: flex;
   align-items: center;
   position: relative;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
 }
 
 .navItem {
@@ -62,4 +66,36 @@
 
 .icon {
   margin-right: 5px;
+}
+
+.hamburgerMenu {
+  display: none;
+
+  @media (max-width: 768px) {
+    display: block;
+  }
+}
+
+.menuIcon {
+  font-size: 2rem;
+  color: white;
+  cursor: pointer;
+}
+
+.dropdownMenu {
+  background-color: var(--blue-dark);
+  border-radius: 8px;
+  padding: 1rem;
+  min-width: 200px;
+
+  .menuItem {
+    font-size: 1.2rem;
+    color: white;
+    padding: 0.8rem 1.2rem;
+
+    &:hover {
+      background-color: #1890ff;
+      color: white;
+    }
+  }
 }

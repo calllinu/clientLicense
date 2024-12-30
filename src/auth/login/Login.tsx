@@ -68,12 +68,28 @@ const Login = () => {
 
     return (
         <Row className={styles.container}>
-            <Col className={styles.leftPanel} span={14}>
+            <Col
+                className={styles.leftPanel}
+                span={14}
+                xs={0}
+                sm={0}
+                md={14}
+                lg={14}
+                xl={14}
+            >
                 <div className={styles.welcomeText}>Welcome Back</div>
                 <div className={styles.companyText}>SafetyNet AI</div>
             </Col>
-            <Col className={styles.rightPanel} span={10}>
-                <Row className={styles.login}>
+            <Col
+                className={styles.rightPanel}
+                span={10}
+                xs={24}
+                sm={24}
+                md={10}
+                lg={10}
+                xl={10}
+            >
+                <Row className={styles.login} justify="center">
                     <Formik
                         initialValues={memoizedInitialValues}
                         validationSchema={memoizedValidationSchema}
@@ -81,10 +97,10 @@ const Login = () => {
                     >
                         {({ errors, touched }) => (
                             <Form className={styles.formContainer}>
-                                <Col className={styles.imageContainer}>
+                                <Col className={styles.imageContainer} span={24}>
                                     <UserOutlined className={styles.iconUser} />
                                 </Col>
-                                <Col className={styles.inputContainer}>
+                                <Col className={styles.inputContainer} span={24}>
                                     <label htmlFor="email" className={styles.label}>Email</label>
                                     <Field
                                         name="email"
@@ -97,7 +113,7 @@ const Login = () => {
                                     <ErrorMessage name="email" component="div" className={styles.error} />
                                 </Col>
 
-                                <Col className={styles.inputContainer}>
+                                <Col className={styles.inputContainer} span={24}>
                                     <label htmlFor="password" className={styles.label}>Password</label>
                                     <Field
                                         name="password"
@@ -106,20 +122,21 @@ const Login = () => {
                                         placeholder="Enter your password"
                                         className={`${errors.password && touched.password ? styles.errorBorder : ""} ${styles.noBorder}`}
                                         iconRender={(visible: boolean) => visible ? <EyeOutlined onClick={togglePasswordVisibility} /> : <EyeInvisibleOutlined onClick={togglePasswordVisibility} />}
+                                        variant="borderless"
                                     />
                                     <ErrorMessage name="password" component="div" className={styles.error} />
                                 </Col>
 
-                                <Col className={styles.button}>
+                                <Col className={styles.button} span={24}>
                                     <Button type="primary" htmlType="submit" className={styles.submitButton} disabled={loading}>
                                         {loading ? <Spin /> : "Log in"}
                                     </Button>
                                 </Col>
 
-                                <Col className={styles.content} span={32}>
+                                <Col className={styles.content} span={24}>
                                     - or -
                                 </Col>
-                                <Col className={styles.alreadyAccount}>
+                                <Col className={styles.alreadyAccount} span={24}>
                                     Don't have an account?
                                     <Link to="/register" className={styles.navLink}>
                                         <div className={styles.title}>Sign Up</div>

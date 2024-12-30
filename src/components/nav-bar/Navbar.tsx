@@ -1,8 +1,20 @@
-import { Row, Col } from "antd";
-import { UserOutlined, CommentOutlined } from "@ant-design/icons";
+import { Row, Col, Dropdown, Menu } from "antd";
+import { UserOutlined, CommentOutlined, MenuOutlined } from "@ant-design/icons";
 import styles from "./Navbar.module.scss";
 
 const Navbar = () => {
+
+    const menu = (
+        <Menu className={styles.dropdownMenu}>
+            <Menu.Item key="profile" icon={<UserOutlined />} className={styles.menuItem}>
+                Profile
+            </Menu.Item>
+            <Menu.Item key="feedback" icon={<CommentOutlined />} className={styles.menuItem}>
+                Feedback
+            </Menu.Item>
+        </Menu>
+    );
+
     return (
         <header className={styles.navbar}>
             <Row align="middle" justify="space-between" style={{ width: "100%" }}>
@@ -12,7 +24,7 @@ const Navbar = () => {
                     </div>
                 </Col>
 
-                <Col>
+                <Col className={styles.navItems}>
                     <Row align="middle" gutter={20}>
                         <Col>
                             <div className={`${styles.navItem} ${styles.active}`}>
@@ -27,6 +39,12 @@ const Navbar = () => {
                             </div>
                         </Col>
                     </Row>
+                </Col>
+
+                <Col className={styles.hamburgerMenu}>
+                    <Dropdown overlay={menu} trigger={["click"]}>
+                        <MenuOutlined className={styles.menuIcon} />
+                    </Dropdown>
                 </Col>
             </Row>
         </header>
