@@ -1,6 +1,6 @@
 import Navbar from "../nav-bar/Navbar"; // Using updated Navbar component
 import { Button, Input, Select, DatePicker, Row, Col } from "antd";
-import { Formik } from "formik";
+import {ErrorMessage, Formik} from "formik";
 import dayjs from "dayjs";
 import useLogout from "../../auth/authHooks/useLogOut.tsx";
 import Footer from "../footer/Footer";
@@ -8,13 +8,33 @@ import styles from "./Profile.module.scss";
 import { initialValues } from "./utils/initialValues";
 import { validationSchema } from "./utils/validationSchema";
 import { Qualification } from "../../interfaces/Qualification";
-import { useState } from "react";
+import {useCallback, useMemo, useState} from "react";
+import {Organization} from "../../interfaces/OrganizationInterfaces.tsx";
+import {useGetAllOrganizationsQuery} from "../../services/organizationApi.tsx";
+import {Subsidiary} from "../../interfaces/SubsidiaryInterfaces.tsx";
+import useOrgAdminRole from "../../hooks/useOrgAdminRole.tsx";
 
 const { Option } = Select;
 
 const Profile = () => {
     const handleLogout = useLogout();
     const [yearsOfExperience] = useState<number>(5);
+    const [selectedOrganization, setSelectedOrganization] = useState<number | null>(null);
+    const [selectedSubsidiary, setSelectedSubsidiary] = useState<number | null>(null);
+
+    const { data: organizations, isError: isOrgError } = useGetAllOrganizationsQuery();
+
+    const selectedOrganizationSubsidiaries = useMemo(() => {
+        const organization = organizations?.find(
+            (org: Organization) => org.organizationId === selectedOrganization
+        );
+        return organization?.subsidiaries || [];
+    }, [selectedOrganization, organizations]);
+
+    const handleOrganizationChange = useCallback((value: number) => {
+        setSelectedOrganization(value);
+        setSelectedSubsidiary(null);
+    }, []);
 
     const formatQualification = (qualification: Qualification): string => {
         switch (qualification) {
@@ -36,6 +56,8 @@ const Profile = () => {
     const handleSubmit = (values: typeof initialValues) => {
         console.log("Profile Data Submitted:", values);
     };
+
+    const isAdmin = useOrgAdminRole();
 
     return (
         <>
@@ -130,6 +152,66 @@ const Profile = () => {
                                             size="large"
                                         />
                                     </div>
+                                </Col>
+
+                                <Col xs={24} md={12}>
+                                    <label htmlFor="selectedOrganization" className={styles.label}>Select Organization</label>
+                                    <Select
+                                        id="selectedOrganization"
+                                        size="large"
+                                        style={{ width: "100%" }}
+                                        placeholder={<span style={{ fontSize: "1.2rem" }}>Select an organization</span>}
+                                        className={`${errors.selectedOrganization && touched.selectedOrganization ? styles.errorBorder : ""} ${styles.noBorder}`}
+                                        onChange={(value) => {
+                                            setFieldValue("selectedOrganization", value);
+                                            handleOrganizationChange(value);
+                                        }}
+                                        value={selectedOrganization || null}
+                                        disabled={!isAdmin}
+                                    >
+                                        {isOrgError ? (
+                                            <Select.Option value="" disabled>
+                                                Error fetching organizations
+                                            </Select.Option>
+                                        ) : (
+                                            organizations?.map((org: Organization) => (
+                                                <Select.Option key={org.organizationId} value={org.organizationId}>
+                                                    {org.name}
+                                                </Select.Option>
+                                            ))
+                                        )}
+                                    </Select>
+                                    <ErrorMessage name="selectedOrganization" component="div" className={styles.error} />
+                                </Col>
+
+                                <Col xs={24} md={12}>
+                                    <label htmlFor="selectedSubsidiary" className={styles.label}>Select Subsidiary</label>
+                                    <Select
+                                        id="selectedSubsidiary"
+                                        style={{ width: "100%" }}
+                                        size="large"
+                                        placeholder={<span style={{ fontSize: "1.2rem" }}>Select a subsidiary</span>}
+                                        className={`${errors.selectedSubsidiary && touched.selectedSubsidiary ? styles.errorBorder : ""} ${styles.noBorder}`}
+                                        onChange={(value) => {
+                                            setFieldValue("selectedSubsidiary", value);
+                                            setSelectedSubsidiary(value);
+                                        }}
+                                        value={selectedSubsidiary || null}
+                                        disabled={!isAdmin}
+                                    >
+                                        {selectedOrganizationSubsidiaries.length === 0 ? (
+                                            <Select.Option value="" disabled>
+                                                No subsidiaries available
+                                            </Select.Option>
+                                        ) : (
+                                            selectedOrganizationSubsidiaries.map((subsidiary: Subsidiary) => (
+                                                <Select.Option key={subsidiary.subsidiaryId} value={subsidiary.subsidiaryId}>
+                                                    {subsidiary.address}, {subsidiary.city}, {subsidiary.country}
+                                                </Select.Option>
+                                            ))
+                                        )}
+                                    </Select>
+                                    <ErrorMessage name="selectedSubsidiary" component="div" className={styles.error} />
                                 </Col>
 
                                 <Col span={24}>

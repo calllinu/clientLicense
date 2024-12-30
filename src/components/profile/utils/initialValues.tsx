@@ -6,4 +6,6 @@ export const initialValues: ProfileValues= {
     yearsOfExperience: 5,
     dateOfBirth: "",
     personalId: "",
+    selectedOrganization: null,
+    selectedSubsidiary: null
 };

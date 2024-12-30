@@ -40,6 +40,7 @@ const Login = () => {
                     sessionStorage.setItem('accessToken', response.accessToken);
                     sessionStorage.setItem('refreshToken', response.refreshToken);
                     sessionStorage.setItem('role', response.role);
+                    sessionStorage.setItem('userId', response.userId.toString());
                 }
                 if (response.role === Role.ORG_ADMIN || response.role === Role.OWNER) {
                     navigate("/dashboard");

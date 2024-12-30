@@ -6,4 +6,6 @@ export interface ProfileValues {
     yearsOfExperience: number;
     dateOfBirth: string;
     personalId: string;
+    selectedOrganization: number | null;
+    selectedSubsidiary: number | null;
 }

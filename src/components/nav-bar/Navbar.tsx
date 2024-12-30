@@ -1,19 +1,29 @@
-import { Row, Col, Dropdown, Menu } from "antd";
+import {Row, Col, Dropdown,  MenuProps} from "antd";
 import { UserOutlined, CommentOutlined, MenuOutlined } from "@ant-design/icons";
 import styles from "./Navbar.module.scss";
 
+type MenuItem = Required<MenuProps>['items'][number];
+
 const Navbar = () => {
 
-    const menu = (
-        <Menu className={styles.dropdownMenu}>
-            <Menu.Item key="profile" icon={<UserOutlined />} className={styles.menuItem}>
-                Profile
-            </Menu.Item>
-            <Menu.Item key="feedback" icon={<CommentOutlined />} className={styles.menuItem}>
-                Feedback
-            </Menu.Item>
-        </Menu>
-    );
+    const menuItems: MenuItem[] = [
+        {
+            key: 'profile',
+            icon: <UserOutlined />,
+            label: 'Profile',
+            className: styles.menuItem,
+        },
+        {
+            key: 'feedback',
+            icon: <CommentOutlined />,
+            label: 'Feedback',
+            className: styles.menuItem,
+        },
+    ];
+
+    const menu: MenuProps = {
+        items: menuItems,
+    };
 
     return (
         <header className={styles.navbar}>
@@ -42,7 +52,7 @@ const Navbar = () => {
                 </Col>
 
                 <Col className={styles.hamburgerMenu}>
-                    <Dropdown overlay={menu} trigger={["click"]}>
+                    <Dropdown menu={menu} trigger={["click"]}>
                         <MenuOutlined className={styles.menuIcon} />
                     </Dropdown>
                 </Col>
