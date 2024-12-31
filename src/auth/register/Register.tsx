@@ -69,7 +69,6 @@ const Register = () => {
 
     return (
         <Row className={styles.container}>
-            {/* Main Form Section */}
             <Col xs={24} sm={24} md={10} className={styles.mainContainer}>
                 <Row>
                     <Col className={styles.createAccount}>Create Account</Col>

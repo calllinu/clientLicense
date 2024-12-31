@@ -1,11 +1,11 @@
-import {Qualification} from "./Qualification.tsx";
+import { Qualification } from "./Qualification.tsx";
 
 export interface ProfileValues {
     fullName: string;
-    qualification: Qualification | "";
+    qualification: Qualification | null;
     yearsOfExperience: number;
-    dateOfBirth: string;
-    personalId: string;
-    selectedOrganization: number | null;
-    selectedSubsidiary: number | null;
+    dateOfBirth: Date | string;
+    employeeCNP: string;
+    organization: string;
+    subsidiary: string;
 }

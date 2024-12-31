@@ -8,7 +8,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuthenticateUserMutation } from "../../services/userApi.tsx";
 import { LoginSchema } from "./utils/validationSchema.tsx";
 import { initialValues } from "./utils/initialValues.tsx";
-import { Role } from "../../interfaces/Role.tsx";
+import { Role } from "../../interfaces/RoleEnum.tsx";
 
 interface FormValues {
     email: string;
@@ -109,6 +109,7 @@ const Login = () => {
                                         as={Input}
                                         placeholder="Enter your email"
                                         variant="borderless"
+                                        size="large"
                                         className={errors.email && touched.email ? styles.errorBorder : ""}
                                     />
                                     <ErrorMessage name="email" component="div" className={styles.error} />
@@ -120,6 +121,7 @@ const Login = () => {
                                         name="password"
                                         type={showPassword ? "text" : "password"}
                                         as={Input.Password}
+                                        size="large"
                                         placeholder="Enter your password"
                                         className={`${errors.password && touched.password ? styles.errorBorder : ""} ${styles.noBorder}`}
                                         iconRender={(visible: boolean) => visible ? <EyeOutlined onClick={togglePasswordVisibility} /> : <EyeInvisibleOutlined onClick={togglePasswordVisibility} />}

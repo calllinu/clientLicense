@@ -1,63 +1,67 @@
-import Navbar from "../nav-bar/Navbar"; // Using updated Navbar component
+import { useMemo, useCallback } from "react";
+import Navbar from "../nav-bar/Navbar";
 import { Button, Input, Select, DatePicker, Row, Col } from "antd";
-import {ErrorMessage, Formik} from "formik";
-import dayjs from "dayjs";
-import useLogout from "../../auth/authHooks/useLogOut.tsx";
+import {Formik, FormikHelpers} from "formik";
+import dayjs, { Dayjs } from "dayjs";
+import useLogout from "../../auth/authHooks/useLogOut";
 import Footer from "../footer/Footer";
 import styles from "./Profile.module.scss";
-import { initialValues } from "./utils/initialValues";
 import { validationSchema } from "./utils/validationSchema";
 import { Qualification } from "../../interfaces/Qualification";
-import {useCallback, useMemo, useState} from "react";
-import {Organization} from "../../interfaces/OrganizationInterfaces.tsx";
-import {useGetAllOrganizationsQuery} from "../../services/organizationApi.tsx";
-import {Subsidiary} from "../../interfaces/SubsidiaryInterfaces.tsx";
-import useOrgAdminRole from "../../hooks/useOrgAdminRole.tsx";
+import useInitialValues from "./utils/useInitialValues";
+import { formatQualification } from "./utils/qualificationUtils";
+import useOrgAdminRole from "../../hooks/useOrgAdminRole";
+import {ProfileValues} from "../../interfaces/ProfileValues.tsx";
+import {useUpdateEmployeeMutation} from "../../services/employeeApi.tsx";
 
 const { Option } = Select;
 
 const Profile = () => {
     const handleLogout = useLogout();
-    const [yearsOfExperience] = useState<number>(5);
-    const [selectedOrganization, setSelectedOrganization] = useState<number | null>(null);
-    const [selectedSubsidiary, setSelectedSubsidiary] = useState<number | null>(null);
+    const initialValues = useInitialValues();
+   const isAdmin = useOrgAdminRole();
 
-    const { data: organizations, isError: isOrgError } = useGetAllOrganizationsQuery();
+    const [updateEmployee, { isLoading: isUpdating }] = useUpdateEmployeeMutation();
 
-    const selectedOrganizationSubsidiaries = useMemo(() => {
-        const organization = organizations?.find(
-            (org: Organization) => org.organizationId === selectedOrganization
-        );
-        return organization?.subsidiaries || [];
-    }, [selectedOrganization, organizations]);
+    const qualificationOptions = useMemo(
+        () =>
+            Object.values(Qualification).map((qualification) => ({
+                key: qualification,
+                label: formatQualification(qualification),
+            })),
+        []
+    );
 
-    const handleOrganizationChange = useCallback((value: number) => {
-        setSelectedOrganization(value);
-        setSelectedSubsidiary(null);
+    const userId = parseInt(sessionStorage.getItem("userId") || "0", 10);
+
+    const handleSubmit = useCallback(
+        async (values: ProfileValues, helpers: FormikHelpers<ProfileValues>) => {
+            const { fullName, dateOfBirth, employeeCNP } = values;
+
+            const employee = {
+                fullName,
+                dateOfBirth,
+                employeeCNP,
+            };
+
+            try {
+                await updateEmployee({ userId: userId, employee }).unwrap().then(() => {
+                    console.log("Profile updated successfully");
+                    helpers.resetForm();
+                });
+            } catch (error) {
+                console.error("Error updating profile:", error);
+            }
+        },
+        [updateEmployee, userId]
+    );
+
+
+    const formatDate = useCallback((date: Dayjs) => {
+        return dayjs(date).format("DD-MM-YYYY");
     }, []);
 
-    const formatQualification = (qualification: Qualification): string => {
-        switch (qualification) {
-            case Qualification.FACULTY_DEGREE:
-                return "Faculty Degree";
-            case Qualification.HIGH_SCHOOL:
-                return "High School";
-            case Qualification.PROFESSIONAL_QUALIFICATION:
-                return "Professional Qualification";
-            case Qualification.SEMI_QUALIFIED_WORKER:
-                return "Semi Qualified Worker";
-            case Qualification.WITHOUT_PROFESSIONAL_QUALIFICATION:
-                return "Without Professional Qualification";
-            default:
-                return qualification;
-        }
-    };
-
-    const handleSubmit = (values: typeof initialValues) => {
-        console.log("Profile Data Submitted:", values);
-    };
-
-    const isAdmin = useOrgAdminRole();
+    console.log(initialValues);
 
     return (
         <>
@@ -67,7 +71,8 @@ const Profile = () => {
                 <Formik
                     initialValues={initialValues}
                     validationSchema={validationSchema}
-                    onSubmit={handleSubmit}
+                    onSubmit={(values, helpers) => handleSubmit(values, helpers)}
+                    enableReinitialize
                 >
                     {({ values, handleChange, handleSubmit, setFieldValue, touched, errors }) => (
                         <form onSubmit={handleSubmit} className={styles.form}>
@@ -91,6 +96,25 @@ const Profile = () => {
                                     </div>
                                 </Col>
 
+                                <Col span={24}>
+                                    <div className={styles.formItem}>
+                                        <label htmlFor="employeeCNP" className={styles.label}>
+                                            Personal ID Number
+                                        </label>
+                                        <Input
+                                            id="employeeCNP"
+                                            name="employeeCNP"
+                                            size="large"
+                                            onChange={handleChange}
+                                            value={values.employeeCNP}
+                                            placeholder="Enter your personal ID number"
+                                        />
+                                        {errors.employeeCNP && touched.employeeCNP && (
+                                            <div className={styles.error}>{errors.employeeCNP}</div>
+                                        )}
+                                    </div>
+                                </Col>
+
                                 <Col xs={24} md={24}>
                                     <div className={styles.formItem}>
                                         <label htmlFor="qualification" className={styles.label}>
@@ -103,10 +127,11 @@ const Profile = () => {
                                             value={values.qualification || undefined}
                                             onChange={(value) => setFieldValue("qualification", value)}
                                             placeholder="Select your qualification"
+                                            disabled={!isAdmin}
                                         >
-                                            {Object.values(Qualification).map((qualification) => (
-                                                <Option key={qualification} value={qualification}>
-                                                    {formatQualification(qualification)}
+                                            {qualificationOptions.map((option) => (
+                                                <Option key={option.key} value={option.key}>
+                                                    {option.label}
                                                 </Option>
                                             ))}
                                         </Select>
@@ -126,7 +151,7 @@ const Profile = () => {
                                             name="dateOfBirth"
                                             value={values.dateOfBirth ? dayjs(values.dateOfBirth) : null}
                                             onChange={(date) =>
-                                                setFieldValue("dateOfBirth", date ? date.format("YYYY-MM-DD") : "")
+                                                setFieldValue("dateOfBirth", date ? formatDate(date) : "")
                                             }
                                             className={styles.input}
                                             format="DD-MM-YYYY"
@@ -147,98 +172,63 @@ const Profile = () => {
                                         <Input
                                             id="yearsOfExperience"
                                             name="yearsOfExperience"
-                                            value={yearsOfExperience}
+                                            value={values.yearsOfExperience}
                                             disabled
                                             size="large"
+                                        />
+                                    </div>
+                                    {errors.yearsOfExperience && (
+                                        <div className={styles.error}>{errors.yearsOfExperience}</div>
+                                    )}
+                                </Col>
+
+                                <Col xs={24} md={12}>
+                                    <div className={styles.formItem}>
+                                        <label htmlFor="selectedOrganization" className={styles.label}>
+                                            Organization
+                                        </label>
+                                        <Input
+                                            id="selectedOrganization"
+                                            name="selectedOrganization"
+                                            value={values.organization}
+                                            size="large"
+                                            disabled
+                                            placeholder="Organization name"
                                         />
                                     </div>
                                 </Col>
 
                                 <Col xs={24} md={12}>
-                                    <label htmlFor="selectedOrganization" className={styles.label}>Select Organization</label>
-                                    <Select
-                                        id="selectedOrganization"
-                                        size="large"
-                                        style={{ width: "100%" }}
-                                        placeholder={<span style={{ fontSize: "1.2rem" }}>Select an organization</span>}
-                                        className={`${errors.selectedOrganization && touched.selectedOrganization ? styles.errorBorder : ""} ${styles.noBorder}`}
-                                        onChange={(value) => {
-                                            setFieldValue("selectedOrganization", value);
-                                            handleOrganizationChange(value);
-                                        }}
-                                        value={selectedOrganization || null}
-                                        disabled={!isAdmin}
-                                    >
-                                        {isOrgError ? (
-                                            <Select.Option value="" disabled>
-                                                Error fetching organizations
-                                            </Select.Option>
-                                        ) : (
-                                            organizations?.map((org: Organization) => (
-                                                <Select.Option key={org.organizationId} value={org.organizationId}>
-                                                    {org.name}
-                                                </Select.Option>
-                                            ))
-                                        )}
-                                    </Select>
-                                    <ErrorMessage name="selectedOrganization" component="div" className={styles.error} />
-                                </Col>
-
-                                <Col xs={24} md={12}>
-                                    <label htmlFor="selectedSubsidiary" className={styles.label}>Select Subsidiary</label>
-                                    <Select
-                                        id="selectedSubsidiary"
-                                        style={{ width: "100%" }}
-                                        size="large"
-                                        placeholder={<span style={{ fontSize: "1.2rem" }}>Select a subsidiary</span>}
-                                        className={`${errors.selectedSubsidiary && touched.selectedSubsidiary ? styles.errorBorder : ""} ${styles.noBorder}`}
-                                        onChange={(value) => {
-                                            setFieldValue("selectedSubsidiary", value);
-                                            setSelectedSubsidiary(value);
-                                        }}
-                                        value={selectedSubsidiary || null}
-                                        disabled={!isAdmin}
-                                    >
-                                        {selectedOrganizationSubsidiaries.length === 0 ? (
-                                            <Select.Option value="" disabled>
-                                                No subsidiaries available
-                                            </Select.Option>
-                                        ) : (
-                                            selectedOrganizationSubsidiaries.map((subsidiary: Subsidiary) => (
-                                                <Select.Option key={subsidiary.subsidiaryId} value={subsidiary.subsidiaryId}>
-                                                    {subsidiary.address}, {subsidiary.city}, {subsidiary.country}
-                                                </Select.Option>
-                                            ))
-                                        )}
-                                    </Select>
-                                    <ErrorMessage name="selectedSubsidiary" component="div" className={styles.error} />
-                                </Col>
-
-                                <Col span={24}>
                                     <div className={styles.formItem}>
-                                        <label htmlFor="personalId" className={styles.label}>
-                                            Personal ID Number
+                                        <label htmlFor="selectedSubsidiary" className={styles.label}>
+                                            Subsidiary
                                         </label>
                                         <Input
-                                            id="personalId"
-                                            name="personalId"
+                                            id="selectedSubsidiary"
+                                            name="selectedSubsidiary"
+                                            value={values.subsidiary}
                                             size="large"
-                                            onChange={handleChange}
-                                            value={values.personalId}
-                                            placeholder="Enter your personal ID number"
+                                            disabled
+                                            placeholder="Subsidiary name"
                                         />
-                                        {errors.personalId && touched.personalId && (
-                                            <div className={styles.error}>{errors.personalId}</div>
-                                        )}
                                     </div>
                                 </Col>
                             </Row>
 
                             <div className={styles.buttonsContainer}>
-                                <Button type="primary" htmlType="submit" className={styles.submitButton}>
+                                <Button
+                                    type="primary"
+                                    htmlType={"submit"}
+                                    className={styles.submitButton}
+                                    loading={isUpdating}
+                                >
                                     Save Changes
                                 </Button>
-                                <Button type="default" onClick={handleLogout} className={styles.logoutButton}>
+                                <Button
+                                    type="default"
+                                    onClick={handleLogout}
+                                    className={styles.logoutButton}
+                                >
                                     Logout
                                 </Button>
                             </div>

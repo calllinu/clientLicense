@@ -12,9 +12,9 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  height: fit-content;
 
   .createAccount {
-    padding-bottom: 2rem;
     font-size: 2rem;
     display: flex;
     align-items: center;
@@ -30,8 +30,8 @@
     width: 100%;
     justify-content: center;
     align-items: center;
-    padding: 2rem 4rem;
     border-radius: 1rem;
+    padding: 2rem 4rem;
 
     .imageContainer {
       padding-bottom: 2rem;
@@ -137,6 +137,10 @@
       padding-left: .7rem;
     }
   }
+}
+
+.error{
+    color: var(--error-red);
 }
 
 .rightContainer {
