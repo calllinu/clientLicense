@@ -1,10 +1,19 @@
 import { useState, useCallback, useMemo } from 'react';
 import { Layout, Row, Col, Dropdown, Button } from 'antd';
-import { DatabaseOutlined, BarChartOutlined, LogoutOutlined, RightOutlined, LeftOutlined } from '@ant-design/icons';
+import { DatabaseOutlined,
+         BarChartOutlined,
+         LogoutOutlined,
+         RightOutlined,
+         LeftOutlined,
+         UsergroupAddOutlined,
+         ShopOutlined
+       } from '@ant-design/icons';
 import styles from './dasboard.module.scss'
 import DataContent from "../data-content/DataContent.tsx";
 import Statistics from "../statistics/Statistics.tsx";
 import useLogout from "../../auth/authHooks/useLogOut.tsx";
+import RegisterRequests from "../register-requests/RegisterRequests.tsx";
+import Organizations from "../organizations/Organizations.tsx";
 
 const { Sider, Content } = Layout;
 
@@ -40,25 +49,48 @@ const Dashboard = () => {
         setActiveContent(contentType);
     }, []);
 
+
+    const buttonConfig = [
+        {
+            label: 'Data',
+            icon: <DatabaseOutlined />,
+            onClick: () => handleContentSwitch('data'),
+        },
+        {
+            label: 'Statistics',
+            icon: <BarChartOutlined />,
+            onClick: () => handleContentSwitch('statistics'),
+        },
+        {
+            label: 'Requests',
+            icon: <UsergroupAddOutlined />,
+            onClick: () => handleContentSwitch('requests'),
+        },
+        {
+            label: 'Organizations',
+            icon: <ShopOutlined />,
+            onClick: () => handleContentSwitch('organizations')
+        },
+    ];
+
     return (
         <Layout className={styles.dashboardLayout}>
             <Sider className={`${styles.sidebar} ${collapsed ? styles.collapsedSidebar : ''}`} collapsible collapsed={collapsed} trigger={null}>
                 <Col className={styles.sidebarContent}>
                     <Col className={styles.navigation}>
-                        <Button
-                            className={styles.sidebarButton}
-                            icon={<DatabaseOutlined />}
-                            onClick={() => handleContentSwitch('data')}
-                        >
-                            Data
-                        </Button>
-                        <Button
-                            className={styles.sidebarButton}
-                            icon={<BarChartOutlined />}
-                            onClick={() => handleContentSwitch('statistics')}
-                        >
-                            Statistics
-                        </Button>
+                        {buttonConfig.map(
+                            (button, index) =>
+                                 (
+                                    <Button
+                                        key={index}
+                                        className={styles.sidebarButton}
+                                        icon={button.icon}
+                                        onClick={button.onClick}
+                                    >
+                                        {button.label}
+                                    </Button>
+                                )
+                        )}
                     </Col>
                     <Button
                         className={`${styles.sidebarButton} ${styles.logoutButton}`}
@@ -86,6 +118,8 @@ const Dashboard = () => {
                 <Content className={styles.tableContent}>
                     {activeContent === 'data' && <DataContent dummyEntries={dummyEntries} />}
                     {activeContent === 'statistics' && <Statistics />}
+                    {activeContent === 'requests' && <RegisterRequests />}
+                    {activeContent === 'organizations' && <Organizations />}
                 </Content>
             </Layout>
         </Layout>

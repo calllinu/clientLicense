@@ -1,10 +1,10 @@
-import * as yup from "yup";
-import dayjs from "dayjs";
+import * as Yup from 'yup';
+import {Industry} from "../../../interfaces/IndustryInterfaces.tsx";
 
-export const validationSchema = yup.object({
-    fullName: yup.string().required("Please enter your full name"),
-    qualification: yup.string().required(),
-    yearsOfExperience: yup.number().required().positive().integer(),
-    dateOfBirth: yup.date().required("Please select your date of birth").max(dayjs().toDate(), "Date of birth cannot be in the future"),
-    employeeCNP: yup.string().required("Please enter your personal ID number"),
+export const validationSchema = Yup.object({
+    organizationCode: Yup.string().required('Organization Code is required'),
+    name: Yup.string().required('Organization Name is required'),
+    yearOfEstablishment: Yup.number().required('Year of Establishment is required'),
+    adminEmail: Yup.string().email('Invalid email format').required('Admin Email is required'),
+    industry: Yup.mixed().oneOf(Object.values(Industry)).required('Industry is required'),
 });

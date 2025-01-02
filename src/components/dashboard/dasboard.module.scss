@@ -87,11 +87,13 @@
   color: var(--neutral-white);
   background: transparent;
   border-radius: 6px;
-  padding: 1.5rem;
+  padding: 2rem 1rem;
   transition: all 0.3s;
   display: inline-flex;
   justify-content: flex-start;
   align-items: center;
+  white-space: normal;
+  word-wrap: break-word;
 }
 
 .sidebarButton:hover {
@@ -106,7 +108,7 @@
 }
 
 .sidebarButton .anticon {
-  gap: 1rem;
+  gap: .3rem;
 }
 
 .navigation {

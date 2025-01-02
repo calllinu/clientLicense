@@ -1,3 +1,5 @@
+import {Employee} from "./EmployeeInterfaces.tsx";
+
 export interface SubsidiaryRequest {
     subsidiaryCode: string;
     country: string;
@@ -22,7 +24,7 @@ export interface Subsidiary {
     city: string;
     address: string;
     organizationId: number;
-    employeeIds: number[];
+    employees: Employee[];
 }
 
 export interface SubsidiaryUpdateRequest {

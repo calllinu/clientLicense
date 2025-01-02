@@ -19,7 +19,7 @@ const { Option } = Select;
 const Profile = () => {
     const handleLogout = useLogout();
     const initialValues = useInitialValues();
-   const isAdmin = useOrgAdminRole();
+    const isAdmin = useOrgAdminRole();
 
     const [updateEmployee, { isLoading: isUpdating }] = useUpdateEmployeeMutation();
 

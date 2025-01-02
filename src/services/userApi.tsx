@@ -4,15 +4,14 @@ import {
     LoginUser,
     LogoutRequest,
     LogoutResponse,
-    User,
-    UserResponse
+    User
 } from "../interfaces/UserInterfaces.tsx";
 
 export const userApi = createApi({
     reducerPath: 'userApi',
     baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:8080' }),
     endpoints: (builder) => ({
-        createUser: builder.mutation<UserResponse, User>({
+        createUser: builder.mutation<void, User>({
             query: (user) => ({
                 url: '/register',
                 method: 'POST',

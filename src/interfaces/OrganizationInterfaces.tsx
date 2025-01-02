@@ -8,15 +8,7 @@ export interface OrganizationUpdateRequest {
 
 export interface Organization {
     organizationId: number;
-    organizationCode: string;
-    name: string;
-    yearOfEstablishment: number;
-    industry: Industry;
-    subsidiaries: Subsidiary[];
-}
-
-export interface OrganizationResponse {
-    organizationId: number;
+    adminEmail: string;
     organizationCode: string;
     name: string;
     yearOfEstablishment: number;
@@ -25,16 +17,11 @@ export interface OrganizationResponse {
 }
 
 export interface OrganizationAddRequest {
-    registerCode: string;
+    organizationCode: string;
     name: string;
-    yearOfEstablishment: number;
-    industry: Industry;
+    yearOfEstablishment: string;
+    adminEmail: string;
+    industry: string;
 }
 
-export interface Employee {
-    employeeId: number;
-    name: string;
-    position: string;
-    department: string;
-    subsidiary: Subsidiary;
-}
+
