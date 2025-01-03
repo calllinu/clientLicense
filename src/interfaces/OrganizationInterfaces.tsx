@@ -1,5 +1,6 @@
 import {Industry} from "./IndustryInterfaces.tsx";
 import {Subsidiary} from "./SubsidiaryInterfaces.tsx";
+import {UserResponse} from "./UserInterfaces.tsx";
 
 export interface OrganizationUpdateRequest {
     updatedFields: Partial<Organization>;
@@ -20,8 +21,17 @@ export interface OrganizationAddRequest {
     organizationCode: string;
     name: string;
     yearOfEstablishment: string;
-    adminEmail: string;
     industry: string;
+}
+
+export interface OrganizationResponse {
+    organizationId: number;
+    organizationCode: string;
+    name: string;
+    yearOfEstablishment: number;
+    admin: UserResponse;
+    industry: Industry;
+    subsidiaries: Subsidiary[];
 }
 
 

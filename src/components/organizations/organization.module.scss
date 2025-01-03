@@ -2,23 +2,10 @@
   padding: 20px;
 }
 
-.ant-collapse-header {
-  font-weight: bold;
-}
-
 .header{
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
-
-.ant-list-item {
-  padding: 10px;
-  border-bottom: 1px solid #f0f0f0;
-
-  &:hover {
-    background-color: #f0f8ff;
-  }
 }
 
 .panelHeader {
@@ -53,4 +40,11 @@
   background-color: white;
 }
 
+.oddCollapse {
+  background-color: #f0f0f0;
+}
+
+.evenCollapse {
+  background-color: #ffffff;
+}
 

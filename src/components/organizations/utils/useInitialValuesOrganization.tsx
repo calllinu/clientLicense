@@ -5,7 +5,6 @@ export const useInitialValuesOrganization = (): OrganizationInitialValues => {
         organizationCode: "",
         name: "",
         yearOfEstablishment: undefined,
-        adminEmail: "",
         industry: "",
     };
 };

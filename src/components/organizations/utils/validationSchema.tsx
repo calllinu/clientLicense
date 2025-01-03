@@ -7,7 +7,6 @@ export const validationSchema = Yup.object().shape({
     yearOfEstablishment: Yup.string()
         .matches(/^\d{4}$/, 'Year of establishment must be a valid year')
         .required('Year of establishment is required'),
-    adminEmail: Yup.string().email('Invalid email address').required('Admin email is required'),
     industry: Yup.mixed().oneOf(
         Object.values(Industry),
         'Please select a valid industry'

@@ -1,8 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import {
-    Organization,
     OrganizationUpdateRequest,
-    OrganizationAddRequest
+    OrganizationAddRequest, OrganizationResponse
 } from "../interfaces/OrganizationInterfaces";
 
 export const organizationApi = createApi({
@@ -35,7 +34,7 @@ export const organizationApi = createApi({
                 method: 'GET',
             }),
         }),
-        getAllOrganizations: builder.query<Organization[], void>({
+        getAllOrganizations: builder.query<OrganizationResponse[], void>({
             query: () => ({
                 url: '/all',
                 method: 'GET',

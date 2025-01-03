@@ -2,7 +2,7 @@ import { Row, Col, Collapse, List, Button, Space, Modal, Input, Select, Form } f
 import { useState } from 'react';
 import { EditOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import {useAddOrganizationMutation, useGetAllOrganizationsQuery} from "../../services/organizationApi.tsx";
-import {Organization, OrganizationAddRequest} from "../../interfaces/OrganizationInterfaces.tsx";
+import {OrganizationAddRequest, OrganizationResponse} from "../../interfaces/OrganizationInterfaces.tsx";
 import { Subsidiary } from "../../interfaces/SubsidiaryInterfaces.tsx";
 import { Employee } from "../../interfaces/EmployeeInterfaces.tsx";
 import { Formik } from 'formik';
@@ -13,7 +13,6 @@ import { useInitialValuesOrganization } from "./utils/useInitialValuesOrganizati
 import { OrganizationInitialValues } from "../../interfaces/OrganizationInitialValues.tsx";
 import { formatIndustry } from "./utils/industryUtils.tsx";
 
-const { Panel } = Collapse;
 const { Option } = Select;
 
 const Organizations = () => {
@@ -49,7 +48,6 @@ const Organizations = () => {
     };
 
     const initialValues = useInitialValuesOrganization();
-
     return (
         <Row className={styles.statisticsContent}>
             <Col span={24}>
@@ -68,95 +66,101 @@ const Organizations = () => {
                 </Col>
 
                 {organizationData?.length ? (
-                    <Collapse>
-                        {organizationData.map((org: Organization) => (
-                            <Panel
-                                header={
+                    <Collapse
+                        items={organizationData?.map((org: OrganizationResponse, index: number) => {
+                            return {
+                                key: org.organizationId,
+                                label: (
                                     <div className={styles.panelHeader}>
-                                        <span>{`${org.organizationCode} - ${org.name}`}</span>
+                    <span>
+                        {`${org.organizationCode} - ${org.name}`}
+                    </span>
                                         <Space>
                                             <Button icon={<PlusOutlined />} onClick={() => console.log('Add subsidiary')} />
                                             <Button icon={<EditOutlined />} onClick={() => console.log('Edit organization')} />
                                             <Button icon={<DeleteOutlined />} danger onClick={() => console.log('Delete organization')} />
                                         </Space>
                                     </div>
-                                }
-                                key={org.organizationId}
-                                className={org.organizationId % 2 === 0 ? styles.panelContent : styles.panelContentOdd}
-                            >
-                                <p><strong>Industry: </strong> {formatIndustry(org.industry)}</p> {/* Display formatted industry */}
-                                <p><strong>Admin Email: </strong> {org.adminEmail}</p>
+                                ),
+                                children: (
+                                    <div>
+                                        <p><strong>Industry: </strong> {formatIndustry(org.industry)}</p>
+                                        <p><strong>Admin Name: </strong> {org.admin?.fullName}</p>
+                                        <p><strong>Admin Email: </strong> {org.admin?.email}</p>
 
-                                <h3>Subsidiaries</h3>
-                                {org.subsidiaries.length ? (
-                                    <List
-                                        dataSource={org.subsidiaries}
-                                        renderItem={(sub: Subsidiary) => (
-                                            <List.Item
-                                                className={
-                                                    expandedSubsidiaries.includes(sub.subsidiaryId)
-                                                        ? styles.subsidiaryExpanded
-                                                        : styles.subsidiaryCollapsed
-                                                }
-                                            >
-                                                <div className={styles.subsidiaryItem}>
-                                                    <div className={styles.subsidiaryHeader}>
-                                                        <div>
-                                                            <p><strong>Subsidiary Code:</strong> {sub.subsidiaryCode}</p>
-                                                            <p><strong>City:</strong> {sub.city}</p>
-                                                            <p><strong>Street:</strong> {sub.address}</p>
-                                                            <p><strong>Country:</strong> {sub.country}</p>
-                                                        </div>
-                                                        <Space>
-                                                            <Button icon={<EditOutlined />} onClick={() => console.log('Edit subsidiary')} />
-                                                            <Button icon={<DeleteOutlined />} danger onClick={() => console.log('Delete subsidiary')} />
-                                                        </Space>
-                                                    </div>
+                                        <h3>Subsidiaries</h3>
+                                        {org.subsidiaries.length ? (
+                                            <List
+                                                dataSource={org.subsidiaries}
+                                                renderItem={(sub: Subsidiary) => (
+                                                    <List.Item
+                                                        className={expandedSubsidiaries.includes(sub.subsidiaryId)
+                                                            ? styles.subsidiaryExpanded
+                                                            : styles.subsidiaryCollapsed}
+                                                    >
+                                                        <div className={styles.subsidiaryItem}>
+                                                            <div className={styles.subsidiaryHeader}>
+                                                                <div>
+                                                                    <p><strong>Subsidiary Code:</strong> {sub.subsidiaryCode}</p>
+                                                                    <p><strong>City:</strong> {sub.city}</p>
+                                                                    <p><strong>Street:</strong> {sub.address}</p>
+                                                                    <p><strong>Country:</strong> {sub.country}</p>
+                                                                </div>
+                                                                <Space>
+                                                                    <Button icon={<EditOutlined />} onClick={() => console.log('Edit subsidiary')} />
+                                                                    <Button icon={<DeleteOutlined />} danger onClick={() => console.log('Delete subsidiary')} />
+                                                                </Space>
+                                                            </div>
 
-                                                    {expandedSubsidiaries.includes(sub.subsidiaryId) ? (
-                                                        <div>
-                                                            <h4>Employees</h4>
-                                                            {sub.employees?.length ? (
-                                                                <List
-                                                                    dataSource={sub.employees}
-                                                                    renderItem={(emp: Employee) => (
-                                                                        <List.Item>
-                                                                            <p><strong>Full Name:</strong> {emp.fullName}</p>
-                                                                            <p><strong>Date of Birth:</strong> {emp.dateOfBirth?.toLocaleString()}</p>
-                                                                            <p><strong>Personal ID:</strong>{emp.employeeCNP}</p>
-                                                                            <p><strong>Qualification:</strong> {emp.qualification}</p>
-                                                                            <p><strong>Years of Experience:</strong> {emp.yearsOfExperience}</p>
-                                                                        </List.Item>
+                                                            {expandedSubsidiaries.includes(sub.subsidiaryId) ? (
+                                                                <div>
+                                                                    <h4>Employees</h4>
+                                                                    {sub.employees?.length ? (
+                                                                        <List
+                                                                            dataSource={sub.employees}
+                                                                            renderItem={(emp: Employee) => (
+                                                                                <List.Item>
+                                                                                    <p><strong>Full Name:</strong> {emp.fullName}</p>
+                                                                                    <p><strong>Date of Birth:</strong> {emp.dateOfBirth?.toLocaleString()}</p>
+                                                                                    <p><strong>Personal ID:</strong> {emp.employeeCNP}</p>
+                                                                                    <p><strong>Qualification:</strong> {emp.qualification}</p>
+                                                                                    <p><strong>Years of Experience:</strong> {emp.yearsOfExperience}</p>
+                                                                                </List.Item>
+                                                                            )}
+                                                                        />
+                                                                    ) : (
+                                                                        <p>No employees found.</p>
                                                                     )}
-                                                                />
+                                                                    <Button
+                                                                        type="link"
+                                                                        onClick={() => toggleSubsidiary(sub.subsidiaryId)}
+                                                                    >
+                                                                        Hide Employees
+                                                                    </Button>
+                                                                </div>
                                                             ) : (
-                                                                <p>No employees found.</p>
+                                                                <Button
+                                                                    type="link"
+                                                                    onClick={() => toggleSubsidiary(sub.subsidiaryId)}
+                                                                >
+                                                                    Show Employees
+                                                                </Button>
                                                             )}
-                                                            <Button
-                                                                type="link"
-                                                                onClick={() => toggleSubsidiary(sub.subsidiaryId)}
-                                                            >
-                                                                Hide Employees
-                                                            </Button>
                                                         </div>
-                                                    ) : (
-                                                        <Button
-                                                            type="link"
-                                                            onClick={() => toggleSubsidiary(sub.subsidiaryId)}
-                                                        >
-                                                            Show Employees
-                                                        </Button>
-                                                    )}
-                                                </div>
-                                            </List.Item>
+                                                    </List.Item>
+                                                )}
+                                            />
+                                        ) : (
+                                            <p>No subsidiaries found.</p>
                                         )}
-                                    />
-                                ) : (
-                                    <p>No subsidiaries found.</p>
-                                )}
-                            </Panel>
-                        ))}
-                    </Collapse>
+                                    </div>
+                                ),
+                                className: index % 2 === 0 ? styles.oddCollapse : styles.evenCollapse,
+                            };
+                        })}
+                    />
+
+
                 ) : (
                     <p>No organizations found.</p>
                 )}
@@ -169,7 +173,7 @@ const Organizations = () => {
                 footer={null}
             >
                 <Formik
-                    initialValues={initialValues as OrganizationInitialValues & Organization}
+                    initialValues={initialValues as OrganizationInitialValues & OrganizationResponse}
                     validationSchema={validationSchema}
                     onSubmit={handleAddOrganization}
                 >
@@ -215,21 +219,6 @@ const Organizations = () => {
                                     name="yearOfEstablishment"
                                     placeholder="Enter the year of establishment"
                                     value={values.yearOfEstablishment}
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                />
-                            </Form.Item>
-
-                            <Form.Item
-                                label="Admin Email"
-                                name="adminEmail"
-                                validateStatus={touched.adminEmail && errors.adminEmail ? 'error' : ''}
-                                help={touched.adminEmail && errors.adminEmail}
-                            >
-                                <Input
-                                    name="adminEmail"
-                                    placeholder="Enter the admin email"
-                                    value={values.adminEmail}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
                                 />
