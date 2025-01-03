@@ -1,32 +1,22 @@
-import { Row, Col, Collapse, List, Button, Space, Modal, Input, Select, Form } from 'antd';
+import { Row, Col, Collapse,Button, Space, Modal, Input, Select, Form } from 'antd';
 import { useState } from 'react';
-import { EditOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
+import {EditOutlined, DeleteOutlined, PlusOutlined, SolutionOutlined, UserOutlined, MailOutlined} from '@ant-design/icons';
 import {useAddOrganizationMutation, useGetAllOrganizationsQuery} from "../../services/organizationApi.tsx";
 import {OrganizationAddRequest, OrganizationResponse} from "../../interfaces/OrganizationInterfaces.tsx";
-import { Subsidiary } from "../../interfaces/SubsidiaryInterfaces.tsx";
-import { Employee } from "../../interfaces/EmployeeInterfaces.tsx";
 import { Formik } from 'formik';
-import styles from './organization.module.scss';
+import styles from './organization.module.scss'
 import { validationSchema } from "./utils/validationSchema.tsx";
 import { Industry } from "../../interfaces/IndustryInterfaces.tsx";
 import { useInitialValuesOrganization } from "./utils/useInitialValuesOrganization.tsx";
 import { OrganizationInitialValues } from "../../interfaces/OrganizationInitialValues.tsx";
 import { formatIndustry } from "./utils/industryUtils.tsx";
+import SubsidiariesSection from "../subsidiary/Subsidiary.tsx";
 
 const { Option } = Select;
 
 const Organizations = () => {
-    const { data: organizationData } = useGetAllOrganizationsQuery();
-    const [expandedSubsidiaries, setExpandedSubsidiaries] = useState<number[]>([]);
+    const { data: organizationData, refetch } = useGetAllOrganizationsQuery();
     const [isModalVisible, setIsModalVisible] = useState(false);
-
-    const toggleSubsidiary = (id: number) => {
-        setExpandedSubsidiaries((prevState) =>
-            prevState.includes(id)
-                ? prevState.filter((subId) => subId !== id)
-                : [...prevState, id]
-        );
-    };
 
     const showModal = () => {
         setIsModalVisible(true);
@@ -42,6 +32,7 @@ const Organizations = () => {
         try {
             await addOrganization(values).unwrap();
             setIsModalVisible(false);
+            refetch();
         } catch (error) {
             console.error("Error adding organization:", error);
         }
@@ -72,9 +63,9 @@ const Organizations = () => {
                                 key: org.organizationId,
                                 label: (
                                     <div className={styles.panelHeader}>
-                    <span>
-                        {`${org.organizationCode} - ${org.name}`}
-                    </span>
+                                        <span>
+                                            {`${org.organizationCode} - ${org.name}`}
+                                        </span>
                                         <Space>
                                             <Button icon={<PlusOutlined />} onClick={() => console.log('Add subsidiary')} />
                                             <Button icon={<EditOutlined />} onClick={() => console.log('Edit organization')} />
@@ -83,73 +74,23 @@ const Organizations = () => {
                                     </div>
                                 ),
                                 children: (
-                                    <div>
-                                        <p><strong>Industry: </strong> {formatIndustry(org.industry)}</p>
-                                        <p><strong>Admin Name: </strong> {org.admin?.fullName}</p>
-                                        <p><strong>Admin Email: </strong> {org.admin?.email}</p>
+                                    <div className={styles.industry}>
+                                        <div className={styles.industryInfo}>
+                                            <SolutionOutlined/>
+                                            <strong>Industry: </strong> {formatIndustry(org.industry)}
+                                        </div>
+                                        <div className={styles.industryInfo}>
+                                            <UserOutlined/>
+                                            <strong>Admin Name: </strong> {org.admin?.fullName}
+                                        </div>
+                                        <div className={styles.industryInfo}>
+                                            <MailOutlined/>
+                                            <strong>Admin Email: </strong> {org.admin?.email}
+                                        </div>
 
                                         <h3>Subsidiaries</h3>
                                         {org.subsidiaries.length ? (
-                                            <List
-                                                dataSource={org.subsidiaries}
-                                                renderItem={(sub: Subsidiary) => (
-                                                    <List.Item
-                                                        className={expandedSubsidiaries.includes(sub.subsidiaryId)
-                                                            ? styles.subsidiaryExpanded
-                                                            : styles.subsidiaryCollapsed}
-                                                    >
-                                                        <div className={styles.subsidiaryItem}>
-                                                            <div className={styles.subsidiaryHeader}>
-                                                                <div>
-                                                                    <p><strong>Subsidiary Code:</strong> {sub.subsidiaryCode}</p>
-                                                                    <p><strong>City:</strong> {sub.city}</p>
-                                                                    <p><strong>Street:</strong> {sub.address}</p>
-                                                                    <p><strong>Country:</strong> {sub.country}</p>
-                                                                </div>
-                                                                <Space>
-                                                                    <Button icon={<EditOutlined />} onClick={() => console.log('Edit subsidiary')} />
-                                                                    <Button icon={<DeleteOutlined />} danger onClick={() => console.log('Delete subsidiary')} />
-                                                                </Space>
-                                                            </div>
-
-                                                            {expandedSubsidiaries.includes(sub.subsidiaryId) ? (
-                                                                <div>
-                                                                    <h4>Employees</h4>
-                                                                    {sub.employees?.length ? (
-                                                                        <List
-                                                                            dataSource={sub.employees}
-                                                                            renderItem={(emp: Employee) => (
-                                                                                <List.Item>
-                                                                                    <p><strong>Full Name:</strong> {emp.fullName}</p>
-                                                                                    <p><strong>Date of Birth:</strong> {emp.dateOfBirth?.toLocaleString()}</p>
-                                                                                    <p><strong>Personal ID:</strong> {emp.employeeCNP}</p>
-                                                                                    <p><strong>Qualification:</strong> {emp.qualification}</p>
-                                                                                    <p><strong>Years of Experience:</strong> {emp.yearsOfExperience}</p>
-                                                                                </List.Item>
-                                                                            )}
-                                                                        />
-                                                                    ) : (
-                                                                        <p>No employees found.</p>
-                                                                    )}
-                                                                    <Button
-                                                                        type="link"
-                                                                        onClick={() => toggleSubsidiary(sub.subsidiaryId)}
-                                                                    >
-                                                                        Hide Employees
-                                                                    </Button>
-                                                                </div>
-                                                            ) : (
-                                                                <Button
-                                                                    type="link"
-                                                                    onClick={() => toggleSubsidiary(sub.subsidiaryId)}
-                                                                >
-                                                                    Show Employees
-                                                                </Button>
-                                                            )}
-                                                        </div>
-                                                    </List.Item>
-                                                )}
-                                            />
+                                            <SubsidiariesSection subsidiaries={org.subsidiaries}/>
                                         ) : (
                                             <p>No subsidiaries found.</p>
                                         )}

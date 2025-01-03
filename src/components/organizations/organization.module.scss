@@ -12,6 +12,13 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  font-size: 1rem;
+}
+
+:global{
+  .ant-collapse>.ant-collapse-item >.ant-collapse-header{
+    align-items: center !important;
+  }
 }
 
 .panelContent {
@@ -47,4 +54,19 @@
 .evenCollapse {
   background-color: #ffffff;
 }
+
+.industry{
+  display: flex;
+  flex-direction: column;
+  font-size: 1rem;
+
+  .industryInfo{
+    display: flex;
+    gap: .3rem;
+    margin-top: .5rem;
+  }
+}
+
+
+
 
