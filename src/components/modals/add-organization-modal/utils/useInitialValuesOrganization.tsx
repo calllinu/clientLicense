@@ -1,4 +1,4 @@
-import { OrganizationInitialValues } from "../../../interfaces/OrganizationInitialValues.tsx";
+import { OrganizationInitialValues } from "../../../../interfaces/OrganizationInitialValues.tsx";
 
 export const useInitialValuesOrganization = (): OrganizationInitialValues => {
     return {

@@ -1,44 +1,94 @@
-import { Row, Col, Collapse,Button, Space, Modal, Input, Select, Form } from 'antd';
-import { useState } from 'react';
-import {EditOutlined, DeleteOutlined, PlusOutlined, SolutionOutlined, UserOutlined, MailOutlined} from '@ant-design/icons';
-import {useAddOrganizationMutation, useGetAllOrganizationsQuery} from "../../services/organizationApi.tsx";
-import {OrganizationAddRequest, OrganizationResponse} from "../../interfaces/OrganizationInterfaces.tsx";
-import { Formik } from 'formik';
-import styles from './organization.module.scss'
-import { validationSchema } from "./utils/validationSchema.tsx";
-import { Industry } from "../../interfaces/IndustryInterfaces.tsx";
-import { useInitialValuesOrganization } from "./utils/useInitialValuesOrganization.tsx";
-import { OrganizationInitialValues } from "../../interfaces/OrganizationInitialValues.tsx";
-import { formatIndustry } from "./utils/industryUtils.tsx";
+import { Row, Col, Button, Collapse, Space } from 'antd';
+import { useState, useCallback, useMemo } from 'react';
+import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { useGetAllOrganizationsQuery } from "../../services/organizationApi.tsx";
+import OrganizationModal from "../modals/add-organization-modal/OrganizationModal.tsx";
+import SubsidiaryModal from "../modals/add-subsidiary-modal/SubsidiaryModal.tsx";
+import { OrganizationResponse } from "../../interfaces/OrganizationInterfaces.tsx";
+import { formatIndustry } from "../modals/add-organization-modal/utils/industryUtils.tsx";
 import SubsidiariesSection from "../subsidiary/Subsidiary.tsx";
-
-const { Option } = Select;
+import styles from './organization.module.scss';
 
 const Organizations = () => {
     const { data: organizationData, refetch } = useGetAllOrganizationsQuery();
-    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [isOrgModalVisible, setIsOrgModalVisible] = useState(false);
+    const [isSubsidiaryModalVisible, setIsSubsidiaryModalVisible] = useState(false);
+    const [currentOrganizationId, setCurrentOrganizationId] = useState<number | null>(null);
 
-    const showModal = () => {
-        setIsModalVisible(true);
-    };
+    const showOrgModal = useCallback(() => {
+        setIsOrgModalVisible(true);
+    }, []);
 
-    const handleCancel = () => {
-        setIsModalVisible(false);
-    };
+    const handleOrgCancel = useCallback(() => {
+        setIsOrgModalVisible(false);
+    }, []);
 
-    const [addOrganization] = useAddOrganizationMutation();
+    const showSubsidiaryModal = useCallback((organizationId: number) => {
+        setCurrentOrganizationId(organizationId);
+        setIsSubsidiaryModalVisible(true);
+    }, []);
 
-    const handleAddOrganization = async (values: OrganizationAddRequest) => {
-        try {
-            await addOrganization(values).unwrap();
-            setIsModalVisible(false);
-            refetch();
-        } catch (error) {
-            console.error("Error adding organization:", error);
-        }
-    };
+    const handleSubsidiaryCancel = useCallback(() => {
+        setIsSubsidiaryModalVisible(false);
+        setCurrentOrganizationId(null);
+    }, []);
 
-    const initialValues = useInitialValuesOrganization();
+    const organizationCollapseItems = useMemo(() => {
+        return organizationData?.map((org: OrganizationResponse, index: number) => ({
+            key: org.organizationId,
+            label: (
+                <div className={styles.panelHeader}>
+                    <span>{`${org.organizationCode} - ${org.name}`}</span>
+                    <Space>
+                        <Button
+                            icon={<PlusOutlined />}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                showSubsidiaryModal(org.organizationId);
+                            }}
+                        />
+                        <Button
+                            icon={<EditOutlined />}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                console.log('Edit organization');
+                            }}
+                        />
+                        <Button
+                            icon={<DeleteOutlined />}
+                            danger
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                console.log('Delete organization');
+                            }}
+                        />
+                    </Space>
+                </div>
+            ),
+            children: (
+                <div className={styles.industry}>
+                    <div className={styles.industryInfo}>
+                        <strong>Industry: </strong> {formatIndustry(org.industry)}
+                    </div>
+                    <div className={styles.industryInfo}>
+                        <strong>Admin Name: </strong> {org.admin?.fullName}
+                    </div>
+                    <div className={styles.industryInfo}>
+                        <strong>Admin Email: </strong> {org.admin?.email}
+                    </div>
+
+                    <h3>Subsidiaries</h3>
+                    {org.subsidiaries.length ? (
+                        <SubsidiariesSection subsidiaries={org.subsidiaries} />
+                    ) : (
+                        <p>No subsidiaries found.</p>
+                    )}
+                </div>
+            ),
+            className: index % 2 === 0 ? styles.oddCollapse : styles.evenCollapse,
+        }));
+    }, [organizationData, showSubsidiaryModal]);
+
     return (
         <Row className={styles.statisticsContent}>
             <Col span={24}>
@@ -48,7 +98,7 @@ const Organizations = () => {
                         <Button
                             type="primary"
                             icon={<PlusOutlined />}
-                            onClick={showModal}
+                            onClick={showOrgModal}
                             style={{ float: 'right' }}
                         >
                             Add Organization
@@ -57,143 +107,24 @@ const Organizations = () => {
                 </Col>
 
                 {organizationData?.length ? (
-                    <Collapse
-                        items={organizationData?.map((org: OrganizationResponse, index: number) => {
-                            return {
-                                key: org.organizationId,
-                                label: (
-                                    <div className={styles.panelHeader}>
-                                        <span>
-                                            {`${org.organizationCode} - ${org.name}`}
-                                        </span>
-                                        <Space>
-                                            <Button icon={<PlusOutlined />} onClick={() => console.log('Add subsidiary')} />
-                                            <Button icon={<EditOutlined />} onClick={() => console.log('Edit organization')} />
-                                            <Button icon={<DeleteOutlined />} danger onClick={() => console.log('Delete organization')} />
-                                        </Space>
-                                    </div>
-                                ),
-                                children: (
-                                    <div className={styles.industry}>
-                                        <div className={styles.industryInfo}>
-                                            <SolutionOutlined/>
-                                            <strong>Industry: </strong> {formatIndustry(org.industry)}
-                                        </div>
-                                        <div className={styles.industryInfo}>
-                                            <UserOutlined/>
-                                            <strong>Admin Name: </strong> {org.admin?.fullName}
-                                        </div>
-                                        <div className={styles.industryInfo}>
-                                            <MailOutlined/>
-                                            <strong>Admin Email: </strong> {org.admin?.email}
-                                        </div>
-
-                                        <h3>Subsidiaries</h3>
-                                        {org.subsidiaries.length ? (
-                                            <SubsidiariesSection subsidiaries={org.subsidiaries}/>
-                                        ) : (
-                                            <p>No subsidiaries found.</p>
-                                        )}
-                                    </div>
-                                ),
-                                className: index % 2 === 0 ? styles.oddCollapse : styles.evenCollapse,
-                            };
-                        })}
-                    />
-
-
+                    <Collapse items={organizationCollapseItems} />
                 ) : (
                     <p>No organizations found.</p>
                 )}
             </Col>
 
-            <Modal
-                title="Add New Organization"
-                open={isModalVisible}
-                onCancel={handleCancel}
-                footer={null}
-            >
-                <Formik
-                    initialValues={initialValues as OrganizationInitialValues & OrganizationResponse}
-                    validationSchema={validationSchema}
-                    onSubmit={handleAddOrganization}
-                >
-                    {({ values, errors, touched, handleChange, handleBlur, handleSubmit }) => (
-                        <Form layout="vertical" onFinish={handleSubmit}>
-                            <Form.Item
-                                label="Organization Code"
-                                name="organizationCode"
-                                validateStatus={touched.organizationCode && errors.organizationCode ? 'error' : ''}
-                                help={touched.organizationCode && errors.organizationCode}
-                            >
-                                <Input
-                                    name="organizationCode"
-                                    placeholder="Enter the organization code"
-                                    value={values.organizationCode}
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                />
-                            </Form.Item>
+            <OrganizationModal
+                visible={isOrgModalVisible}
+                onCancel={handleOrgCancel}
+                refetch={refetch}
+            />
 
-                            <Form.Item
-                                label="Organization Name"
-                                name="name"
-                                validateStatus={touched.name && errors.name ? 'error' : ''}
-                                help={touched.name && errors.name}
-                            >
-                                <Input
-                                    name="name"
-                                    placeholder="Enter the organization name"
-                                    value={values.name}
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                />
-                            </Form.Item>
-
-                            <Form.Item
-                                label="Year of Establishment"
-                                name="yearOfEstablishment"
-                                validateStatus={touched.yearOfEstablishment && errors.yearOfEstablishment ? 'error' : ''}
-                                help={touched.yearOfEstablishment && errors.yearOfEstablishment}
-                            >
-                                <Input
-                                    name="yearOfEstablishment"
-                                    placeholder="Enter the year of establishment"
-                                    value={values.yearOfEstablishment}
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                />
-                            </Form.Item>
-
-                            <Form.Item
-                                label="Industry"
-                                name="industry"
-                                validateStatus={touched.industry && errors.industry ? 'error' : ''}
-                                help={touched.industry && errors.industry}
-                            >
-                                <Select
-                                    value={values.industry}
-                                    onChange={(value) => handleChange({ target: { name: 'industry', value } })}
-                                    onBlur={handleBlur}
-                                    placeholder="Select an Industry"
-                                >
-                                    {Object.values(Industry).map((industry) => (
-                                        <Option key={industry} value={industry}>
-                                            {formatIndustry(industry)}
-                                        </Option>
-                                    ))}
-                                </Select>
-                            </Form.Item>
-
-                            <Form.Item>
-                                <Button type="primary" htmlType="submit">
-                                    Add Organization
-                                </Button>
-                            </Form.Item>
-                        </Form>
-                    )}
-                </Formik>
-            </Modal>
+            <SubsidiaryModal
+                isVisible={isSubsidiaryModalVisible}
+                onClose={handleSubsidiaryCancel}
+                refetch={refetch}
+                organizationId={currentOrganizationId}
+            />
         </Row>
     );
 };

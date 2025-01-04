@@ -4,6 +4,7 @@
   flex-wrap: wrap;
   gap: 16px;
   justify-content: flex-start;
+  padding-left: 5rem;
 }
 
 .subsidiaryCard {
@@ -16,7 +17,7 @@
   cursor: pointer;
   padding: 16px;
   width: calc(100% / 4 - 16px);
-  max-width: 25rem;
+  max-width: 28rem;
 
   &:hover {
     transform: translateY(-5px);

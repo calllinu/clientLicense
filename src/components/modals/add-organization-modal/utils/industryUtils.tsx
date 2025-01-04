@@ -1,4 +1,4 @@
-import { Industry } from "../../../interfaces/IndustryInterfaces.tsx";
+import { Industry } from "../../../../interfaces/IndustryInterfaces.tsx";
 
 export const formatIndustry = (industry: Industry | null): string => {
     switch (industry) {

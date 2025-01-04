@@ -5,7 +5,7 @@ export interface SubsidiaryRequest {
     country: string;
     city: string;
     address: string;
-    organizationId: number;
+    organizationId: number | undefined;
 }
 
 export interface SubsidiaryResponse {
