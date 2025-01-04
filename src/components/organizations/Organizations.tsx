@@ -1,37 +1,66 @@
 import { Row, Col, Button, Collapse, Space } from 'antd';
 import { useState, useCallback, useMemo } from 'react';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import { useGetAllOrganizationsQuery } from "../../services/organizationApi.tsx";
+import { useGetAllOrganizationsQuery, useRemoveOrganizationMutation } from "../../services/organizationApi.tsx";
 import OrganizationModal from "../modals/add-organization-modal/OrganizationModal.tsx";
 import SubsidiaryModal from "../modals/add-subsidiary-modal/SubsidiaryModal.tsx";
 import { OrganizationResponse } from "../../interfaces/OrganizationInterfaces.tsx";
 import { formatIndustry } from "../modals/add-organization-modal/utils/industryUtils.tsx";
 import SubsidiariesSection from "../subsidiary/Subsidiary.tsx";
 import styles from './organization.module.scss';
+import ConfirmDeleteModal from "../modals/confirm-delete-modal/ConfirmDeleteModal.tsx";
 
 const Organizations = () => {
     const { data: organizationData, refetch } = useGetAllOrganizationsQuery();
+    const [removeOrganization] = useRemoveOrganizationMutation();
     const [isOrgModalVisible, setIsOrgModalVisible] = useState(false);
     const [isSubsidiaryModalVisible, setIsSubsidiaryModalVisible] = useState(false);
     const [currentOrganizationId, setCurrentOrganizationId] = useState<number | null>(null);
+    const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+    const [organizationToDelete, setOrganizationToDelete] = useState<OrganizationResponse | null>(null);
 
     const showOrgModal = useCallback(() => {
         setIsOrgModalVisible(true);
-    }, []);
+        }, []
+    );
 
     const handleOrgCancel = useCallback(() => {
         setIsOrgModalVisible(false);
-    }, []);
+        }, []
+    );
 
     const showSubsidiaryModal = useCallback((organizationId: number) => {
         setCurrentOrganizationId(organizationId);
         setIsSubsidiaryModalVisible(true);
-    }, []);
+        }, []
+    );
 
     const handleSubsidiaryCancel = useCallback(() => {
         setIsSubsidiaryModalVisible(false);
         setCurrentOrganizationId(null);
-    }, []);
+        }, []
+    );
+
+    const handleDeleteOrganization = useCallback(
+        (organizationId: string) => {
+            removeOrganization(organizationId)
+                .unwrap()
+                .then(() => {
+                    refetch();
+                    setIsDeleteModalVisible(false);
+                });
+        },
+        [removeOrganization, refetch]
+    );
+
+    const handleDeleteClick = useCallback(
+        (organization: OrganizationResponse) => {
+            setOrganizationToDelete(organization);
+            setIsDeleteModalVisible(true);
+        },
+        []
+    );
+
 
     const organizationCollapseItems = useMemo(() => {
         return organizationData?.map((org: OrganizationResponse, index: number) => ({
@@ -59,7 +88,7 @@ const Organizations = () => {
                             danger
                             onClick={(e) => {
                                 e.stopPropagation();
-                                console.log('Delete organization');
+                                handleDeleteClick(org);
                             }}
                         />
                     </Space>
@@ -79,7 +108,10 @@ const Organizations = () => {
 
                     <h3>Subsidiaries</h3>
                     {org.subsidiaries.length ? (
-                        <SubsidiariesSection subsidiaries={org.subsidiaries} />
+                        <SubsidiariesSection
+                            subsidiaries={org.subsidiaries}
+                            refetch={refetch}
+                        />
                     ) : (
                         <p>No subsidiaries found.</p>
                     )}
@@ -124,6 +156,14 @@ const Organizations = () => {
                 onClose={handleSubsidiaryCancel}
                 refetch={refetch}
                 organizationId={currentOrganizationId}
+            />
+
+            <ConfirmDeleteModal
+                isVisible={isDeleteModalVisible}
+                onCancel={() => setIsDeleteModalVisible(false)}
+                onConfirm={() => organizationToDelete && handleDeleteOrganization(organizationToDelete.organizationId.toString())}
+                messageText={`Are you sure you want to delete organization: ${organizationToDelete?.name}?`}
+                titleText="Delete Organization"
             />
         </Row>
     );

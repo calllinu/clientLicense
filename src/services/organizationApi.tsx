@@ -16,8 +16,8 @@ export const organizationApi = createApi({
             }),
         }),
         removeOrganization: builder.mutation<{ message: string }, string>({
-            query: (registerCode) => ({
-                url: `/remove/${registerCode}`,
+            query: (organizationId) => ({
+                url: `/remove/${organizationId}`,
                 method: 'DELETE',
             }),
         }),
