@@ -28,11 +28,9 @@ export interface Subsidiary {
 }
 
 export interface SubsidiaryUpdateRequest {
-    updatedFields: Partial<Subsidiary>;
-    subsidiaryId: number;
-    subsidiaryCode?: string;
-    country?: string;
-    city?: string;
-    address?: string;
-    organizationId?: number;
+    subsidiaryId: number | undefined;
+    subsidiaryCode: string;
+    country: string;
+    city: string;
+    address: string;
 }

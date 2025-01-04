@@ -23,11 +23,15 @@ export const subsidiaryApi = createApi({
                 method: 'DELETE',
             }),
         }),
-        updateSubsidiary: builder.mutation<SubsidiaryResponse, SubsidiaryUpdateRequest>({
-            query: ({ updatedFields, subsidiaryId }) => ({
+        updateSubsidiary: builder.mutation<void, {values: SubsidiaryUpdateRequest; subsidiaryId: number}>({
+            query: ({ values, subsidiaryId }) => ({
                 url: `/update/${subsidiaryId}`,
                 method: 'PUT',
-                body: updatedFields,
+                body: {
+                    country: values.country,
+                    city: values.city,
+                    address: values.address,
+                }
             }),
         }),
         getSubsidiaryById: builder.query<SubsidiaryResponse, string>({
@@ -52,3 +56,6 @@ export const {
     useGetSubsidiaryByIdQuery,
     useGetAllSubsidiariesQuery
 } = subsidiaryApi;
+
+
+

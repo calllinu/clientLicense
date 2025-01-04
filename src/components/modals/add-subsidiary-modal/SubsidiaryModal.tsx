@@ -1,5 +1,5 @@
 import { Modal, Form, Input, Button } from 'antd';
-import {Formik, FormikHelpers} from 'formik';
+import { Formik } from 'formik';
 import { useAddSubsidiaryMutation } from "../../../services/subsidiaryApi.tsx";
 import { SubsidiaryRequest } from "../../../interfaces/SubsidiaryInterfaces.tsx";
 import validationSchema from "./utils/validationSchema.tsx";
@@ -21,13 +21,12 @@ const SubsidiaryModal: React.FC<SubsidiaryModalProps> = ({ isVisible, onClose, r
         address: '',
     };
 
-    const handleAddSubsidiary = async (values: Omit<SubsidiaryRequest, 'organizationId'>, actions: FormikHelpers<Omit<SubsidiaryRequest, 'organizationId'>>) => {
+    const handleAddSubsidiary = async (values: Omit<SubsidiaryRequest, 'organizationId'>) => {
         if (!organizationId) return;
         try {
             await addSubsidiary({ ...values, organizationId }).unwrap();
             refetch();
-            onClose();
-            actions.resetForm();
+            onClose();  // Close modal
         } catch (error) {
             console.error("Error adding subsidiary:", error);
         }
@@ -45,7 +44,7 @@ const SubsidiaryModal: React.FC<SubsidiaryModalProps> = ({ isVisible, onClose, r
                 validationSchema={validationSchema}
                 onSubmit={handleAddSubsidiary}
             >
-                {({ values, errors, touched, handleChange, handleBlur, handleSubmit}) => (
+                {({ values, errors, touched, handleChange, handleBlur, handleSubmit }) => (
                     <Form layout="vertical" onFinish={handleSubmit}>
                         <Form.Item label="Organization ID">
                             <Input

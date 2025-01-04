@@ -61,7 +61,6 @@ const Profile = () => {
         return dayjs(date).format("DD-MM-YYYY");
     }, []);
 
-    console.log(initialValues);
 
     return (
         <>

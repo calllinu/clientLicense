@@ -13,6 +13,7 @@ import styles from './subsidiary.module.scss';
 import { Subsidiary } from '../../interfaces/SubsidiaryInterfaces.tsx';
 import { useRemoveSubsidiaryMutation } from '../../services/subsidiaryApi.tsx';
 import ConfirmDeleteModal from '../modals/confirm-delete-modal/ConfirmDeleteModal.tsx';
+import EditSubsidiaryModal from "../modals/edit-subsidiary-info-modal/EditSubsidiaryModal.tsx";
 
 interface SubsidiariesSectionProps {
     subsidiaries: Subsidiary[];
@@ -23,15 +24,14 @@ const SubsidiariesSection = ({ subsidiaries, refetch }: SubsidiariesSectionProps
     const navigate = useNavigate();
     const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
     const [subsidiaryToDelete, setSubsidiaryToDelete] = useState<Subsidiary | null>(null);
+    const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+    const [selectedSubsidiary, setSelectedSubsidiary] = useState<Subsidiary | null>(null);
     const [removeSubsidiary] = useRemoveSubsidiaryMutation();
 
     const navigateToSubsidiary = useCallback((sub: Subsidiary) => {
         navigate(`/dashboard/${sub.subsidiaryId}`, { state: { subsidiary: sub } });
     }, [navigate]);
 
-    const editSubsidiary = useCallback((id: number) => {
-        console.log(`Edit subsidiary ${id}`);
-    }, []);
 
     const showDeleteModal = useCallback((sub: Subsidiary) => {
         setSubsidiaryToDelete(sub);
@@ -53,6 +53,17 @@ const SubsidiariesSection = ({ subsidiaries, refetch }: SubsidiariesSectionProps
         setIsDeleteModalVisible(false);
         setSubsidiaryToDelete(null);
     }, []);
+
+    const showEditModal = useCallback((sub: Subsidiary) => {
+        setSelectedSubsidiary(sub);
+        setIsEditModalVisible(true);
+    }, []);
+
+    const hideEditModal = useCallback(() => {
+        setIsEditModalVisible(false);
+        setSelectedSubsidiary(null);
+    }, []);
+
 
     return (
         <div className={styles.subsidiariesContainer}>
@@ -80,7 +91,7 @@ const SubsidiariesSection = ({ subsidiaries, refetch }: SubsidiariesSectionProps
                                 icon={<EditOutlined />}
                                 onClick={(e) => {
                                     e.stopPropagation();
-                                    editSubsidiary(sub.subsidiaryId);
+                                    showEditModal(sub);
                                 }}
                             />
                             <Button
@@ -102,6 +113,13 @@ const SubsidiariesSection = ({ subsidiaries, refetch }: SubsidiariesSectionProps
                 onConfirm={confirmDelete}
                 messageText={`Are you sure you want to delete subsidiary: ${subsidiaryToDelete?.subsidiaryCode}?`}
                 titleText="Delete Subsidiary"
+            />
+
+            <EditSubsidiaryModal
+                isVisible={isEditModalVisible}
+                onClose={hideEditModal}
+                refetch={refetch}
+                subsidiary={selectedSubsidiary}
             />
         </div>
     );
