@@ -1,12 +1,12 @@
 import { Modal, Form, Input, Button, Select } from 'antd';
-import { Formik, FormikHelpers } from 'formik';
+import {Formik, FormikHelpers, FormikProps} from 'formik';
 import { useAddOrganizationMutation } from "../../../services/organizationApi.tsx";
 import { validationSchema } from "./utils/validationSchema.tsx";
 import styles from './organization-modal.module.scss';
 import { OrganizationInitialValues } from "../../../interfaces/OrganizationInitialValues.tsx";
 import { Industry } from "../../../interfaces/IndustryInterfaces.tsx";
 import { formatIndustry } from "./utils/industryUtils.tsx";
-import { useCallback, useMemo } from "react";
+import {useCallback, useMemo, useRef} from "react";
 
 const { Option } = Select;
 
@@ -18,7 +18,7 @@ interface OrganizationModalProps {
 
 const OrganizationModal: React.FC<OrganizationModalProps> = ({ visible, onCancel, refetch }) => {
     const [addOrganization] = useAddOrganizationMutation();
-
+    const formikRef = useRef<FormikProps<OrganizationInitialValues> | null>(null);
     const initialValues = useMemo((): OrganizationInitialValues => ({
         organizationCode: '',
         name: '',
@@ -48,15 +48,23 @@ const OrganizationModal: React.FC<OrganizationModalProps> = ({ visible, onCancel
         ))
     ), []);
 
+    const handleClose = useCallback(()  => {
+        if (formikRef.current) {
+            formikRef.current.resetForm();
+        }
+        onCancel();
+    }, []);
+
     return (
         <Modal
             title="Add New Organization"
             open={visible}
-            onCancel={onCancel}
+            onCancel={handleClose}
             footer={null}
             className={styles.modal}
         >
             <Formik
+                innerRef={formikRef}
                 initialValues={initialValues}
                 validationSchema={validationSchema}
                 onSubmit={handleAddOrganization}

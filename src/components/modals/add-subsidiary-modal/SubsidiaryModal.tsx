@@ -1,8 +1,9 @@
 import { Modal, Form, Input, Button } from 'antd';
-import { Formik } from 'formik';
+import {Formik, FormikHelpers, FormikProps} from 'formik';
 import { useAddSubsidiaryMutation } from "../../../services/subsidiaryApi.tsx";
 import { SubsidiaryRequest } from "../../../interfaces/SubsidiaryInterfaces.tsx";
 import validationSchema from "./utils/validationSchema.tsx";
+import {useCallback, useRef} from "react";
 
 interface SubsidiaryModalProps {
     isVisible: boolean;
@@ -13,6 +14,7 @@ interface SubsidiaryModalProps {
 
 const SubsidiaryModal: React.FC<SubsidiaryModalProps> = ({ isVisible, onClose, refetch, organizationId }) => {
     const [addSubsidiary] = useAddSubsidiaryMutation();
+    const formikRef = useRef<FormikProps<Omit<SubsidiaryRequest, 'organizationId'>> | null>(null);
 
     const initialValues: Omit<SubsidiaryRequest, 'organizationId'> = {
         subsidiaryCode: '',
@@ -21,25 +23,37 @@ const SubsidiaryModal: React.FC<SubsidiaryModalProps> = ({ isVisible, onClose, r
         address: '',
     };
 
-    const handleAddSubsidiary = async (values: Omit<SubsidiaryRequest, 'organizationId'>) => {
+    const handleAddSubsidiary = useCallback(async (
+                values: Omit<SubsidiaryRequest, 'organizationId'>,
+                actions: FormikHelpers<Omit<SubsidiaryRequest, 'organizationId'>>) => {
         if (!organizationId) return;
         try {
             await addSubsidiary({ ...values, organizationId }).unwrap();
             refetch();
-            onClose();  // Close modal
+            onClose();
+            actions.resetForm();
         } catch (error) {
             console.error("Error adding subsidiary:", error);
         }
-    };
+    }, [addSubsidiary, organizationId, refetch, onClose]);
+
+    const handleClose = useCallback(()  => {
+        if (formikRef.current) {
+            formikRef.current.resetForm();
+        }
+        onClose();
+    }, []);
+
 
     return (
         <Modal
             title="Add Subsidiary"
             open={isVisible}
-            onCancel={onClose}
+            onCancel={handleClose}
             footer={null}
         >
             <Formik
+                innerRef={formikRef}
                 initialValues={initialValues}
                 validationSchema={validationSchema}
                 onSubmit={handleAddSubsidiary}
