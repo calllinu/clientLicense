@@ -18,16 +18,17 @@ import SubsidiariesSection from "../subsidiary/SubsidiarySection.tsx";
 import styles from './organization.module.scss';
 import ConfirmDeleteModal from "../modals/confirm-delete-modal/ConfirmDeleteModal.tsx";
 import EditOrganizationModal from "../modals/edit-organization-info-modal/EditOrganizationModal.tsx";
+import Search from "antd/es/input/Search";
 
 const Organizations = () => {
     const [pagination, setPagination] = useState({current: 1, pageSize: 20});
+    const [searchText, setSearchText] = useState('');
 
     const {data: organizationData, refetch} = useGetAllOrganizationsQuery({
         page: pagination.current - 1,
         size: pagination.pageSize,
+        search: searchText,
     });
-
-    console.log(organizationData)
 
     const [removeOrganization] = useRemoveOrganizationMutation();
     const [isOrgModalVisible, setIsOrgModalVisible] = useState(false);
@@ -48,6 +49,10 @@ const Organizations = () => {
         yearOfEstablishment: organization.yearOfEstablishment,
         industry: organization.industry,
     });
+
+    const filteredOrganizations = useMemo(() => {
+        return organizationData?.data || [];
+    }, [organizationData]);
 
     const showEditOrgModal = useCallback(
         (organization: OrganizationResponse) => {
@@ -94,7 +99,7 @@ const Organizations = () => {
     );
 
     const organizationCollapseItems = useMemo(() => {
-        return organizationData?.data?.map((org: OrganizationResponse, index: number) => ({
+        return filteredOrganizations.map((org: OrganizationResponse, index: number) => ({
             key: org.organizationId,
             label: (
                 <div className={styles.panelHeader}>
@@ -159,14 +164,21 @@ const Organizations = () => {
             ),
             className: index % 2 === 0 ? styles.oddCollapse : styles.evenCollapse,
         }));
-    }, [organizationData, showSubsidiaryModal, showEditOrgModal, handleDeleteClick]);
+    }, [filteredOrganizations, showSubsidiaryModal, showEditOrgModal, handleDeleteClick]);
 
     return (
         <Row className={styles.statisticsContent}>
             <Col span={24}>
                 <Col span={24} className={styles.header}>
                     <Col><h2>Organizations SafetyNet AI</h2></Col>
-                    <Col>
+                    <Col className={styles.rightActions}>
+                        <Search
+                            placeholder="Search by name, code, or industry"
+                            onChange={(e) => setSearchText(e.target.value)}
+                            value={searchText}
+                            enterButton
+                            className={styles.searchAction}
+                        />
                         <Button
                             type="primary"
                             icon={<PlusOutlined/>}

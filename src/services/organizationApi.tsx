@@ -35,14 +35,17 @@ export const organizationApi = createApi({
                 method: 'GET',
             }),
         }),
-        getAllOrganizations: builder.query<{ data: OrganizationResponse[], total: number }, {
-            page: number,
-            size: number
-        }>({
-            query: ({page, size}) => ({
+        getAllOrganizations: builder.query<{
+            data: OrganizationResponse[];
+            total: number;
+        }, { page: number; size: number; search: string }>({
+            query: ({page, size, search}) => ({
                 url: '/all',
-                method: 'GET',
-                params: {page, size}
+                params: {
+                    page,
+                    size,
+                    search,
+                },
             }),
         }),
     }),
