@@ -1,4 +1,4 @@
-import {Button, Col, Collapse, Row, Space} from 'antd';
+import {Button, Col, Collapse, Pagination, Row, Space} from 'antd';
 import {useCallback, useMemo, useState} from 'react';
 import {
     DeleteOutlined,
@@ -20,7 +20,15 @@ import ConfirmDeleteModal from "../modals/confirm-delete-modal/ConfirmDeleteModa
 import EditOrganizationModal from "../modals/edit-organization-info-modal/EditOrganizationModal.tsx";
 
 const Organizations = () => {
-    const {data: organizationData, refetch} = useGetAllOrganizationsQuery();
+    const [pagination, setPagination] = useState({current: 1, pageSize: 20});
+
+    const {data: organizationData, refetch} = useGetAllOrganizationsQuery({
+        page: pagination.current - 1,
+        size: pagination.pageSize,
+    });
+
+    console.log(organizationData)
+
     const [removeOrganization] = useRemoveOrganizationMutation();
     const [isOrgModalVisible, setIsOrgModalVisible] = useState(false);
     const [isSubsidiaryModalVisible, setIsSubsidiaryModalVisible] = useState(false);
@@ -86,7 +94,7 @@ const Organizations = () => {
     );
 
     const organizationCollapseItems = useMemo(() => {
-        return organizationData?.map((org: OrganizationResponse, index: number) => ({
+        return organizationData?.data?.map((org: OrganizationResponse, index: number) => ({
             key: org.organizationId,
             label: (
                 <div className={styles.panelHeader}>
@@ -170,11 +178,27 @@ const Organizations = () => {
                     </Col>
                 </Col>
 
-                {organizationData?.length ? (
+                {organizationData?.data?.length ? (
                     <Collapse items={organizationCollapseItems}/>
                 ) : (
                     <p>No organizations found.</p>
                 )}
+
+                <Pagination
+                    className={styles.pagination}
+                    current={pagination.current}
+                    pageSize={pagination.pageSize}
+                    total={organizationData?.total}
+                    onChange={(page, pageSize) => {
+                        setPagination({current: page, pageSize});
+                        refetch();
+                    }}
+                    showSizeChanger
+                    onShowSizeChange={(current, size) => {
+                        setPagination({current, pageSize: size});
+                        refetch();
+                    }}
+                />
             </Col>
 
             <OrganizationModal

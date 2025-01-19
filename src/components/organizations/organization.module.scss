@@ -2,7 +2,7 @@
   padding: 20px;
 }
 
-.header{
+.header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -15,8 +15,8 @@
   font-size: 1rem;
 }
 
-:global{
-  .ant-collapse>.ant-collapse-item >.ant-collapse-header{
+:global {
+  .ant-collapse > .ant-collapse-item > .ant-collapse-header {
     align-items: center !important;
   }
 }
@@ -55,19 +55,19 @@
   background-color: #ffffff;
 }
 
-.industry{
+.industry {
   display: flex;
   flex-direction: column;
   font-size: 1rem;
 
-  .industryInfo{
-    display: inline-flex; 
+  .industryInfo {
+    display: inline-flex;
     gap: .3rem;
     margin-top: .5rem;
   }
 }
 
-.subsidiaryTitle{
+.subsidiaryTitle {
   display: inline-flex;
   padding: 1rem;
   font-size: 1.2rem;
@@ -75,6 +75,13 @@
   justify-content: center;
   background-color: #f0f0f0;
   margin-top: 1.5rem;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  padding: 1rem;
+  margin-top: .5rem;
 }
 
 

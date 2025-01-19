@@ -35,6 +35,7 @@ export interface OrganizationResponse {
     admin: UserResponse;
     industry: Industry;
     subsidiaries: Subsidiary[];
+    total: number;
 }
 
 
