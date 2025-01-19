@@ -27,4 +27,10 @@ export interface Subsidiary {
     employees: Employee[];
 }
 
-
+export interface SubsidiaryUpdateRequest {
+    country: string;
+    city: string;
+    address: string;
+    subsidiaryCode?: string;
+    subsidiaryId?: number;
+}

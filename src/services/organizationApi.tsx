@@ -22,12 +22,13 @@ export const organizationApi = createApi({
             }),
         }),
         updateOrganization: builder.mutation<void, OrganizationUpdateRequest>({
-            query: ({ updatedFields, registerCode }) => ({
-                url: `/update/${registerCode}`,
+            query: ({ organizationId, name, yearOfEstablishment }) => ({
+                url: `/update/${organizationId}`,
                 method: 'PUT',
-                body: updatedFields,
+                body: { name, yearOfEstablishment },
             }),
         }),
+
         getOrganizationByRegisterCode: builder.query<void, string>({
             query: (registerCode) => ({
                 url: `/get/${registerCode}`,

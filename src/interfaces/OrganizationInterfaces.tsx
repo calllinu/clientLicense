@@ -3,8 +3,11 @@ import {Subsidiary} from "./SubsidiaryInterfaces.tsx";
 import {UserResponse} from "./UserInterfaces.tsx";
 
 export interface OrganizationUpdateRequest {
-    updatedFields: Partial<Organization>;
-    registerCode: string;
+    organizationCode?: string;
+    name: string;
+    yearOfEstablishment: number;
+    industry?: Industry | undefined;
+    organizationId?: number;
 }
 
 export interface Organization {

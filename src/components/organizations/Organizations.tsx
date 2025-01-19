@@ -1,45 +1,69 @@
-import { Row, Col, Button, Collapse, Space } from 'antd';
-import { useState, useCallback, useMemo } from 'react';
-import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import { useGetAllOrganizationsQuery, useRemoveOrganizationMutation } from "../../services/organizationApi.tsx";
+import {Button, Col, Collapse, Row, Space} from 'antd';
+import {useCallback, useMemo, useState} from 'react';
+import {
+    DeleteOutlined,
+    EditOutlined,
+    MailOutlined,
+    NodeIndexOutlined,
+    PartitionOutlined,
+    PlusOutlined,
+    UserOutlined
+} from '@ant-design/icons';
+import {useGetAllOrganizationsQuery, useRemoveOrganizationMutation} from "../../services/organizationApi.tsx";
 import OrganizationModal from "../modals/add-organization-modal/OrganizationModal.tsx";
 import SubsidiaryModal from "../modals/add-subsidiary-modal/SubsidiaryModal.tsx";
-import { OrganizationResponse } from "../../interfaces/OrganizationInterfaces.tsx";
-import { formatIndustry } from "../modals/add-organization-modal/utils/industryUtils.tsx";
+import {OrganizationResponse, OrganizationUpdateRequest} from "../../interfaces/OrganizationInterfaces.tsx";
+import {formatIndustry} from "../modals/add-organization-modal/utils/industryUtils.tsx";
 import SubsidiariesSection from "../subsidiary/Subsidiary.tsx";
 import styles from './organization.module.scss';
 import ConfirmDeleteModal from "../modals/confirm-delete-modal/ConfirmDeleteModal.tsx";
+import EditOrganizationModal from "../modals/edit-organization-info-modal/EditOrganizationModal.tsx";
 
 const Organizations = () => {
-    const { data: organizationData, refetch } = useGetAllOrganizationsQuery();
+    const {data: organizationData, refetch} = useGetAllOrganizationsQuery();
     const [removeOrganization] = useRemoveOrganizationMutation();
     const [isOrgModalVisible, setIsOrgModalVisible] = useState(false);
     const [isSubsidiaryModalVisible, setIsSubsidiaryModalVisible] = useState(false);
+    const [isEditOrganizationModalVisible, setIsEditOrganizationModalVisible] = useState(false);
     const [currentOrganizationId, setCurrentOrganizationId] = useState<number | null>(null);
     const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
     const [organizationToDelete, setOrganizationToDelete] = useState<OrganizationResponse | null>(null);
+    const [organizationToEdit, setOrganizationToEdit] = useState<OrganizationUpdateRequest | null>(null);
 
     const showOrgModal = useCallback(() => {
         setIsOrgModalVisible(true);
-        }, []
+    }, []);
+
+    const mapToOrganizationUpdateRequest = (organization: OrganizationResponse): OrganizationUpdateRequest => ({
+        organizationId: organization.organizationId,
+        name: organization.name,
+        yearOfEstablishment: organization.yearOfEstablishment,
+        industry: organization.industry,
+    });
+
+    const showEditOrgModal = useCallback(
+        (organization: OrganizationResponse) => {
+            const organizationToEdit = mapToOrganizationUpdateRequest(organization);
+            setOrganizationToEdit(organizationToEdit);
+            setIsEditOrganizationModalVisible(true);
+        },
+        []
     );
 
     const handleOrgCancel = useCallback(() => {
         setIsOrgModalVisible(false);
-        }, []
-    );
+        setIsEditOrganizationModalVisible(false);
+    }, []);
 
     const showSubsidiaryModal = useCallback((organizationId: number) => {
         setCurrentOrganizationId(organizationId);
         setIsSubsidiaryModalVisible(true);
-        }, []
-    );
+    }, []);
 
     const handleSubsidiaryCancel = useCallback(() => {
         setIsSubsidiaryModalVisible(false);
         setCurrentOrganizationId(null);
-        }, []
-    );
+    }, []);
 
     const handleDeleteOrganization = useCallback(
         (organizationId: string) => {
@@ -61,7 +85,6 @@ const Organizations = () => {
         []
     );
 
-
     const organizationCollapseItems = useMemo(() => {
         return organizationData?.map((org: OrganizationResponse, index: number) => ({
             key: org.organizationId,
@@ -70,21 +93,21 @@ const Organizations = () => {
                     <span>{`${org.organizationCode} - ${org.name}`}</span>
                     <Space>
                         <Button
-                            icon={<PlusOutlined />}
+                            icon={<PlusOutlined/>}
                             onClick={(e) => {
                                 e.stopPropagation();
                                 showSubsidiaryModal(org.organizationId);
                             }}
                         />
                         <Button
-                            icon={<EditOutlined />}
+                            icon={<EditOutlined/>}
                             onClick={(e) => {
                                 e.stopPropagation();
-                                console.log('Edit organization');
+                                showEditOrgModal(org);
                             }}
                         />
                         <Button
-                            icon={<DeleteOutlined />}
+                            icon={<DeleteOutlined/>}
                             danger
                             onClick={(e) => {
                                 e.stopPropagation();
@@ -97,16 +120,25 @@ const Organizations = () => {
             children: (
                 <div className={styles.industry}>
                     <div className={styles.industryInfo}>
+                        <PartitionOutlined/>
                         <strong>Industry: </strong> {formatIndustry(org.industry)}
                     </div>
                     <div className={styles.industryInfo}>
+                        <UserOutlined/>
                         <strong>Admin Name: </strong> {org.admin?.fullName}
                     </div>
                     <div className={styles.industryInfo}>
+                        <MailOutlined/>
                         <strong>Admin Email: </strong> {org.admin?.email}
                     </div>
+                    <div className={styles.industryInfo}>
+                        <NodeIndexOutlined/>
+                        <strong>Year of establishment: </strong> {org.yearOfEstablishment}
+                    </div>
 
-                    <h3>Subsidiaries</h3>
+                    <div className={styles.subsidiaryTitle}>
+                        Subsidiaries
+                    </div>
                     {org.subsidiaries.length ? (
                         <SubsidiariesSection
                             subsidiaries={org.subsidiaries}
@@ -119,7 +151,7 @@ const Organizations = () => {
             ),
             className: index % 2 === 0 ? styles.oddCollapse : styles.evenCollapse,
         }));
-    }, [organizationData, showSubsidiaryModal]);
+    }, [organizationData, showSubsidiaryModal, showEditOrgModal, handleDeleteClick]);
 
     return (
         <Row className={styles.statisticsContent}>
@@ -129,9 +161,9 @@ const Organizations = () => {
                     <Col>
                         <Button
                             type="primary"
-                            icon={<PlusOutlined />}
+                            icon={<PlusOutlined/>}
                             onClick={showOrgModal}
-                            style={{ float: 'right' }}
+                            style={{float: 'right'}}
                         >
                             Add Organization
                         </Button>
@@ -139,7 +171,7 @@ const Organizations = () => {
                 </Col>
 
                 {organizationData?.length ? (
-                    <Collapse items={organizationCollapseItems} />
+                    <Collapse items={organizationCollapseItems}/>
                 ) : (
                     <p>No organizations found.</p>
                 )}
@@ -156,6 +188,13 @@ const Organizations = () => {
                 onClose={handleSubsidiaryCancel}
                 refetch={refetch}
                 organizationId={currentOrganizationId}
+            />
+
+            <EditOrganizationModal
+                visible={isEditOrganizationModalVisible}
+                onCancel={handleOrgCancel}
+                refetch={refetch}
+                organization={organizationToEdit}
             />
 
             <ConfirmDeleteModal

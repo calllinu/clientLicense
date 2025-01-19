@@ -18,7 +18,6 @@ const EditSubsidiaryModal: React.FC<EditSubsidiaryModalProps> = ({ isVisible, on
     const [updateSubsidiary] = useUpdateSubsidiaryMutation();
 
     const updateOrganization = useCallback(async (values: SubsidiaryUpdateRequest) => {
-        console.log("Form Values:", values);
         if (subsidiary) {
             try {
                 await updateSubsidiary({
@@ -50,9 +49,6 @@ const EditSubsidiaryModal: React.FC<EditSubsidiaryModalProps> = ({ isVisible, on
                 enableReinitialize={true}
             >
                 {({ values, handleChange, handleBlur, handleSubmit, touched, errors }) => {
-                    // Log errors for debugging
-                    console.log("Formik Errors:", errors);
-
                     return (
                         <Form layout="vertical" onFinish={handleSubmit}>
                             <Form.Item label="Subsidiary Code">
