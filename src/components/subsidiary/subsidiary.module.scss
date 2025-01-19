@@ -1,10 +1,13 @@
 .subsidiariesContainer {
   margin-top: 20px;
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 16px;
-  justify-content: flex-start;
-  padding-left: 5rem;
+  padding: 1.5rem 1rem 1.5rem 1rem;
+  width: calc((28rem * 5) + (23px * 4));
+  overflow-x: scroll;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .subsidiaryCard {
@@ -18,11 +21,26 @@
   padding: 16px;
   width: calc(100% / 4 - 16px);
   max-width: 28rem;
+  flex: 0 0 auto;
 
   &:hover {
     transform: translateY(-5px);
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
   }
+}
+
+.subsidiariesContainer::-webkit-scrollbar {
+  height: 8px;
+  background-color: #f0f0f0;
+}
+
+.subsidiariesContainer::-webkit-scrollbar-thumb {
+  background-color: #c0c0c0;
+  border-radius: 4px;
+}
+
+.subsidiariesContainer::-webkit-scrollbar-thumb:hover {
+  background-color: #a0a0a0;
 }
 
 .cardContent {
@@ -49,7 +67,7 @@
   visibility: hidden;
 }
 
-.subItem{
+.subItem {
   margin-top: 10px;
 }
 

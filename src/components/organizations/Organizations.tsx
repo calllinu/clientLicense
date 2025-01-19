@@ -14,7 +14,7 @@ import OrganizationModal from "../modals/add-organization-modal/OrganizationModa
 import SubsidiaryModal from "../modals/add-subsidiary-modal/SubsidiaryModal.tsx";
 import {OrganizationResponse, OrganizationUpdateRequest} from "../../interfaces/OrganizationInterfaces.tsx";
 import {formatIndustry} from "../modals/add-organization-modal/utils/industryUtils.tsx";
-import SubsidiariesSection from "../subsidiary/Subsidiary.tsx";
+import SubsidiariesSection from "../subsidiary/SubsidiarySection.tsx";
 import styles from './organization.module.scss';
 import ConfirmDeleteModal from "../modals/confirm-delete-modal/ConfirmDeleteModal.tsx";
 import EditOrganizationModal from "../modals/edit-organization-info-modal/EditOrganizationModal.tsx";
