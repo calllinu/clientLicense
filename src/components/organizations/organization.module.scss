@@ -93,6 +93,25 @@
   width: 20rem;
 }
 
+.container {
+  display: flex;
+  width: 100%;
+  justify-content: flex-end;
+  padding-top: 1.5rem;
+}
+
+.searchSubsidiary {
+  display: inline-flex;
+  width: 20rem;
+}
+
+.subsidiariesContainer {
+  display: flex;
+  padding-left: 10%;
+  padding-right: 10%;
+  justify-content: center;
+}
+
 
 
 

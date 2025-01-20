@@ -23,6 +23,7 @@ import Search from "antd/es/input/Search";
 const Organizations = () => {
     const [pagination, setPagination] = useState({current: 1, pageSize: 20});
     const [searchText, setSearchText] = useState('');
+    const [searchSubsidiary, setSearchSubsidiary] = useState('');
 
     const {data: organizationData, refetch} = useGetAllOrganizationsQuery({
         page: pagination.current - 1,
@@ -49,10 +50,6 @@ const Organizations = () => {
         yearOfEstablishment: organization.yearOfEstablishment,
         industry: organization.industry,
     });
-
-    const filteredOrganizations = useMemo(() => {
-        return organizationData?.data || [];
-    }, [organizationData]);
 
     const showEditOrgModal = useCallback(
         (organization: OrganizationResponse) => {
@@ -99,7 +96,7 @@ const Organizations = () => {
     );
 
     const organizationCollapseItems = useMemo(() => {
-        return filteredOrganizations.map((org: OrganizationResponse, index: number) => ({
+        return organizationData?.data?.map((org: OrganizationResponse, index: number) => ({
             key: org.organizationId,
             label: (
                 <div className={styles.panelHeader}>
@@ -153,10 +150,30 @@ const Organizations = () => {
                         Subsidiaries
                     </div>
                     {org.subsidiaries.length ? (
-                        <SubsidiariesSection
-                            subsidiaries={org.subsidiaries}
-                            refetch={refetch}
-                        />
+                        <>
+                            <div className={styles.container}>
+                                <Search
+                                    placeholder="Search by country, city or code"
+                                    onChange={(e) => setSearchSubsidiary(e.target.value)}
+                                    value={searchSubsidiary}
+                                    enterButton
+                                    className={styles.searchSubsidiary}
+                                />
+                            </div>
+                            <div className={styles.subsidiariesContainer}>
+                                <SubsidiariesSection
+                                    subsidiaries={org.subsidiaries.filter((subsidiary) => {
+                                        const searchText = searchSubsidiary.toLowerCase();
+                                        return (
+                                            subsidiary.country?.toLowerCase().includes(searchText) ||
+                                            subsidiary.city?.toLowerCase().includes(searchText) ||
+                                            subsidiary.subsidiaryCode?.toLowerCase().includes(searchText)
+                                        );
+                                    })}
+                                    refetch={refetch}
+                                />
+                            </div>
+                        </>
                     ) : (
                         <p>No subsidiaries found.</p>
                     )}
@@ -164,7 +181,7 @@ const Organizations = () => {
             ),
             className: index % 2 === 0 ? styles.oddCollapse : styles.evenCollapse,
         }));
-    }, [filteredOrganizations, showSubsidiaryModal, showEditOrgModal, handleDeleteClick]);
+    }, [organizationData, searchSubsidiary, showSubsidiaryModal, showEditOrgModal, handleDeleteClick]);
 
     return (
         <Row className={styles.statisticsContent}>
