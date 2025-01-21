@@ -1,0 +1,96 @@
+.employeeContainer {
+  margin: 20px;
+  padding: 16px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.employeeCard {
+  background: #fff;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 16px;
+  transition: transform 0.2s;
+  width: 100%;
+  font-size: 1rem;
+
+  .employeeInfo {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    padding: 1rem 1.5rem;
+  }
+
+  &:hover {
+    transform: scale(1.009);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  }
+
+  p {
+    margin: 8px 0;
+    font-size: 14px;
+  }
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+
+  .ant-btn-primary {
+    background-color: #52c41a;
+    border-color: #52c41a;
+  }
+
+  .ant-btn-danger {
+    background-color: #f5222d;
+    border-color: #f5222d;
+  }
+
+  .ant-btn:hover {
+    opacity: 0.9;
+  }
+
+  .ant-btn-primary:hover {
+    background-color: #73d13d;
+    border-color: #73d13d;
+  }
+
+  .ant-btn-danger:hover {
+    background-color: #ff4d4f;
+    border-color: #ff4d4f;
+  }
+}
+
+@media (max-width: 768px) {
+  .employeeCard {
+    padding: 12px;
+    font-size: 0.9rem;
+
+    .employeeInfo {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+    }
+  }
+
+  .actions {
+    flex-direction: row;
+    justify-content: flex-start;
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .employeeCard {
+    padding: 10px;
+    font-size: 0.85rem;
+
+    .employeeInfo {
+      padding: 0.8rem 1rem;
+    }
+  }
+}

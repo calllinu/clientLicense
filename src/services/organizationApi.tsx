@@ -1,5 +1,6 @@
 import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react';
 import {
+    Organization,
     OrganizationAddRequest,
     OrganizationResponse,
     OrganizationUpdateRequest
@@ -35,17 +36,23 @@ export const organizationApi = createApi({
                 method: 'GET',
             }),
         }),
-        getAllOrganizations: builder.query<{
+        getAllOrganizationsPageable: builder.query<{
             data: OrganizationResponse[];
             total: number;
         }, { page: number; size: number; search: string }>({
             query: ({page, size, search}) => ({
-                url: '/all',
+                url: '/pageable-all',
                 params: {
                     page,
                     size,
                     search,
                 },
+            }),
+        }),
+        getAllOrganizations: builder.query<Organization[], void>({
+            query: () => ({
+                url: '/all',
+                method: 'GET',
             }),
         }),
     }),
@@ -56,5 +63,6 @@ export const {
     useRemoveOrganizationMutation,
     useUpdateOrganizationMutation,
     useGetOrganizationByRegisterCodeQuery,
-    useGetAllOrganizationsQuery
+    useGetAllOrganizationsPageableQuery,
+    useGetAllOrganizationsQuery,
 } = organizationApi;

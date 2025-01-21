@@ -16,22 +16,62 @@
   width: 100%;
   font-size: 1rem;
 
-  .employeeInfo{
+  .employeeInfo {
     display: flex;
     width: 100%;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem;
     cursor: pointer;
+    padding: 1rem 1.5rem;
   }
 
   &:hover {
-    transform: scale(1.02);
+    transform: scale(1.009);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
   }
 
   p {
     margin: 8px 0;
     font-size: 14px;
+  }
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+
+  .delete:hover {
+    color: red !important;
+    border-color: red !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .employeeCard {
+    padding: 12px;
+    font-size: 0.9rem;
+
+    .employeeInfo {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+    }
+  }
+
+  .actions {
+    flex-direction: row;
+    justify-content: flex-start;
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .employeeCard {
+    padding: 10px;
+    font-size: 0.85rem;
+
+    .employeeInfo {
+      padding: 0.8rem 1rem;
+    }
   }
 }
