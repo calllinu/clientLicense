@@ -1,11 +1,11 @@
-import React from 'react';
+import React, {useCallback, useMemo} from 'react';
 import {Button, Space, Table} from 'antd';
 import {CheckCircleOutlined, CloseCircleOutlined} from '@ant-design/icons';
-import styles from './register-requests.module.scss'
+import styles from './register-requests.module.scss';
 import {
     useAcceptRequestMutation,
     useDeclineRequestMutation,
-    useGetRequestsByAdminQuery
+    useGetRequestsByAdminQuery,
 } from "../../services/requestsApi.tsx";
 import {RegistrationRequest} from "../../interfaces/RequestsApi.tsx";
 import {ColumnsType} from 'antd/es/table';
@@ -13,19 +13,28 @@ import {Subsidiary} from "../../interfaces/SubsidiaryInterfaces.tsx";
 
 const RegistrationRequests: React.FC = () => {
     const adminId = sessionStorage.getItem('userId');
-    const {data, isLoading, isError} = useGetRequestsByAdminQuery(Number(adminId));
+    const {data, isLoading, isError, refetch} = useGetRequestsByAdminQuery(Number(adminId));
     const [acceptRequest] = useAcceptRequestMutation();
     const [declineRequest] = useDeclineRequestMutation();
+    
+    const handleAccept = useCallback(
+        async (requestId: number) => {
+            await acceptRequest(requestId);
+            refetch();
+        },
+        [acceptRequest, refetch]
+    );
 
-    const handleAccept = (requestId: number) => {
-        acceptRequest(requestId);
-    };
+    // Decline handler
+    const handleDecline = useCallback(
+        async (requestId: number) => {
+            await declineRequest(requestId);
+            refetch();
+        },
+        [declineRequest, refetch]
+    );
 
-    const handleDecline = (requestId: number) => {
-        declineRequest(requestId);
-    };
-
-    const columns: ColumnsType<RegistrationRequest> = [
+    const columns: ColumnsType<RegistrationRequest> = useMemo(() => [
         {
             title: 'Username',
             dataIndex: 'username',
@@ -44,14 +53,28 @@ const RegistrationRequests: React.FC = () => {
         {
             title: 'Subsidiary Code',
             dataIndex: 'subsidiary',
-            key: 'subsidiary',
+            key: 'subsidiaryCode',
             render: (subsidiary: Subsidiary) => <span>{subsidiary.subsidiaryCode}</span>,
+        },
+        {
+            title: 'Subsidiary Location',
+            dataIndex: 'subsidiary',
+            key: 'subsidiaryLocation',
+            render: (subsidiary: Subsidiary) => (
+                <span>
+                    {subsidiary.address}, {subsidiary.city}, {subsidiary.country}
+                </span>
+            ),
         },
         {
             title: 'Status',
             dataIndex: 'status',
             key: 'status',
-            render: (status: string) => <span>{status}</span>,
+            render: (status: string) => (
+                <span style={{fontWeight: status === 'PENDING' ? 'bold' : 'normal'}}>
+                    {status}
+                </span>
+            ),
         },
         {
             title: 'Actions',
@@ -67,6 +90,7 @@ const RegistrationRequests: React.FC = () => {
                         Accept
                     </Button>
                     <Button
+                        danger
                         icon={<CloseCircleOutlined/>}
                         onClick={() => handleDecline(record.requestId)}
                         disabled={record.status !== 'PENDING'}
@@ -76,7 +100,13 @@ const RegistrationRequests: React.FC = () => {
                 </Space>
             ),
         },
-    ];
+    ], [handleAccept, handleDecline]);
+
+    const tableData = useMemo(() => {
+        if (!data) return [];
+        return [...data].sort((a, b) => (a.status === 'PENDING' ? -1 : b.status === 'PENDING' ? 1 : 0));
+    }, [data]);
+
 
     if (isLoading) {
         return <div>Loading...</div>;
@@ -91,7 +121,7 @@ const RegistrationRequests: React.FC = () => {
             <h2>Registration Requests</h2>
             <Table
                 columns={columns}
-                dataSource={data}
+                dataSource={tableData}
                 rowKey="requestId"
                 pagination={false}
             />

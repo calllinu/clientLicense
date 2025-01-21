@@ -9,7 +9,7 @@ import {
     PlusOutlined,
     UserOutlined
 } from '@ant-design/icons';
-import {useGetAllOrganizationsQuery, useRemoveOrganizationMutation} from "../../services/organizationApi.tsx";
+import {useGetAllOrganizationsPageableQuery, useRemoveOrganizationMutation} from "../../services/organizationApi.tsx";
 import OrganizationModal from "../modals/add-organization-modal/OrganizationModal.tsx";
 import SubsidiaryModal from "../modals/add-subsidiary-modal/SubsidiaryModal.tsx";
 import {OrganizationResponse, OrganizationUpdateRequest} from "../../interfaces/OrganizationInterfaces.tsx";
@@ -25,7 +25,7 @@ const Organizations = () => {
     const [searchText, setSearchText] = useState('');
     const [searchSubsidiary, setSearchSubsidiary] = useState('');
 
-    const {data: organizationData, refetch} = useGetAllOrganizationsQuery({
+    const {data: organizationData, refetch} = useGetAllOrganizationsPageableQuery({
         page: pagination.current - 1,
         size: pagination.pageSize,
         search: searchText,

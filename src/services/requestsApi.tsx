@@ -26,5 +26,5 @@ export const registrationRequestsApi = createApi({
 export const {
     useGetRequestsByAdminQuery,
     useAcceptRequestMutation,
-    useDeclineRequestMutation
+    useDeclineRequestMutation,
 } = registrationRequestsApi;
