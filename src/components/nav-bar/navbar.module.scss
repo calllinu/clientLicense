@@ -12,12 +12,7 @@
   display: flex;
   align-items: center;
   gap: 1rem;
-  font-size: 1.2rem;
-}
-
-.logo img {
-  height: 40px;
-  margin-right: 10px;
+  font-size: 1.1rem;
 }
 
 .navItems {
@@ -30,42 +25,26 @@
   }
 }
 
-.navItem {
+.navButton {
   display: flex;
   align-items: center;
   margin-left: 20px;
+  padding: 8px 16px;
+  border: none;
+  background-color: transparent !important;
+  color: white !important;
+  font-size: 1.1rem;
   cursor: pointer;
-  color: white;
-  text-decoration: none;
-  font-size: 1.2rem;
-  position: relative;
   transition: color 0.3s ease;
+
+  @media (max-width: 768px) {
+    color: black !important;
+    font-size: 1rem;
+  }
 }
 
-.navItem.active,
-.navItem:hover {
-  color: #1890ff;
-}
-
-.navItem::after {
-  content: '';
-  position: absolute;
-  bottom: -5px;
-  left: 50%;
-  width: 0;
-  height: 2px;
-  background-color: #1890ff;
-  transition: width 0.3s ease, left 0.3s ease;
-}
-
-.navItem.active::after,
-.navItem:hover::after {
-  width: 100%;
-  left: 0;
-}
-
-.icon {
-  margin-right: 5px;
+.navButton:hover {
+  color: #1890ff !important;
 }
 
 .hamburgerMenu {
@@ -82,20 +61,69 @@
   cursor: pointer;
 }
 
-.dropdownMenu {
-  background-color: var(--blue-dark);
-  border-radius: 8px;
-  padding: 1rem;
-  min-width: 200px;
+.drawer {
+  .ant-drawer-content {
+    background-color: var(--blue-dark);
+  }
 
-  .menuItem {
-    font-size: 1.2rem;
+  .ant-drawer-title {
     color: white;
-    padding: 0.8rem 1.2rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
 
-    &:hover {
-      background-color: #1890ff;
-      color: white;
+  .ant-drawer-close {
+    color: white;
+  }
+
+  .menuItems {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+
+    .menuButton {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      background: none;
+      border: none;
+      color: black;
+      font-size: 1rem;
+      padding: 0.6rem 1rem;
+      cursor: pointer;
+      transition: background 0.3s;
+
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.1);
+      }
+
+      .icon {
+        font-size: 1.2rem;
+      }
+    }
+  }
+}
+
+.drawerButton {
+  color: black !important;
+  font-size: 1.2rem !important;
+}
+
+.drawerHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.closeIcon {
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+@media (min-width: 769px) {
+  :global {
+    .ant-menu-item {
+      font-size: 1.2rem;
     }
   }
 }

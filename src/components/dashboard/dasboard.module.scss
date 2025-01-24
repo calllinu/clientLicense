@@ -1,119 +1,12 @@
-.dashboard {
-  padding: 20px;
-  background-color: var(--blue-light);
-  font-size: 18px;
-  color: var(--neutral-black);
-}
-
-.navbar {
-  padding: 10px 20px;
+.dashboardLayout {
+  height: 100vh;
   display: flex;
-  align-items: center;
-  font-size: 2.5rem;
-  background-color: var(--neutral-white);
-  color: var(--neutral-black);
+  flex-direction: column;
 }
 
-.navbarTitle {
-  font-weight: bold;
-  color: var(--neutral-black);
-  font-size: inherit;
-}
-
-.actions {
-  text-align: right;
-}
-
-.customActionButton {
-  font-size: 1.2rem;
-  border: 2px solid var(--blue-dark);
-  color: var(--blue-dark);
-  background: transparent;
-  border-radius: 6px;
-  padding: 10px 20px;
-  transition: all 0.3s;
-}
-
-.customActionButton:hover {
-  color: var(--neutral-white) !important;
-  background: var(--blue-dark) !important;
-}
-
-.sidebar {
-  position: relative;
-  background-color: var(--blue-dark);
+.tableContent {
   min-height: 100vh;
-  opacity: 1;
-  visibility: visible;
-  width: 300px;
-  padding: .5rem;
-}
-
-.collapsedSidebar {
-  opacity: 0;
-  visibility: hidden;
-}
-
-.sidebarToggle {
-  position: fixed;
-  top: 50%;
-  left: 10.5rem;
-  transform: translateY(-50%);
-  background-color: var(--blue-dark);
-  border-radius: 50%;
-  font-size: 1.9rem;
-  cursor: pointer;
-  z-index: 9999;
-  color: var(--neutral-white);
-  transition: left 0.25s ease, transform 0.35s ease;
-  padding: 1rem;
-}
-
-.collapsedSidebar + .sidebarToggle {
-  left: -1.3rem;
-  transform: translateY(-50%);
-}
-
-.sidebarContent {
-  height: inherit;
-  display: flex;
-  justify-content: space-between;
-  flex-direction: column;
-}
-
-.sidebarButton {
-  font-size: 1.125rem;
-  border: 2px solid var(--blue-darker);
-  color: var(--neutral-white);
-  background: transparent;
-  border-radius: 6px;
-  padding: 2rem 1rem;
-  transition: all 0.3s;
-  display: inline-flex;
-  justify-content: flex-start;
-  align-items: center;
-  white-space: normal;
-  word-wrap: break-word;
-}
-
-.sidebarButton:hover {
-  color: var(--neutral-white) !important;
-  background: var(--blue-medium) !important;
-  border-color: var(--blue-medium) !important;
-}
-
-.sidebarButton:focus {
-  outline: none !important;
-  box-shadow: 0 0 5px var(--shadow-color) !important;
-}
-
-.sidebarButton .anticon {
-  gap: .3rem;
-}
-
-.navigation {
-  display: flex;
-  flex-direction: column;
-  padding-top: 5rem;
-  gap: .5rem;
+  padding: 24px;
+  flex: 1;
+  background-color: #fff;
 }

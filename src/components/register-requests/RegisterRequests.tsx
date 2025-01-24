@@ -16,7 +16,7 @@ const RegistrationRequests: React.FC = () => {
     const {data, isLoading, isError, refetch} = useGetRequestsByAdminQuery(Number(adminId));
     const [acceptRequest] = useAcceptRequestMutation();
     const [declineRequest] = useDeclineRequestMutation();
-    
+
     const handleAccept = useCallback(
         async (requestId: number) => {
             await acceptRequest(requestId);
@@ -25,7 +25,6 @@ const RegistrationRequests: React.FC = () => {
         [acceptRequest, refetch]
     );
 
-    // Decline handler
     const handleDecline = useCallback(
         async (requestId: number) => {
             await declineRequest(requestId);
@@ -123,7 +122,6 @@ const RegistrationRequests: React.FC = () => {
                 columns={columns}
                 dataSource={tableData}
                 rowKey="requestId"
-                pagination={false}
             />
         </div>
     );
