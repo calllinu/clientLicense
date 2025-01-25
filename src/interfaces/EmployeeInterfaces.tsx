@@ -21,6 +21,7 @@ export interface EmployeeResponse {
     employeeId: number;
     employeeCNP?: string;
     dateOfBirth?: Date;
+    dateOfHiring?: Date;
     fullName: string;
     qualification?: Qualification;
     yearsOfExperience?: number;

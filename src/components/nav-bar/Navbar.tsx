@@ -13,6 +13,7 @@ import {
 import styles from "./Navbar.module.scss";
 import {useCallback, useMemo, useState} from "react";
 import {useMediaQuery} from "react-responsive";
+import useOrgAdminRole from "../../hooks/useOrgAdminRole.tsx";
 
 const Navbar = ({
                     handleContentSwitch,
@@ -24,6 +25,7 @@ const Navbar = ({
     const [drawerVisible, setDrawerVisible] = useState(false);
     const [dashboardSubMenuVisible, setDashboardSubMenuVisible] = useState(false);
     const isMobile = useMediaQuery({query: "(max-width: 768px)"});
+    const isOrgAdmin = useOrgAdminRole();
 
     const openDrawer = useCallback(() => {
         setDrawerVisible(true);
@@ -38,44 +40,51 @@ const Navbar = ({
         setDashboardSubMenuVisible(true);
     }, []);
 
-    const dashboardMenuItems = useMemo(() => [
-        {
-            key: "data",
-            icon: <DatabaseOutlined/>,
-            label: "Data",
-            onClick: () => {
-                handleContentSwitch("data");
-                closeDrawer();
+    const dashboardMenuItems = useMemo(() => {
+        const items = [
+            {
+                key: "data",
+                icon: <DatabaseOutlined/>,
+                label: "Data",
+                onClick: () => {
+                    handleContentSwitch("data");
+                    closeDrawer();
+                },
             },
-        },
-        {
-            key: "statistics",
-            icon: <BarChartOutlined/>,
-            label: "Statistics",
-            onClick: () => {
-                handleContentSwitch("statistics");
-                closeDrawer();
+            {
+                key: "statistics",
+                icon: <BarChartOutlined/>,
+                label: "Statistics",
+                onClick: () => {
+                    handleContentSwitch("statistics");
+                    closeDrawer();
+                },
             },
-        },
-        {
-            key: "requests",
-            icon: <UsergroupAddOutlined/>,
-            label: "Requests",
-            onClick: () => {
-                handleContentSwitch("requests");
-                closeDrawer();
+            {
+                key: "organizations",
+                icon: <ShopOutlined/>,
+                label: "Organizations",
+                onClick: () => {
+                    handleContentSwitch("organizations");
+                    closeDrawer();
+                },
             },
-        },
-        {
-            key: "organizations",
-            icon: <ShopOutlined/>,
-            label: "Organizations",
-            onClick: () => {
-                handleContentSwitch("organizations");
-                closeDrawer();
-            },
-        },
-    ], [handleContentSwitch, closeDrawer]);
+        ];
+
+        if (isOrgAdmin) {
+            items.push({
+                key: "requests",
+                icon: <UsergroupAddOutlined/>,
+                label: "Requests",
+                onClick: () => {
+                    handleContentSwitch("requests");
+                    closeDrawer();
+                },
+            });
+        }
+
+        return items;
+    }, [handleContentSwitch, closeDrawer, isOrgAdmin]);
 
     return (
         <header className={styles.navbar}>

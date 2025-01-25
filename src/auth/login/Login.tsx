@@ -1,14 +1,13 @@
-import { useState, useCallback, useMemo } from "react";
-import { Formik, Form, Field, ErrorMessage, FormikHelpers } from "formik";
-import { Col, Row, Input, Button, Spin } from "antd";
-import { UserOutlined } from "@ant-design/icons";
-import { EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons";
+import {useCallback, useMemo, useState} from "react";
+import {ErrorMessage, Field, Form, Formik, FormikHelpers} from "formik";
+import {Button, Col, Input, Row, Spin} from "antd";
+import {EyeInvisibleOutlined, EyeOutlined, UserOutlined} from "@ant-design/icons";
 import styles from './login.module.scss';
-import { Link, useNavigate } from "react-router-dom";
-import { useAuthenticateUserMutation } from "../../services/userApi.tsx";
-import { LoginSchema } from "./utils/validationSchema.tsx";
-import { initialValues } from "./utils/initialValues.tsx";
-import { Role } from "../../interfaces/RoleEnum.tsx";
+import {Link, useNavigate} from "react-router-dom";
+import {useAuthenticateUserMutation} from "../../services/userApi.tsx";
+import {LoginSchema} from "./utils/validationSchema.tsx";
+import {initialValues} from "./utils/initialValues.tsx";
+import {Role} from "../../interfaces/RoleEnum.tsx";
 
 interface FormValues {
     email: string;
@@ -29,7 +28,7 @@ const Login = () => {
     const memoizedValidationSchema = useMemo(() => LoginSchema, []);
 
     const handleSubmit = useCallback(
-        async (values: FormValues, { setErrors }: FormikHelpers<FormValues>) => {
+        async (values: FormValues, {setErrors}: FormikHelpers<FormValues>) => {
             setLoading(true);
             try {
                 const response = await authenticateUser({
@@ -42,18 +41,16 @@ const Login = () => {
                     sessionStorage.setItem('role', response.role);
                     sessionStorage.setItem('userId', response.userId.toString());
                 }
-                if (response.role === Role.ORG_ADMIN || response.role === Role.OWNER) {
+                if (response.role === Role.ORG_ADMIN || response.role === Role.OWNER || response.role === Role.EMPLOYEE) {
                     navigate("/dashboard");
-                } else {
-                    navigate("/profile");
                 }
             } catch (error: unknown) {
                 console.log(error);
                 if (error instanceof Error) {
                     if (error.message === "User not found") {
-                        setErrors({ email: "User not found. Please register." });
+                        setErrors({email: "User not found. Please register."});
                     } else if (error.message === "Invalid credentials") {
-                        setErrors({ password: "Invalid password. Please try again." });
+                        setErrors({password: "Invalid password. Please try again."});
                     } else {
                         console.error("Login failed:", error);
                     }
@@ -96,10 +93,10 @@ const Login = () => {
                         validationSchema={memoizedValidationSchema}
                         onSubmit={handleSubmit}
                     >
-                        {({ errors, touched }) => (
+                        {({errors, touched}) => (
                             <Form className={styles.formContainer}>
                                 <Col className={styles.imageContainer} span={24}>
-                                    <UserOutlined className={styles.iconUser} />
+                                    <UserOutlined className={styles.iconUser}/>
                                 </Col>
                                 <Col className={styles.inputContainer} span={24}>
                                     <label htmlFor="email" className={styles.label}>Email</label>
@@ -112,7 +109,7 @@ const Login = () => {
                                         size="large"
                                         className={errors.email && touched.email ? styles.errorBorder : ""}
                                     />
-                                    <ErrorMessage name="email" component="div" className={styles.error} />
+                                    <ErrorMessage name="email" component="div" className={styles.error}/>
                                 </Col>
 
                                 <Col className={styles.inputContainer} span={24}>
@@ -124,15 +121,18 @@ const Login = () => {
                                         size="large"
                                         placeholder="Enter your password"
                                         className={`${errors.password && touched.password ? styles.errorBorder : ""} ${styles.noBorder}`}
-                                        iconRender={(visible: boolean) => visible ? <EyeOutlined onClick={togglePasswordVisibility} /> : <EyeInvisibleOutlined onClick={togglePasswordVisibility} />}
+                                        iconRender={(visible: boolean) => visible ?
+                                            <EyeOutlined onClick={togglePasswordVisibility}/> :
+                                            <EyeInvisibleOutlined onClick={togglePasswordVisibility}/>}
                                         variant="borderless"
                                     />
-                                    <ErrorMessage name="password" component="div" className={styles.error} />
+                                    <ErrorMessage name="password" component="div" className={styles.error}/>
                                 </Col>
 
                                 <Col className={styles.button} span={24}>
-                                    <Button type="primary" htmlType="submit" className={styles.submitButton} disabled={loading}>
-                                        {loading ? <Spin /> : "Log in"}
+                                    <Button type="primary" htmlType="submit" className={styles.submitButton}
+                                            disabled={loading}>
+                                        {loading ? <Spin/> : "Log in"}
                                     </Button>
                                 </Col>
 

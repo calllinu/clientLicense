@@ -70,6 +70,7 @@ const EmployeeDetails = () => {
                     dataSource={subsidiary.employees}
                     columns={columns}
                     rowKey={(record: Employee) => record?.employeeId || "unknown"}
+                    pagination={{pageSize: 20}}
                 />
             ) : (
                 <p>No employees found for this subsidiary.</p>

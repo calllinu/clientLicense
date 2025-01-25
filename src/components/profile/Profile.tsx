@@ -11,6 +11,7 @@ import {formatQualification} from "./utils/qualificationUtils";
 import useOrgAdminRole from "../../hooks/useOrgAdminRole";
 import {ProfileValues} from "../../interfaces/ProfileValues.tsx";
 import {useUpdateEmployeeMutation} from "../../services/employeeApi.tsx";
+import useOwnerRole from "../../hooks/useOwnerRole.tsx";
 
 const {Option} = Select;
 
@@ -18,6 +19,7 @@ const Profile = () => {
     const handleLogout = useLogout();
     const initialValues = useInitialValues();
     const isAdmin = useOrgAdminRole();
+    const isOwner = useOwnerRole();
 
     const [updateEmployee, {isLoading: isUpdating}] = useUpdateEmployeeMutation();
 
@@ -34,11 +36,12 @@ const Profile = () => {
 
     const handleSubmit = useCallback(
         async (values: ProfileValues) => {
-            const {fullName, dateOfBirth, employeeCNP} = values;
+            const {fullName, dateOfBirth, dateOfHiring, employeeCNP} = values;
 
             const employee = {
                 fullName,
                 dateOfBirth,
+                dateOfHiring,
                 employeeCNP,
             };
 
@@ -110,7 +113,7 @@ const Profile = () => {
                                     </div>
                                 </Col>
 
-                                <Col xs={24} md={24}>
+                                <Col xs={24} md={12}>
                                     <div className={styles.formItem}>
                                         <label htmlFor="qualification" className={styles.label}>
                                             Qualification
@@ -135,6 +138,31 @@ const Profile = () => {
                                         )}
                                     </div>
                                 </Col>
+
+                                <Col xs={24} md={12}>
+                                    <div className={styles.formItem}>
+                                        <label htmlFor="dateOfHiring" className={styles.label}>
+                                            Date of Hiring
+                                        </label>
+                                        <DatePicker
+                                            id="dateOfHiring"
+                                            name="dateOfHiring"
+                                            value={values.dateOfHiring ? dayjs(values.dateOfHiring) : null}
+                                            onChange={(date) =>
+                                                setFieldValue("dateOfHiring", date ? formatDate(date) : "")
+                                            }
+                                            className={styles.input}
+                                            format="DD-MM-YYYY"
+                                            size="large"
+                                            disabled={isAdmin || isOwner}
+                                            disabledDate={(current) => current && current > dayjs().endOf("day")}
+                                        />
+                                        {errors.dateOfHiring && touched.dateOfHiring && (
+                                            <div className={styles.error}>{errors.dateOfHiring}</div>
+                                        )}
+                                    </div>
+                                </Col>
+
 
                                 <Col xs={24} md={12}>
                                     <div className={styles.formItem}>

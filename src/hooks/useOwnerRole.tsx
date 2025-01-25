@@ -1,11 +1,11 @@
-import {useMemo} from 'react';
+import {useMemo} from "react";
 import {Role} from "../interfaces/RoleEnum.tsx";
 
-const useOrgAdminRole = () => {
+const useOwnerRole = () => {
     return useMemo(() => {
         const role = sessionStorage.getItem('role');
-        return role === Role.ORG_ADMIN;
+        return role === Role.OWNER;
     }, [])
 };
 
-export default useOrgAdminRole;
+export default useOwnerRole;
