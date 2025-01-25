@@ -116,14 +116,17 @@ const RegistrationRequests: React.FC = () => {
     }
 
     return (
-        <div className={styles.employeeContainer}>
-            <h2>Registration Requests</h2>
-            <Table
-                columns={columns}
-                dataSource={tableData}
-                rowKey="requestId"
-            />
+        <div className={styles.mainContainer}>
+            <div className={styles.employeeContainer}>
+                <h2>Registration Requests</h2>
+                <Table
+                    columns={columns}
+                    dataSource={tableData}
+                    rowKey="requestId"
+                />
+            </div>
         </div>
+
     );
 };
 

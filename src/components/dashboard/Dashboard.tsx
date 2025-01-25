@@ -8,6 +8,7 @@ import Organizations from "../organizations/Organizations.tsx";
 import Navbar from "../nav-bar/Navbar.tsx";
 import Footer from "../footer/Footer.tsx";
 import styles from './dasboard.module.scss';
+import Profile from "../profile/Profile.tsx";
 
 const {Content} = Layout;
 
@@ -152,6 +153,7 @@ const Dashboard = () => {
                     {activeContent === 'statistics' && <Statistics/>}
                     {activeContent === 'requests' && <RegisterRequests/>}
                     {activeContent === 'organizations' && <Organizations/>}
+                    {activeContent === 'profile' && <Profile/>}
                 </Content>
             </Layout>
             <Footer/>

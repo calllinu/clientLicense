@@ -1,27 +1,25 @@
-import { useMemo, useCallback } from "react";
-import Navbar from "../nav-bar/Navbar";
-import { Button, Input, Select, DatePicker, Row, Col } from "antd";
-import {Formik, FormikHelpers} from "formik";
-import dayjs, { Dayjs } from "dayjs";
+import {useCallback, useMemo} from "react";
+import {Button, Col, DatePicker, Input, Row, Select} from "antd";
+import {Formik} from "formik";
+import dayjs, {Dayjs} from "dayjs";
 import useLogout from "../../auth/authHooks/useLogOut";
-import Footer from "../footer/Footer";
 import styles from "./Profile.module.scss";
-import { validationSchema } from "./utils/validationSchema";
-import { Qualification } from "../../interfaces/Qualification";
+import {validationSchema} from "./utils/validationSchema";
+import {Qualification} from "../../interfaces/Qualification";
 import useInitialValues from "./utils/useInitialValues";
-import { formatQualification } from "./utils/qualificationUtils";
+import {formatQualification} from "./utils/qualificationUtils";
 import useOrgAdminRole from "../../hooks/useOrgAdminRole";
 import {ProfileValues} from "../../interfaces/ProfileValues.tsx";
 import {useUpdateEmployeeMutation} from "../../services/employeeApi.tsx";
 
-const { Option } = Select;
+const {Option} = Select;
 
 const Profile = () => {
     const handleLogout = useLogout();
     const initialValues = useInitialValues();
     const isAdmin = useOrgAdminRole();
 
-    const [updateEmployee, { isLoading: isUpdating }] = useUpdateEmployeeMutation();
+    const [updateEmployee, {isLoading: isUpdating}] = useUpdateEmployeeMutation();
 
     const qualificationOptions = useMemo(
         () =>
@@ -35,8 +33,8 @@ const Profile = () => {
     const userId = parseInt(sessionStorage.getItem("userId") || "0", 10);
 
     const handleSubmit = useCallback(
-        async (values: ProfileValues, helpers: FormikHelpers<ProfileValues>) => {
-            const { fullName, dateOfBirth, employeeCNP } = values;
+        async (values: ProfileValues) => {
+            const {fullName, dateOfBirth, employeeCNP} = values;
 
             const employee = {
                 fullName,
@@ -45,9 +43,8 @@ const Profile = () => {
             };
 
             try {
-                await updateEmployee({ userId: userId, employee }).unwrap().then(() => {
+                await updateEmployee({userId: userId, employee}).unwrap().then(() => {
                     console.log("Profile updated successfully");
-                    helpers.resetForm();
                 });
             } catch (error) {
                 console.error("Error updating profile:", error);
@@ -64,16 +61,15 @@ const Profile = () => {
 
     return (
         <>
-            <Navbar />
             <div className={styles.profileContainer}>
                 <h1 className={styles.profileTitle}>Profile</h1>
                 <Formik
                     initialValues={initialValues}
                     validationSchema={validationSchema}
-                    onSubmit={(values, helpers) => handleSubmit(values, helpers)}
+                    onSubmit={(values) => handleSubmit(values)}
                     enableReinitialize
                 >
-                    {({ values, handleChange, handleSubmit, setFieldValue, touched, errors }) => (
+                    {({values, handleChange, handleSubmit, setFieldValue, touched, errors}) => (
                         <form onSubmit={handleSubmit} className={styles.form}>
                             <Row gutter={[16, 16]}>
                                 <Col span={24}>
@@ -122,7 +118,7 @@ const Profile = () => {
                                         <Select
                                             id="qualification"
                                             size="large"
-                                            style={{ width: "100%" }}
+                                            style={{width: "100%"}}
                                             value={values.qualification || undefined}
                                             onChange={(value) => setFieldValue("qualification", value)}
                                             placeholder="Select your qualification"
@@ -232,10 +228,10 @@ const Profile = () => {
                                 </Button>
                             </div>
                         </form>
-                    )}
+                    )
+                    }
                 </Formik>
             </div>
-            <Footer />
         </>
     );
 };
