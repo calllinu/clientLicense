@@ -5,7 +5,7 @@
   padding: 20px;
   border: 1px solid #f0f0f0;
   border-radius: 8px;
-  min-height: calc(100vh - 203px);
+  min-height: calc(100vh - 400px);
   font-size: 1.2rem;
   box-shadow: 0 0 10px 5px var(--shadow-color);
   background-color: var(--neutral-white);
@@ -51,7 +51,7 @@
 
 .submitButton, .logoutButton {
   width: 100%;
-  max-width: 600px;
+  max-width: 400px;
   font-size: 1.1rem;
   border-radius: 0.8rem;
   padding: 1.5rem;
@@ -61,12 +61,13 @@
   background-color: var(--blue-medium);
   color: var(--neutral-white);
   border: none;
+
   &:hover {
     background-color: var(--blue-dark) !important;
   }
 }
 
-.error{
+.error {
   color: var(--error-red);
 }
 
@@ -74,6 +75,7 @@
   border: 1px solid var(--blue-medium);
   background-color: var(--neutral-white);
   color: var(--blue-medium);
+
   &:hover {
     background-color: var(--blue-light);
     color: var(--neutral-white);

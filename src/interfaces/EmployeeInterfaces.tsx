@@ -8,7 +8,8 @@ import {Qualification} from "./Qualification.tsx";
 export interface Employee {
     employeeId?: number;
     employeeCNP?: string;
-    dateOfBirth?: Date | string;
+    dateOfBirth?: Date;
+    dateOfHiring?: Date;
     fullName: string;
     qualification?: Qualification;
     yearsOfExperience?: number;

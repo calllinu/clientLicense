@@ -1,8 +1,7 @@
 import {useCallback, useMemo} from "react";
 import {Button, Col, DatePicker, Input, Row, Select} from "antd";
 import {Formik} from "formik";
-import dayjs, {Dayjs} from "dayjs";
-import useLogout from "../../auth/authHooks/useLogOut";
+import dayjs from "dayjs";
 import styles from "./Profile.module.scss";
 import {validationSchema} from "./utils/validationSchema";
 import {Qualification} from "../../interfaces/Qualification";
@@ -11,15 +10,12 @@ import {formatQualification} from "./utils/qualificationUtils";
 import useOrgAdminRole from "../../hooks/useOrgAdminRole";
 import {ProfileValues} from "../../interfaces/ProfileValues.tsx";
 import {useUpdateEmployeeMutation} from "../../services/employeeApi.tsx";
-import useOwnerRole from "../../hooks/useOwnerRole.tsx";
 
 const {Option} = Select;
 
 const Profile = () => {
-    const handleLogout = useLogout();
     const initialValues = useInitialValues();
     const isAdmin = useOrgAdminRole();
-    const isOwner = useOwnerRole();
 
     const [updateEmployee, {isLoading: isUpdating}] = useUpdateEmployeeMutation();
 
@@ -36,13 +32,14 @@ const Profile = () => {
 
     const handleSubmit = useCallback(
         async (values: ProfileValues) => {
-            const {fullName, dateOfBirth, dateOfHiring, employeeCNP} = values;
+            const {fullName, dateOfBirth, dateOfHiring, employeeCNP, qualification} = values;
 
             const employee = {
                 fullName,
                 dateOfBirth,
                 dateOfHiring,
                 employeeCNP,
+                qualification,
             };
 
             try {
@@ -55,11 +52,6 @@ const Profile = () => {
         },
         [updateEmployee, userId]
     );
-
-
-    const formatDate = useCallback((date: Dayjs) => {
-        return dayjs(date).format("DD-MM-YYYY");
-    }, []);
 
 
     return (
@@ -115,6 +107,53 @@ const Profile = () => {
 
                                 <Col xs={24} md={12}>
                                     <div className={styles.formItem}>
+                                        <label htmlFor="dateOfBirth" className={styles.label}>
+                                            Date of Birth
+                                        </label>
+                                        <DatePicker
+                                            id="dateOfBirth"
+                                            name="dateOfBirth"
+                                            value={values.dateOfBirth ? dayjs(values.dateOfBirth) : null}
+                                            onChange={(date) =>
+                                                setFieldValue("dateOfBirth", date)
+                                            }
+                                            className={styles.input}
+                                            format="DD-MM-YYYY"
+                                            size="large"
+                                            disabledDate={(current) => current && current > dayjs().endOf("day")}
+                                        />
+                                        {errors.dateOfBirth && touched.dateOfBirth && (
+                                            <div className={styles.error}>{errors.dateOfBirth}</div>
+                                        )}
+                                    </div>
+                                </Col>
+
+                                <Col xs={24} md={12}>
+                                    <div className={styles.formItem}>
+                                        <label htmlFor="dateOfHiring" className={styles.label}>
+                                            Date of Hiring
+                                        </label>
+                                        <DatePicker
+                                            id="dateOfHiring"
+                                            name="dateOfHiring"
+                                            value={values.dateOfHiring ? dayjs(values.dateOfHiring) : null}
+                                            onChange={(date) =>
+                                                setFieldValue("dateOfHiring", date)
+                                            }
+                                            className={styles.input}
+                                            format="DD-MM-YYYY"
+                                            size="large"
+                                            disabled={!isAdmin}
+                                            disabledDate={(current) => current && current > dayjs().endOf("day")}
+                                        />
+                                        {errors.dateOfHiring && touched.dateOfHiring && (
+                                            <div className={styles.error}>{errors.dateOfHiring}</div>
+                                        )}
+                                    </div>
+                                </Col>
+
+                                <Col xs={24} md={12}>
+                                    <div className={styles.formItem}>
                                         <label htmlFor="qualification" className={styles.label}>
                                             Qualification
                                         </label>
@@ -135,54 +174,6 @@ const Profile = () => {
                                         </Select>
                                         {errors.qualification && touched.qualification && (
                                             <div className={styles.error}>{errors.qualification}</div>
-                                        )}
-                                    </div>
-                                </Col>
-
-                                <Col xs={24} md={12}>
-                                    <div className={styles.formItem}>
-                                        <label htmlFor="dateOfHiring" className={styles.label}>
-                                            Date of Hiring
-                                        </label>
-                                        <DatePicker
-                                            id="dateOfHiring"
-                                            name="dateOfHiring"
-                                            value={values.dateOfHiring ? dayjs(values.dateOfHiring) : null}
-                                            onChange={(date) =>
-                                                setFieldValue("dateOfHiring", date ? formatDate(date) : "")
-                                            }
-                                            className={styles.input}
-                                            format="DD-MM-YYYY"
-                                            size="large"
-                                            disabled={isAdmin || isOwner}
-                                            disabledDate={(current) => current && current > dayjs().endOf("day")}
-                                        />
-                                        {errors.dateOfHiring && touched.dateOfHiring && (
-                                            <div className={styles.error}>{errors.dateOfHiring}</div>
-                                        )}
-                                    </div>
-                                </Col>
-
-
-                                <Col xs={24} md={12}>
-                                    <div className={styles.formItem}>
-                                        <label htmlFor="dateOfBirth" className={styles.label}>
-                                            Date of Birth
-                                        </label>
-                                        <DatePicker
-                                            id="dateOfBirth"
-                                            name="dateOfBirth"
-                                            value={values.dateOfBirth ? dayjs(values.dateOfBirth) : null}
-                                            onChange={(date) =>
-                                                setFieldValue("dateOfBirth", date ? formatDate(date) : "")
-                                            }
-                                            className={styles.input}
-                                            format="DD-MM-YYYY"
-                                            size="large"
-                                            disabledDate={(current) => current && current > dayjs().endOf("day")}
-                                        />
-                                        {errors.dateOfBirth && touched.dateOfBirth && (
-                                            <div className={styles.error}>{errors.dateOfBirth}</div>
                                         )}
                                     </div>
                                 </Col>
@@ -246,13 +237,6 @@ const Profile = () => {
                                     loading={isUpdating}
                                 >
                                     Save Changes
-                                </Button>
-                                <Button
-                                    type="default"
-                                    onClick={handleLogout}
-                                    className={styles.logoutButton}
-                                >
-                                    Logout
                                 </Button>
                             </div>
                         </form>

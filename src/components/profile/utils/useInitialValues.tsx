@@ -9,7 +9,7 @@ const useInitialValues = (): ProfileValues => {
     return {
         fullName: employeeData?.fullName || "",
         qualification: employeeData?.qualification || null,
-        yearsOfExperience: employeeData?.yearsOfExperience || 1,
+        yearsOfExperience: employeeData?.yearsOfExperience,
         dateOfBirth: employeeData?.dateOfBirth || "",
         dateOfHiring: employeeData?.dateOfHiring || "",
         employeeCNP: employeeData?.employeeCNP?.toString() || "",

@@ -2,10 +2,10 @@ import {Qualification} from "./Qualification.tsx";
 
 export interface ProfileValues {
     fullName: string;
-    qualification: Qualification | null;
+    qualification: Qualification;
     yearsOfExperience: number;
-    dateOfBirth: Date | string;
-    dateOfHiring: Date | string;
+    dateOfBirth?: Date;
+    dateOfHiring?: Date;
     employeeCNP: string;
     organization: string;
     subsidiary: string;

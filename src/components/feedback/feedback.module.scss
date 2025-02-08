@@ -1,0 +1,25 @@
+.surveyForm {
+  display: flex;
+  flex-direction: column;
+  padding-left: 4rem;
+  padding-right: 4rem;
+
+  @media (max-width: 600px) {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  .formItem {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 1rem;
+
+    label {
+      font-size: 1rem;
+    }
+
+    .error {
+      color: red;
+    }
+  }
+}

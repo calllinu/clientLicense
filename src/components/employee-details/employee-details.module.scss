@@ -1,39 +1,14 @@
 .employeeContainer {
   margin: 20px;
-  padding: 16px;
+  padding-left: 4rem;
+  padding-right: 4rem;
   background-color: #f9f9f9;
   border-radius: 8px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-.employeeCard {
-  background: #fff;
-  padding: 16px;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  margin-bottom: 16px;
-  transition: transform 0.2s;
-  width: 100%;
-  font-size: 1rem;
-
-  .employeeInfo {
-    display: flex;
-    width: 100%;
-    justify-content: space-between;
-    align-items: center;
-    cursor: pointer;
-    padding: 1rem 1.5rem;
-  }
-
-  &:hover {
-    transform: scale(1.009);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-  }
-
-  p {
-    margin: 8px 0;
-    font-size: 14px;
-  }
+.tableWrapper {
+  overflow-x: auto;
 }
 
 .actions {
@@ -47,31 +22,13 @@
 }
 
 @media (max-width: 768px) {
-  .employeeCard {
-    padding: 12px;
-    font-size: 0.9rem;
-
-    .employeeInfo {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 10px;
-    }
-  }
-
   .actions {
     flex-direction: row;
     justify-content: flex-start;
     width: 100%;
   }
-}
 
-@media (max-width: 480px) {
-  .employeeCard {
-    padding: 10px;
-    font-size: 0.85rem;
-
-    .employeeInfo {
-      padding: 0.8rem 1rem;
-    }
+  .employeeContainer {
+    padding: 0;
   }
 }

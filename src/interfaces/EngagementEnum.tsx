@@ -1,6 +1,5 @@
 export enum Engagement {
-    FULL_TIME = 'FULL_TIME',
-    PART_TIME = 'PART_TIME',
-    CONTRACTOR = 'CONTRACTOR',
-    INTERN = 'INTERN',
+    PHYSICALLY = 'Physically',
+    MENTALLY = 'Mentally',
+    PHYSICALLY_AND_MENTALLY = 'Physically and Mentally',
 }

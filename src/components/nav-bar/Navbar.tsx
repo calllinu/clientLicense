@@ -14,6 +14,7 @@ import styles from "./Navbar.module.scss";
 import {useCallback, useMemo, useState} from "react";
 import {useMediaQuery} from "react-responsive";
 import useOrgAdminRole from "../../hooks/useOrgAdminRole.tsx";
+import useOwnerRole from "../../hooks/useOwnerRole.tsx";
 
 const Navbar = ({
                     handleContentSwitch,
@@ -26,6 +27,7 @@ const Navbar = ({
     const [dashboardSubMenuVisible, setDashboardSubMenuVisible] = useState(false);
     const isMobile = useMediaQuery({query: "(max-width: 768px)"});
     const isOrgAdmin = useOrgAdminRole();
+    const isOwner = useOwnerRole();
 
     const openDrawer = useCallback(() => {
         setDrawerVisible(true);
@@ -97,15 +99,17 @@ const Navbar = ({
 
                 <Col className={styles.navItems}>
                     <Row align="middle" gutter={20}>
-                        <Col>
-                            <Button
-                                className={`${styles.navButton} ${styles.dashboardButton}`}
-                                icon={<MenuOutlined/>}
-                                onClick={openDrawer}
-                            >
-                                Dashboard
-                            </Button>
-                        </Col>
+                        {(isOrgAdmin || isOwner) && (
+                            <Col>
+                                <Button
+                                    className={`${styles.navButton} ${styles.dashboardButton}`}
+                                    icon={<MenuOutlined/>}
+                                    onClick={openDrawer}
+                                >
+                                    Dashboard
+                                </Button>
+                            </Col>
+                        )}
 
                         <Col>
                             <Button
@@ -160,13 +164,15 @@ const Navbar = ({
             >
                 {isMobile ? (
                     <div>
-                        <Button
-                            className={`${styles.navButton} ${styles.drawerButton}`}
-                            icon={<MenuOutlined/>}
-                            onClick={openDashboardSubMenu}
-                        >
-                            Dashboard
-                        </Button>
+                        {(isOrgAdmin || isOwner) && (
+                            <Button
+                                className={`${styles.navButton} ${styles.drawerButton}`}
+                                icon={<MenuOutlined/>}
+                                onClick={openDashboardSubMenu}
+                            >
+                                Dashboard
+                            </Button>
+                        )}
 
                         {dashboardSubMenuVisible && (
                             <Menu

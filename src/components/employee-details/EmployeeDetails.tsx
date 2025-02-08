@@ -71,6 +71,7 @@ const EmployeeDetails = () => {
                     columns={columns}
                     rowKey={(record: Employee) => record?.employeeId || "unknown"}
                     pagination={{pageSize: 20}}
+                    scroll={{x: true}}
                 />
             ) : (
                 <p>No employees found for this subsidiary.</p>

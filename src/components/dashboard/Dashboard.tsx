@@ -9,12 +9,18 @@ import Navbar from "../nav-bar/Navbar.tsx";
 import Footer from "../footer/Footer.tsx";
 import styles from './dasboard.module.scss';
 import Profile from "../profile/Profile.tsx";
+import Feedback from "../feedback/Feedback.tsx";
+import useOrgAdminRole from "../../hooks/useOrgAdminRole.tsx";
+import useOwnerRole from "../../hooks/useOwnerRole.tsx";
 
 const {Content} = Layout;
 
 const Dashboard = () => {
-    const [activeContent, setActiveContent] = useState('data');
+    const isOrgAdmin = useOrgAdminRole();
+    const isOwner = useOwnerRole();
     const handleLogout = useLogout();
+
+    const [activeContent, setActiveContent] = useState(isOrgAdmin || isOwner ? 'data' : 'feedback');
 
     const dummyEntries = useMemo(() => [
         {
@@ -148,17 +154,17 @@ const Dashboard = () => {
             <Navbar handleContentSwitch={handleContentSwitch} handleLogout={handleLogout}/>
 
             <Layout className={styles.tableContent}>
-                <Content>
+                <Content key={activeContent}>
                     {activeContent === 'data' && <DataContent dummyEntries={dummyEntries}/>}
                     {activeContent === 'statistics' && <Statistics/>}
                     {activeContent === 'requests' && <RegisterRequests/>}
                     {activeContent === 'organizations' && <Organizations/>}
                     {activeContent === 'profile' && <Profile/>}
+                    {activeContent === 'feedback' && <Feedback/>}
                 </Content>
             </Layout>
             <Footer/>
         </Layout>
-
     );
 };
 

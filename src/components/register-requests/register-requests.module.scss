@@ -87,6 +87,10 @@
     justify-content: flex-start;
     width: 100%;
   }
+
+  .mainContainer {
+    padding: 0;
+  }
 }
 
 @media (max-width: 480px) {
