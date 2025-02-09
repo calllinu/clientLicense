@@ -152,8 +152,7 @@ const Dashboard = () => {
     const handleContentSwitch = useCallback((contentType: string) => {
         setActiveContent(contentType);
     }, []);
-
-    console.log(subsidiariesForOrganization);
+    
 
     return (
         <Layout className={styles.dashboardLayout}>

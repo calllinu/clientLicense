@@ -9,12 +9,14 @@ import useInitialValues from "./utils/useInitialValues";
 import {formatQualification} from "./utils/qualificationUtils";
 import useOrgAdminRole from "../../hooks/useOrgAdminRole";
 import {ProfileValues} from "../../interfaces/ProfileValues.tsx";
-import {useUpdateEmployeeMutation} from "../../services/employeeApi.tsx";
+import {useGetEmployeeByUserIdQuery, useUpdateEmployeeMutation} from "../../services/employeeApi.tsx";
 
 const {Option} = Select;
 
 const Profile = () => {
-    const initialValues = useInitialValues();
+    const userId = parseInt(sessionStorage.getItem("userId") || "0", 10);
+    const {data: employeeData, refetch} = useGetEmployeeByUserIdQuery(userId);
+    const initialValues = useInitialValues(employeeData);
     const isAdmin = useOrgAdminRole();
 
     const [updateEmployee, {isLoading: isUpdating}] = useUpdateEmployeeMutation();
@@ -27,8 +29,6 @@ const Profile = () => {
             })),
         []
     );
-
-    const userId = parseInt(sessionStorage.getItem("userId") || "0", 10);
 
     const handleSubmit = useCallback(
         async (values: ProfileValues) => {
@@ -43,9 +43,8 @@ const Profile = () => {
             };
 
             try {
-                await updateEmployee({userId: userId, employee}).unwrap().then(() => {
-                    console.log("Profile updated successfully");
-                });
+                await updateEmployee({userId: userId, employee}).unwrap();
+                refetch();
             } catch (error) {
                 console.error("Error updating profile:", error);
             }

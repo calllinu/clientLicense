@@ -31,6 +31,12 @@ export const employeeApi = createApi({
                 method: 'DELETE',
             }),
         }),
+        getEmployeeAtSubsidiary: builder.query<EmployeeResponse[], number>({
+            query: (subsidiaryId) => ({
+                url: `/subsidiary-employees/${subsidiaryId}`,
+                method: 'GET',
+            }),
+        }),
     }),
 });
 
@@ -39,4 +45,5 @@ export const {
     useUpdateEmployeeMutation,
     useCheckNullFieldsQuery,
     useDeleteEmployeeMutation,
+    useGetEmployeeAtSubsidiaryQuery,
 } = employeeApi;

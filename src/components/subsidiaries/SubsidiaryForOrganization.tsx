@@ -26,7 +26,9 @@ const SubsidiaryForOrganization = ({subsidiaries, organizationId, refetch}: Subs
     const [removeSubsidiary] = useRemoveSubsidiaryMutation();
 
     const navigateToSubsidiary = useCallback((sub: Subsidiary) => {
-        navigate(`/dashboard/${sub.subsidiaryId}`, {state: {subsidiary: sub}});
+        navigate(`/dashboard/${sub.subsidiaryId}`, {
+            state: {subsidiaryId: sub.subsidiaryId, subsidiaryCode: sub.subsidiaryCode}
+        });
     }, [navigate]);
 
     const showDeleteModal = useCallback((sub: Subsidiary) => {

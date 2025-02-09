@@ -4,14 +4,22 @@ import {useLocation} from "react-router-dom";
 import styles from './employee-details.module.scss';
 import {Employee} from "../../interfaces/EmployeeInterfaces.tsx";
 import {Qualification} from "../../interfaces/Qualification";
-import {useDeleteEmployeeMutation} from "../../services/employeeApi.tsx";
-import {useCallback} from "react";
+import {useDeleteEmployeeMutation, useGetEmployeeAtSubsidiaryQuery} from "../../services/employeeApi.tsx";
+import {useCallback, useState} from "react";
+import ConfirmDeleteModal from "../modals/confirm-delete-modal/ConfirmDeleteModal.tsx";
+import EditEmployeeModal from "../modals/edit-profile-modal/EditEmployeeModal.tsx";
 
 const EmployeeDetails = () => {
     const location = useLocation();
-    const {subsidiary} = location.state || {};
+    const {subsidiaryId, subsidiaryCode} = location.state || {};
     const [deleteEmployee] = useDeleteEmployeeMutation();
-    console.log(subsidiary)
+    const {data: employees, refetch} = useGetEmployeeAtSubsidiaryQuery(subsidiaryId);
+
+    const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+    const [employeeToDelete, setEmployeeToDelete] = useState<Employee | null>(null);
+    const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+    const [employeeToEdit, setEmployeeToEdit] = useState<Employee | null>(null);
+
     const formatQualification = (qualification: Qualification): string => {
         return qualification
             .split('_')
@@ -22,9 +30,23 @@ const EmployeeDetails = () => {
     const deleteEmployeeHandle = useCallback(
         async (employeeId: number) => {
             await deleteEmployee(employeeId).unwrap();
-        }, [deleteEmployee]);
+            refetch();
+            setIsDeleteModalVisible(false);
+        },
+        [deleteEmployee, refetch]
+    );
 
-    if (!subsidiary) return <p>No subsidiary data found.</p>;
+    const showDeleteModal = useCallback((employee: Employee) => {
+        setEmployeeToDelete(employee);
+        setIsDeleteModalVisible(true);
+    }, []);
+
+    const showEditModal = useCallback((employee: Employee) => {
+        setEmployeeToEdit(employee);
+        setIsEditModalVisible(true);
+    }, []);
+
+    if (!subsidiaryId) return <p>No subsidiary data found.</p>;
 
     const columns = [
         {
@@ -40,6 +62,13 @@ const EmployeeDetails = () => {
             key: 'dateOfBirth',
             render: (date: string) => <span
                 className={date ? '' : styles.notCompleted}>{date?.toString() || "Not completed"}</span>,
+        },
+        {
+            title: <><SolutionOutlined/> Date of Hiring</>,
+            dataIndex: 'dateOfHiring',
+            key: 'dateOfHiring',
+            render: (text: string) => <span
+                className={text ? '' : styles.notCompleted}>{text || "Not completed"}</span>,
         },
         {
             title: 'Personal ID',
@@ -68,23 +97,28 @@ const EmployeeDetails = () => {
             key: 'actions',
             render: (employee: Employee) => (
                 <div className={styles.actions}>
-                    <Button icon={<EditOutlined/>}/>
+                    <Button
+                        icon={<EditOutlined/>}
+                        onClick={() => showEditModal(employee)}
+                    />
                     <Button
                         icon={<DeleteOutlined/>}
                         className={styles.delete}
-                        onClick={() => deleteEmployeeHandle(employee.employeeId)}
+                        onClick={() => showDeleteModal(employee)}
                     />
                 </div>
             ),
         },
     ];
 
+    console.log(employeeToEdit)
+
     return (
         <div className={styles.employeeContainer}>
-            <h2>Employees at {subsidiary.subsidiaryCode}</h2>
-            {subsidiary.employees && subsidiary.employees.length ? (
+            <h2>Employees at {subsidiaryCode}</h2>
+            {employees && employees.length ? (
                 <Table
-                    dataSource={subsidiary.employees}
+                    dataSource={employees}
                     columns={columns}
                     rowKey={(employee: Employee) => employee?.employeeId || "unknown"}
                     pagination={{pageSize: 20}}
@@ -93,6 +127,22 @@ const EmployeeDetails = () => {
             ) : (
                 <p>No employees found for this subsidiary.</p>
             )}
+
+            <ConfirmDeleteModal
+                isVisible={isDeleteModalVisible}
+                onCancel={() => setIsDeleteModalVisible(false)}
+                onConfirm={() => employeeToDelete && deleteEmployeeHandle(employeeToDelete.employeeId as number)}
+                messageText={`Are you sure you want to delete employee: ${employeeToDelete?.fullName}?`}
+                titleText="Delete Employee"
+            />
+
+            <EditEmployeeModal
+                visible={isEditModalVisible}
+                onCancel={() => setIsEditModalVisible(false)}
+                refetch={refetch}
+                employee={employeeToEdit}
+                employeeId={employeeToEdit?.employeeId as number}
+            />
         </div>
     );
 };

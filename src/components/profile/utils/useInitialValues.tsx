@@ -1,11 +1,8 @@
-import {useGetEmployeeByUserIdQuery} from "../../../services/employeeApi.tsx";
 import {ProfileValues} from "../../../interfaces/ProfileValues.tsx";
+import {EmployeeResponse} from "../../../interfaces/EmployeeInterfaces.tsx";
 
-const userId = parseInt(sessionStorage.getItem("userId") || "0", 10);
+const useInitialValues = (employeeData: EmployeeResponse | undefined): ProfileValues => {
 
-const useInitialValues = (): ProfileValues => {
-    const {data: employeeData} = useGetEmployeeByUserIdQuery(userId);
-    console.log(employeeData);
     return {
         fullName: employeeData?.fullName || "",
         qualification: employeeData?.qualification || null,
