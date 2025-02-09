@@ -1,14 +1,9 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import {
-    SubsidiaryResponse,
-    SubsidiaryRequest,
-    SubsidiaryUpdateRequest,
-    Subsidiary
-} from "../interfaces/SubsidiaryInterfaces";
+import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react';
+import {SubsidiaryRequest, SubsidiaryResponse, SubsidiaryUpdateRequest} from "../interfaces/SubsidiaryInterfaces";
 
 export const subsidiaryApi = createApi({
     reducerPath: 'subsidiaryApi',
-    baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:8080/subsidiaries' }), // The base URL for the subsidiary endpoints
+    baseQuery: fetchBaseQuery({baseUrl: 'http://localhost:8080/subsidiaries'}), // The base URL for the subsidiary-section endpoints
     endpoints: (builder) => ({
         addSubsidiary: builder.mutation<SubsidiaryResponse, SubsidiaryRequest>({
             query: (subsidiary) => ({
@@ -23,8 +18,8 @@ export const subsidiaryApi = createApi({
                 method: 'DELETE',
             }),
         }),
-        updateSubsidiary: builder.mutation<void, {values: SubsidiaryUpdateRequest; subsidiaryId: number}>({
-            query: ({ values, subsidiaryId }) => ({
+        updateSubsidiary: builder.mutation<void, { values: SubsidiaryUpdateRequest; subsidiaryId: number }>({
+            query: ({values, subsidiaryId}) => ({
                 url: `/update/${subsidiaryId}`,
                 method: 'PUT',
                 body: {
@@ -34,18 +29,6 @@ export const subsidiaryApi = createApi({
                 }
             }),
         }),
-        getSubsidiaryById: builder.query<SubsidiaryResponse, string>({
-            query: (subsidiaryId) => ({
-                url: `/get/${subsidiaryId}`,
-                method: 'GET',
-            }),
-        }),
-        getAllSubsidiaries: builder.query<Subsidiary[], void>({
-            query: () => ({
-                url: '/all',
-                method: 'GET',
-            }),
-        }),
     }),
 });
 
@@ -53,8 +36,6 @@ export const {
     useAddSubsidiaryMutation,
     useRemoveSubsidiaryMutation,
     useUpdateSubsidiaryMutation,
-    useGetSubsidiaryByIdQuery,
-    useGetAllSubsidiariesQuery
 } = subsidiaryApi;
 
 

@@ -1,10 +1,10 @@
-import { Modal, Form, Input, Button } from 'antd';
-import { Formik } from 'formik';
-import { Subsidiary, SubsidiaryUpdateRequest } from "../../../interfaces/SubsidiaryInterfaces.tsx";
+import {Button, Form, Input, Modal} from 'antd';
+import {Formik} from 'formik';
+import {Subsidiary, SubsidiaryUpdateRequest} from "../../../interfaces/SubsidiaryInterfaces.tsx";
 import useInitialValues from "./utils/useInitialValues.tsx";
 import validationSchema from "./utils/validationSchema.tsx";
-import { useUpdateSubsidiaryMutation } from "../../../services/subsidiaryApi.tsx";
-import { useCallback } from "react";
+import {useUpdateSubsidiaryMutation} from "../../../services/subsidiaryApi.tsx";
+import {useCallback} from "react";
 
 interface EditSubsidiaryModalProps {
     isVisible: boolean;
@@ -13,8 +13,8 @@ interface EditSubsidiaryModalProps {
     subsidiary: Subsidiary | null;
 }
 
-const EditSubsidiaryModal: React.FC<EditSubsidiaryModalProps> = ({ isVisible, onClose, refetch, subsidiary }) => {
-    const initialValues = useInitialValues({ subsidiary });
+const EditSubsidiaryModal: React.FC<EditSubsidiaryModalProps> = ({isVisible, onClose, refetch, subsidiary}) => {
+    const initialValues = useInitialValues({subsidiary});
     const [updateSubsidiary] = useUpdateSubsidiaryMutation();
 
     const updateOrganization = useCallback(async (values: SubsidiaryUpdateRequest) => {
@@ -28,7 +28,7 @@ const EditSubsidiaryModal: React.FC<EditSubsidiaryModalProps> = ({ isVisible, on
                 refetch();
                 onClose();
             } catch (error) {
-                console.error("Error updating subsidiary:", error);
+                console.error("Error updating subsidiary-section:", error);
             }
         }
     }, [subsidiary, updateSubsidiary, refetch, onClose]);
@@ -48,11 +48,11 @@ const EditSubsidiaryModal: React.FC<EditSubsidiaryModalProps> = ({ isVisible, on
                 validateOnChange={true}
                 enableReinitialize={true}
             >
-                {({ values, handleChange, handleBlur, handleSubmit, touched, errors }) => {
+                {({values, handleChange, handleBlur, handleSubmit, touched, errors}) => {
                     return (
                         <Form layout="vertical" onFinish={handleSubmit}>
                             <Form.Item label="Subsidiary Code">
-                                <Input value={values.subsidiaryCode} disabled />
+                                <Input value={values.subsidiaryCode} disabled/>
                             </Form.Item>
 
                             <Form.Item

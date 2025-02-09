@@ -1,7 +1,7 @@
-import { Modal, Form, Input, Button } from 'antd';
+import {Button, Form, Input, Modal} from 'antd';
 import {Formik, FormikHelpers, FormikProps} from 'formik';
-import { useAddSubsidiaryMutation } from "../../../services/subsidiaryApi.tsx";
-import { SubsidiaryRequest } from "../../../interfaces/SubsidiaryInterfaces.tsx";
+import {useAddSubsidiaryMutation} from "../../../services/subsidiaryApi.tsx";
+import {SubsidiaryRequest} from "../../../interfaces/SubsidiaryInterfaces.tsx";
 import validationSchema from "./utils/validationSchema.tsx";
 import {useCallback, useRef} from "react";
 
@@ -9,10 +9,10 @@ interface SubsidiaryModalProps {
     isVisible: boolean;
     onClose: () => void;
     refetch: () => void;
-    organizationId: number | null;
+    organizationId?: number | null;
 }
 
-const SubsidiaryModal: React.FC<SubsidiaryModalProps> = ({ isVisible, onClose, refetch, organizationId }) => {
+const SubsidiaryModal: React.FC<SubsidiaryModalProps> = ({isVisible, onClose, refetch, organizationId}) => {
     const [addSubsidiary] = useAddSubsidiaryMutation();
     const formikRef = useRef<FormikProps<Omit<SubsidiaryRequest, 'organizationId'>> | null>(null);
 
@@ -24,20 +24,20 @@ const SubsidiaryModal: React.FC<SubsidiaryModalProps> = ({ isVisible, onClose, r
     };
 
     const handleAddSubsidiary = useCallback(async (
-                values: Omit<SubsidiaryRequest, 'organizationId'>,
-                actions: FormikHelpers<Omit<SubsidiaryRequest, 'organizationId'>>) => {
+        values: Omit<SubsidiaryRequest, 'organizationId'>,
+        actions: FormikHelpers<Omit<SubsidiaryRequest, 'organizationId'>>) => {
         if (!organizationId) return;
         try {
-            await addSubsidiary({ ...values, organizationId }).unwrap();
+            await addSubsidiary({...values, organizationId}).unwrap();
             refetch();
             onClose();
             actions.resetForm();
         } catch (error) {
-            console.error("Error adding subsidiary:", error);
+            console.error("Error adding subsidiary-section:", error);
         }
     }, [addSubsidiary, organizationId, refetch, onClose]);
 
-    const handleClose = useCallback(()  => {
+    const handleClose = useCallback(() => {
         if (formikRef.current) {
             formikRef.current.resetForm();
         }
@@ -58,7 +58,7 @@ const SubsidiaryModal: React.FC<SubsidiaryModalProps> = ({ isVisible, onClose, r
                 validationSchema={validationSchema}
                 onSubmit={handleAddSubsidiary}
             >
-                {({ values, errors, touched, handleChange, handleBlur, handleSubmit }) => (
+                {({values, errors, touched, handleChange, handleBlur, handleSubmit}) => (
                     <Form layout="vertical" onFinish={handleSubmit}>
                         <Form.Item label="Organization ID">
                             <Input

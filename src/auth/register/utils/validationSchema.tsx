@@ -12,5 +12,5 @@ export const SignupSchema = Yup.object().shape({
         .oneOf([Yup.ref("password")], "Passwords must match")
         .required("Required"),
     selectedOrganization: Yup.number().required("Please select an organization"),
-    selectedSubsidiary: Yup.number().required("Please select a subsidiary"),
+    selectedSubsidiary: Yup.number().required("Please select a subsidiary-section"),
 });

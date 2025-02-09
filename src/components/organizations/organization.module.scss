@@ -112,6 +112,12 @@
   justify-content: center;
 }
 
+.spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 @media screen and (max-width: 768px) {
   .statisticsContent {
     padding: 0;

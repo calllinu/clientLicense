@@ -6,7 +6,7 @@ import {Qualification} from "./Qualification.tsx";
 
 
 export interface Employee {
-    employeeId?: number;
+    employeeId: number;
     employeeCNP?: string;
     dateOfBirth?: Date;
     dateOfHiring?: Date;

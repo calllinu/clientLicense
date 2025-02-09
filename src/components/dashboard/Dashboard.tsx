@@ -12,6 +12,9 @@ import Profile from "../profile/Profile.tsx";
 import Feedback from "../feedback/Feedback.tsx";
 import useOrgAdminRole from "../../hooks/useOrgAdminRole.tsx";
 import useOwnerRole from "../../hooks/useOwnerRole.tsx";
+import {useGetSubsidiariesForOrganizationQuery} from "../../services/organizationApi.tsx";
+import SubsidiaryForOrganization from "../subsidiaries/SubsidiaryForOrganization.tsx";
+
 
 const {Content} = Layout;
 
@@ -19,8 +22,9 @@ const Dashboard = () => {
     const isOrgAdmin = useOrgAdminRole();
     const isOwner = useOwnerRole();
     const handleLogout = useLogout();
-
     const [activeContent, setActiveContent] = useState(isOrgAdmin || isOwner ? 'data' : 'feedback');
+    const userId = Number(sessionStorage.getItem("userId"));
+    const {data: subsidiariesForOrganization, refetch} = useGetSubsidiariesForOrganizationQuery(userId);
 
     const dummyEntries = useMemo(() => [
         {
@@ -149,6 +153,8 @@ const Dashboard = () => {
         setActiveContent(contentType);
     }, []);
 
+    console.log(subsidiariesForOrganization);
+
     return (
         <Layout className={styles.dashboardLayout}>
             <Navbar handleContentSwitch={handleContentSwitch} handleLogout={handleLogout}/>
@@ -161,6 +167,16 @@ const Dashboard = () => {
                     {activeContent === 'organizations' && <Organizations/>}
                     {activeContent === 'profile' && <Profile/>}
                     {activeContent === 'feedback' && <Feedback/>}
+                    {
+                        activeContent === 'subsidiaries' && (
+                            <SubsidiaryForOrganization
+                                subsidiaries={subsidiariesForOrganization?.subsidiaries}
+                                organizationId={subsidiariesForOrganization?.organizationId}
+                                refetch={refetch}
+                            />
+                        )
+                    }
+
                 </Content>
             </Layout>
             <Footer/>

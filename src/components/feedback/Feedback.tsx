@@ -139,7 +139,7 @@ const SurveyForm: React.FC = () => {
                                 </Row>
 
                                 <Tooltip
-                                    title={hasNullFields.data ? "Please fill in your profile data, or wait that other details to be filled by your Organizational Admin." : ""}>
+                                    title={hasNullFields.data ? "Please fill in your profile data, or wait that other details to be filled by your Organization's Admin." : ""}>
                                     <Button
                                         type="primary"
                                         htmlType="submit"

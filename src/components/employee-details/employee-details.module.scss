@@ -21,6 +21,10 @@
   }
 }
 
+.notCompleted {
+  color: red;
+}
+
 @media (max-width: 768px) {
   .actions {
     flex-direction: row;

@@ -1,4 +1,4 @@
-import {Button, Col, Collapse, Pagination, Row, Space} from 'antd';
+import {Button, Col, Collapse, Pagination, Row, Space, Spin} from 'antd';
 import {useCallback, useMemo, useState} from 'react';
 import {
     DeleteOutlined,
@@ -14,7 +14,7 @@ import OrganizationModal from "../modals/add-organization-modal/OrganizationModa
 import SubsidiaryModal from "../modals/add-subsidiary-modal/SubsidiaryModal.tsx";
 import {OrganizationResponse, OrganizationUpdateRequest} from "../../interfaces/OrganizationInterfaces.tsx";
 import {formatIndustry} from "../modals/add-organization-modal/utils/industryUtils.tsx";
-import SubsidiariesSection from "../subsidiary/SubsidiarySection.tsx";
+import SubsidiariesSection from "../subsidiary-section/SubsidiarySection.tsx";
 import styles from './organization.module.scss';
 import ConfirmDeleteModal from "../modals/confirm-delete-modal/ConfirmDeleteModal.tsx";
 import EditOrganizationModal from "../modals/edit-organization-info-modal/EditOrganizationModal.tsx";
@@ -25,7 +25,7 @@ const Organizations = () => {
     const [searchText, setSearchText] = useState('');
     const [searchSubsidiary, setSearchSubsidiary] = useState('');
 
-    const {data: organizationData, refetch} = useGetAllOrganizationsPageableQuery({
+    const {data: organizationData, refetch, isLoading} = useGetAllOrganizationsPageableQuery({
         page: pagination.current - 1,
         size: pagination.pageSize,
         search: searchText,
@@ -76,7 +76,7 @@ const Organizations = () => {
     }, []);
 
     const handleDeleteOrganization = useCallback(
-        (organizationId: string) => {
+        (organizationId: number) => {
             removeOrganization(organizationId)
                 .unwrap()
                 .then(() => {
@@ -96,91 +96,93 @@ const Organizations = () => {
     );
 
     const organizationCollapseItems = useMemo(() => {
-        return organizationData?.data?.map((org: OrganizationResponse, index: number) => ({
-            key: org.organizationId,
-            label: (
-                <div className={styles.panelHeader}>
-                    <span>{`${org.organizationCode} - ${org.name}`}</span>
-                    <Space>
-                        <Button
-                            icon={<PlusOutlined/>}
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                showSubsidiaryModal(org.organizationId);
-                            }}
-                        />
-                        <Button
-                            icon={<EditOutlined/>}
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                showEditOrgModal(org);
-                            }}
-                        />
-                        <Button
-                            icon={<DeleteOutlined/>}
-                            danger
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                handleDeleteClick(org);
-                            }}
-                        />
-                    </Space>
-                </div>
-            ),
-            children: (
-                <div className={styles.industry}>
-                    <div className={styles.industryInfo}>
-                        <PartitionOutlined/>
-                        <strong>Industry: </strong> {formatIndustry(org.industry)}
+        return organizationData?.data?.slice()
+            .sort((a: OrganizationResponse, b: OrganizationResponse) => a.name.localeCompare(b.name))
+            .map((org: OrganizationResponse, index: number) => ({
+                key: org.organizationId,
+                label: (
+                    <div className={styles.panelHeader}>
+                        <span>{`${org.organizationCode} - ${org.name}`}</span>
+                        <Space>
+                            <Button
+                                icon={<PlusOutlined/>}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    showSubsidiaryModal(org.organizationId);
+                                }}
+                            />
+                            <Button
+                                icon={<EditOutlined/>}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    showEditOrgModal(org);
+                                }}
+                            />
+                            <Button
+                                icon={<DeleteOutlined/>}
+                                danger
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleDeleteClick(org);
+                                }}
+                            />
+                        </Space>
                     </div>
-                    <div className={styles.industryInfo}>
-                        <UserOutlined/>
-                        <strong>Admin Name: </strong> {org.admin?.fullName}
-                    </div>
-                    <div className={styles.industryInfo}>
-                        <MailOutlined/>
-                        <strong>Admin Email: </strong> {org.admin?.email}
-                    </div>
-                    <div className={styles.industryInfo}>
-                        <NodeIndexOutlined/>
-                        <strong>Year of establishment: </strong> {org.yearOfEstablishment}
-                    </div>
+                ),
+                children: (
+                    <div className={styles.industry}>
+                        <div className={styles.industryInfo}>
+                            <PartitionOutlined/>
+                            <strong>Industry: </strong> {formatIndustry(org.industry)}
+                        </div>
+                        <div className={styles.industryInfo}>
+                            <UserOutlined/>
+                            <strong>Admin Name: </strong> {org.admin?.fullName}
+                        </div>
+                        <div className={styles.industryInfo}>
+                            <MailOutlined/>
+                            <strong>Admin Email: </strong> {org.admin?.email}
+                        </div>
+                        <div className={styles.industryInfo}>
+                            <NodeIndexOutlined/>
+                            <strong>Year of establishment: </strong> {org.yearOfEstablishment}
+                        </div>
 
-                    <div className={styles.subsidiaryTitle}>
-                        Subsidiaries
+                        <div className={styles.subsidiaryTitle}>
+                            Subsidiaries
+                        </div>
+                        {org.subsidiaries.length ? (
+                            <>
+                                <div className={styles.container}>
+                                    <Search
+                                        placeholder="Search by country, city or code"
+                                        onChange={(e) => setSearchSubsidiary(e.target.value)}
+                                        value={searchSubsidiary}
+                                        enterButton
+                                        className={styles.searchSubsidiary}
+                                    />
+                                </div>
+                                <div className={styles.subsidiariesContainer}>
+                                    <SubsidiariesSection
+                                        subsidiaries={org.subsidiaries.filter((subsidiary) => {
+                                            const searchText = searchSubsidiary.toLowerCase();
+                                            return (
+                                                subsidiary.country?.toLowerCase().includes(searchText) ||
+                                                subsidiary.city?.toLowerCase().includes(searchText) ||
+                                                subsidiary.subsidiaryCode?.toLowerCase().includes(searchText)
+                                            );
+                                        })}
+                                        refetch={refetch}
+                                    />
+                                </div>
+                            </>
+                        ) : (
+                            <p>No subsidiaries found.</p>
+                        )}
                     </div>
-                    {org.subsidiaries.length ? (
-                        <>
-                            <div className={styles.container}>
-                                <Search
-                                    placeholder="Search by country, city or code"
-                                    onChange={(e) => setSearchSubsidiary(e.target.value)}
-                                    value={searchSubsidiary}
-                                    enterButton
-                                    className={styles.searchSubsidiary}
-                                />
-                            </div>
-                            <div className={styles.subsidiariesContainer}>
-                                <SubsidiariesSection
-                                    subsidiaries={org.subsidiaries.filter((subsidiary) => {
-                                        const searchText = searchSubsidiary.toLowerCase();
-                                        return (
-                                            subsidiary.country?.toLowerCase().includes(searchText) ||
-                                            subsidiary.city?.toLowerCase().includes(searchText) ||
-                                            subsidiary.subsidiaryCode?.toLowerCase().includes(searchText)
-                                        );
-                                    })}
-                                    refetch={refetch}
-                                />
-                            </div>
-                        </>
-                    ) : (
-                        <p>No subsidiaries found.</p>
-                    )}
-                </div>
-            ),
-            className: index % 2 === 0 ? styles.oddCollapse : styles.evenCollapse,
-        }));
+                ),
+                className: index % 2 === 0 ? styles.oddCollapse : styles.evenCollapse,
+            }));
     }, [organizationData, searchSubsidiary, showSubsidiaryModal, showEditOrgModal, handleDeleteClick]);
 
     return (
@@ -209,8 +211,10 @@ const Organizations = () => {
 
                 {organizationData?.data?.length ? (
                     <Collapse items={organizationCollapseItems}/>
+                ) : isLoading ? (
+                    <Spin size="large" className={styles.spinner}/>
                 ) : (
-                    <p>No organizations found.</p>
+                    <p>No organizations found</p>
                 )}
 
                 <Pagination
@@ -253,7 +257,7 @@ const Organizations = () => {
             <ConfirmDeleteModal
                 isVisible={isDeleteModalVisible}
                 onCancel={() => setIsDeleteModalVisible(false)}
-                onConfirm={() => organizationToDelete && handleDeleteOrganization(organizationToDelete.organizationId.toString())}
+                onConfirm={() => organizationToDelete && handleDeleteOrganization(organizationToDelete.organizationId)}
                 messageText={`Are you sure you want to delete organization: ${organizationToDelete?.name}?`}
                 titleText="Delete Organization"
             />

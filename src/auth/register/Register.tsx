@@ -1,15 +1,15 @@
-import { useState, useCallback, useMemo } from "react";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import { Col, Row, Input, Button, Spin, Select } from "antd";
-import { EyeOutlined, EyeInvisibleOutlined, UserOutlined } from "@ant-design/icons";
+import {useCallback, useMemo, useState} from "react";
+import {ErrorMessage, Field, Form, Formik} from "formik";
+import {Button, Col, Input, Row, Select, Spin} from "antd";
+import {EyeInvisibleOutlined, EyeOutlined, UserOutlined} from "@ant-design/icons";
 import styles from './register.module.scss';
-import { Link, useNavigate } from "react-router-dom";
-import { useCreateUserMutation } from "../../services/userApi.tsx";
-import { useGetAllOrganizationsQuery } from "../../services/organizationApi";
-import { Organization } from "../../interfaces/OrganizationInterfaces";
-import { Subsidiary } from "../../interfaces/SubsidiaryInterfaces";
-import { SignupSchema } from "./utils/validationSchema.tsx";
-import { initialValues } from "./utils/initialValues.tsx";
+import {Link, useNavigate} from "react-router-dom";
+import {useCreateUserMutation} from "../../services/userApi.tsx";
+import {useGetAllOrganizationsQuery} from "../../services/organizationApi";
+import {Organization} from "../../interfaces/OrganizationInterfaces";
+import {Subsidiary} from "../../interfaces/SubsidiaryInterfaces";
+import {SignupSchema} from "./utils/validationSchema.tsx";
+import {initialValues} from "./utils/initialValues.tsx";
 
 export interface FormValues {
     email: string;
@@ -29,7 +29,7 @@ const Register = () => {
     const [selectedOrganization, setSelectedOrganization] = useState<number | null>(null);
     const [selectedSubsidiary, setSelectedSubsidiary] = useState<number | null>(null);
 
-    const { data: organizations, isError: isOrgError } = useGetAllOrganizationsQuery();
+    const {data: organizations, isError: isOrgError} = useGetAllOrganizationsQuery();
 
     const selectedOrganizationSubsidiaries = useMemo(() => {
         const organization = organizations?.find(
@@ -43,7 +43,7 @@ const Register = () => {
         setSelectedSubsidiary(null);
     }, []);
 
-    const handleSubmit = async (values: FormValues, { resetForm }: { resetForm: () => void }) => {
+    const handleSubmit = async (values: FormValues, {resetForm}: { resetForm: () => void }) => {
         setLoading(true);
         try {
             await createUser({
@@ -77,10 +77,10 @@ const Register = () => {
                         validationSchema={SignupSchema}
                         onSubmit={handleSubmit}
                     >
-                        {({ errors, touched, setFieldValue }) => (
+                        {({errors, touched, setFieldValue}) => (
                             <Form className={styles.formContainer}>
                                 <Col className={styles.imageContainer}>
-                                    <UserOutlined className={styles.iconUser} />
+                                    <UserOutlined className={styles.iconUser}/>
                                 </Col>
 
                                 <Col className={styles.inputContainer}>
@@ -92,7 +92,7 @@ const Register = () => {
                                         placeholder="Enter your email"
                                         className={errors.email && touched.email ? styles.errorBorder : ""}
                                     />
-                                    <ErrorMessage name="email" component="div" className={styles.error} />
+                                    <ErrorMessage name="email" component="div" className={styles.error}/>
                                 </Col>
 
                                 <Col className={styles.inputContainer}>
@@ -103,7 +103,7 @@ const Register = () => {
                                         placeholder="Enter your username"
                                         className={errors.username && touched.username ? styles.errorBorder : ""}
                                     />
-                                    <ErrorMessage name="username" component="div" className={styles.error} />
+                                    <ErrorMessage name="username" component="div" className={styles.error}/>
                                 </Col>
 
                                 <Col className={styles.inputContainer}>
@@ -114,7 +114,7 @@ const Register = () => {
                                         placeholder="Enter your full name"
                                         className={errors.fullName && touched.fullName ? styles.errorBorder : ""}
                                     />
-                                    <ErrorMessage name="fullName" component="div" className={styles.error} />
+                                    <ErrorMessage name="fullName" component="div" className={styles.error}/>
                                 </Col>
 
                                 <Col className={styles.inputContainer}>
@@ -125,9 +125,11 @@ const Register = () => {
                                         as={Input.Password}
                                         placeholder="Enter your password"
                                         className={`${errors.password && touched.password ? styles.errorBorder : ""} ${styles.noBorder}`}
-                                        iconRender={(visible: boolean) => visible ? <EyeOutlined onClick={togglePasswordVisibility} /> : <EyeInvisibleOutlined onClick={togglePasswordVisibility} />}
+                                        iconRender={(visible: boolean) => visible ?
+                                            <EyeOutlined onClick={togglePasswordVisibility}/> :
+                                            <EyeInvisibleOutlined onClick={togglePasswordVisibility}/>}
                                     />
-                                    <ErrorMessage name="password" component="div" className={styles.error} />
+                                    <ErrorMessage name="password" component="div" className={styles.error}/>
                                 </Col>
 
                                 <Col className={styles.inputContainer}>
@@ -138,17 +140,20 @@ const Register = () => {
                                         as={Input.Password}
                                         placeholder="Confirm your password"
                                         className={`${errors.confirmPassword && touched.confirmPassword ? styles.errorBorder : ""} ${styles.noBorder}`}
-                                        iconRender={(visible: boolean) => visible ? <EyeOutlined onClick={togglePasswordVisibility} /> : <EyeInvisibleOutlined onClick={togglePasswordVisibility} />}
+                                        iconRender={(visible: boolean) => visible ?
+                                            <EyeOutlined onClick={togglePasswordVisibility}/> :
+                                            <EyeInvisibleOutlined onClick={togglePasswordVisibility}/>}
                                     />
-                                    <ErrorMessage name="confirmPassword" component="div" className={styles.error} />
+                                    <ErrorMessage name="confirmPassword" component="div" className={styles.error}/>
                                 </Col>
 
                                 <Col className={styles.inputContainer}>
-                                    <label htmlFor="selectedOrganization" className={styles.label}>Select Organization</label>
+                                    <label htmlFor="selectedOrganization" className={styles.label}>Select
+                                        Organization</label>
                                     <Select
                                         id="selectedOrganization"
-                                        style={{ width: "100%" }}
-                                        placeholder={<span style={{ fontSize: "1.2rem" }}>Select an organization</span>}
+                                        style={{width: "100%"}}
+                                        placeholder={<span style={{fontSize: "1.2rem"}}>Select an organization</span>}
                                         className={`${errors.selectedOrganization && touched.selectedOrganization ? styles.errorBorder : ""} ${styles.noBorder}`}
                                         onChange={(value) => {
                                             setFieldValue("selectedOrganization", value);
@@ -169,15 +174,16 @@ const Register = () => {
                                             ))
                                         )}
                                     </Select>
-                                    <ErrorMessage name="selectedOrganization" component="div" className={styles.error} />
+                                    <ErrorMessage name="selectedOrganization" component="div" className={styles.error}/>
                                 </Col>
 
                                 <Col className={styles.inputContainer}>
-                                    <label htmlFor="selectedSubsidiary" className={styles.label}>Select Subsidiary</label>
+                                    <label htmlFor="selectedSubsidiary" className={styles.label}>Select
+                                        Subsidiary</label>
                                     <Select
                                         id="selectedSubsidiary"
-                                        style={{ width: "100%" }}
-                                        placeholder={<span style={{ fontSize: "1.2rem" }}>Select a subsidiary</span>}
+                                        style={{width: "100%"}}
+                                        placeholder={<span style={{fontSize: "1.2rem"}}>Select a subsidiary</span>}
                                         className={`${errors.selectedSubsidiary && touched.selectedSubsidiary ? styles.errorBorder : ""} ${styles.noBorder}`}
                                         onChange={(value) => {
                                             setFieldValue("selectedSubsidiary", value);
@@ -192,18 +198,19 @@ const Register = () => {
                                             </Select.Option>
                                         ) : (
                                             selectedOrganizationSubsidiaries.map((subsidiary: Subsidiary) => (
-                                                <Select.Option key={subsidiary.subsidiaryId} value={subsidiary.subsidiaryId}>
+                                                <Select.Option key={subsidiary.subsidiaryId}
+                                                               value={subsidiary.subsidiaryId}>
                                                     {subsidiary.address}, {subsidiary.city}, {subsidiary.country}
                                                 </Select.Option>
                                             ))
                                         )}
                                     </Select>
-                                    <ErrorMessage name="selectedSubsidiary" component="div" className={styles.error} />
+                                    <ErrorMessage name="selectedSubsidiary" component="div" className={styles.error}/>
                                 </Col>
 
                                 <Col className={styles.button}>
                                     <Button type="primary" htmlType="submit" className={styles.submitButton}>
-                                        {loading ? <Spin /> : "Create Account"}
+                                        {loading ? <Spin/> : "Create Account"}
                                     </Button>
                                 </Col>
 

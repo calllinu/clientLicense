@@ -1,5 +1,5 @@
 import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react';
-import {RegistrationRequest} from "../interfaces/RequestsApi.tsx";
+import {RegistrationRequest} from "../interfaces/RegistrationRequest.tsx";
 
 export const registrationRequestsApi = createApi({
     reducerPath: 'registrationRequestsApi',

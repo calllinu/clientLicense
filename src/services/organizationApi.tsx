@@ -5,6 +5,7 @@ import {
     OrganizationResponse,
     OrganizationUpdateRequest
 } from "../interfaces/OrganizationInterfaces";
+import {SubsidiaryForOrganizationObject} from "../interfaces/SubsidiaryForOrganizationObject.tsx";
 
 export const organizationApi = createApi({
     reducerPath: 'organizationApi',
@@ -17,7 +18,7 @@ export const organizationApi = createApi({
                 body: organization,
             }),
         }),
-        removeOrganization: builder.mutation<{ message: string }, string>({
+        removeOrganization: builder.mutation<void, number>({
             query: (organizationId) => ({
                 url: `/remove/${organizationId}`,
                 method: 'DELETE',
@@ -28,12 +29,6 @@ export const organizationApi = createApi({
                 url: `/update/${organizationId}`,
                 method: 'PUT',
                 body: {name, yearOfEstablishment},
-            }),
-        }),
-        getOrganizationByRegisterCode: builder.query<void, string>({
-            query: (registerCode) => ({
-                url: `/get/${registerCode}`,
-                method: 'GET',
             }),
         }),
         getAllOrganizationsPageable: builder.query<{
@@ -55,6 +50,12 @@ export const organizationApi = createApi({
                 method: 'GET',
             }),
         }),
+        getSubsidiariesForOrganization: builder.query<SubsidiaryForOrganizationObject, number>({
+            query: (userId) => ({
+                url: `/subsidiaries/${userId}`,
+                method: 'GET',
+            }),
+        }),
     }),
 });
 
@@ -62,7 +63,7 @@ export const {
     useAddOrganizationMutation,
     useRemoveOrganizationMutation,
     useUpdateOrganizationMutation,
-    useGetOrganizationByRegisterCodeQuery,
     useGetAllOrganizationsPageableQuery,
     useGetAllOrganizationsQuery,
+    useGetSubsidiariesForOrganizationQuery,
 } = organizationApi;

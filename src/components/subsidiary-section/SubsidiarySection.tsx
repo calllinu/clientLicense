@@ -1,17 +1,17 @@
-import { Button, Space } from 'antd';
+import {Button, Space} from 'antd';
 import {
-    EditOutlined,
+    BarcodeOutlined,
     DeleteOutlined,
+    EditOutlined,
     EnvironmentOutlined,
-    HomeOutlined,
     GlobalOutlined,
-    BarcodeOutlined
+    HomeOutlined
 } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
-import { useCallback, useState } from 'react';
-import styles from './subsidiary.module.scss';
-import { Subsidiary } from '../../interfaces/SubsidiaryInterfaces.tsx';
-import { useRemoveSubsidiaryMutation } from '../../services/subsidiaryApi.tsx';
+import {useNavigate} from 'react-router-dom';
+import {useCallback, useState} from 'react';
+import styles from './subsidiary-section.module.scss';
+import {Subsidiary} from '../../interfaces/SubsidiaryInterfaces.tsx';
+import {useRemoveSubsidiaryMutation} from '../../services/subsidiaryApi.tsx';
 import ConfirmDeleteModal from '../modals/confirm-delete-modal/ConfirmDeleteModal.tsx';
 import EditSubsidiaryModal from "../modals/edit-subsidiary-info-modal/EditSubsidiaryModal.tsx";
 
@@ -20,7 +20,7 @@ interface SubsidiariesSectionProps {
     refetch: () => void;
 }
 
-const SubsidiariesSection = ({ subsidiaries, refetch }: SubsidiariesSectionProps) => {
+const SubsidiariesSection = ({subsidiaries, refetch}: SubsidiariesSectionProps) => {
     const navigate = useNavigate();
     const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
     const [subsidiaryToDelete, setSubsidiaryToDelete] = useState<Subsidiary | null>(null);
@@ -29,7 +29,7 @@ const SubsidiariesSection = ({ subsidiaries, refetch }: SubsidiariesSectionProps
     const [removeSubsidiary] = useRemoveSubsidiaryMutation();
 
     const navigateToSubsidiary = useCallback((sub: Subsidiary) => {
-        navigate(`/dashboard/${sub.subsidiaryId}`, { state: { subsidiary: sub } });
+        navigate(`/dashboard/${sub.subsidiaryId}`, {state: {subsidiary: sub}});
     }, [navigate]);
 
 
@@ -75,27 +75,27 @@ const SubsidiariesSection = ({ subsidiaries, refetch }: SubsidiariesSectionProps
                 >
                     <div className={styles.cardContent}>
                         <div className={styles.subItem}>
-                            <BarcodeOutlined /> <strong>Subsidiary Code:</strong> {sub.subsidiaryCode}
+                            <BarcodeOutlined/> <strong>Subsidiary Code:</strong> {sub.subsidiaryCode}
                         </div>
                         <div className={styles.subItem}>
-                            <EnvironmentOutlined /> <strong>City:</strong> {sub.city}
+                            <EnvironmentOutlined/> <strong>City:</strong> {sub.city}
                         </div>
                         <div className={styles.subItem}>
-                            <HomeOutlined /> <strong>Street:</strong> {sub.address}
+                            <HomeOutlined/> <strong>Street:</strong> {sub.address}
                         </div>
                         <div className={styles.subItem}>
-                            <GlobalOutlined /> <strong>Country:</strong> {sub.country}
+                            <GlobalOutlined/> <strong>Country:</strong> {sub.country}
                         </div>
                         <Space className={styles.cardActions}>
                             <Button
-                                icon={<EditOutlined />}
+                                icon={<EditOutlined/>}
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     showEditModal(sub);
                                 }}
                             />
                             <Button
-                                icon={<DeleteOutlined />}
+                                icon={<DeleteOutlined/>}
                                 danger
                                 onClick={(e) => {
                                     e.stopPropagation();

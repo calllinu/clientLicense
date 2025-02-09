@@ -25,6 +25,12 @@ export const employeeApi = createApi({
                 method: 'GET',
             }),
         }),
+        deleteEmployee: builder.mutation<void, number>({
+            query: (userId) => ({
+                url: `/delete-user/${userId}`,
+                method: 'DELETE',
+            }),
+        }),
     }),
 });
 
@@ -32,4 +38,5 @@ export const {
     useGetEmployeeByUserIdQuery,
     useUpdateEmployeeMutation,
     useCheckNullFieldsQuery,
+    useDeleteEmployeeMutation,
 } = employeeApi;

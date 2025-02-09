@@ -16,6 +16,7 @@ import {useMediaQuery} from "react-responsive";
 import useOrgAdminRole from "../../hooks/useOrgAdminRole.tsx";
 import useOwnerRole from "../../hooks/useOwnerRole.tsx";
 
+
 const Navbar = ({
                     handleContentSwitch,
                     handleLogout,
@@ -62,7 +63,10 @@ const Navbar = ({
                     closeDrawer();
                 },
             },
-            {
+        ];
+
+        if (isOwner) {
+            items.push({
                 key: "organizations",
                 icon: <ShopOutlined/>,
                 label: "Organizations",
@@ -70,23 +74,35 @@ const Navbar = ({
                     handleContentSwitch("organizations");
                     closeDrawer();
                 },
-            },
-        ];
-
-        if (isOrgAdmin) {
-            items.push({
-                key: "requests",
-                icon: <UsergroupAddOutlined/>,
-                label: "Requests",
-                onClick: () => {
-                    handleContentSwitch("requests");
-                    closeDrawer();
-                },
             });
         }
 
+        if (isOrgAdmin) {
+            items.push(
+                {
+                    key: "requests",
+                    icon: <UsergroupAddOutlined/>,
+                    label: "Requests",
+                    onClick: () => {
+                        handleContentSwitch("requests");
+                        closeDrawer();
+                    },
+                },
+                {
+                    key: "subsidiaries",
+                    icon: <ShopOutlined/>,
+                    label: "Subsidiaries",
+                    onClick: () => {
+                        handleContentSwitch("subsidiaries");
+                        closeDrawer();
+                    },
+                }
+            );
+        }
+
         return items;
-    }, [handleContentSwitch, closeDrawer, isOrgAdmin]);
+    }, [handleContentSwitch, closeDrawer, isOwner, isOrgAdmin]);
+
 
     return (
         <header className={styles.navbar}>
@@ -155,10 +171,11 @@ const Navbar = ({
                         <CloseOutlined className={styles.closeIcon} onClick={closeDrawer}/>
                     </div>
                 }
-                placement="top"
+                placement={isMobile ? "top" : "left"}
                 open={drawerVisible}
                 onClose={closeDrawer}
-                width="100%"
+                width="400px"
+                height="250px"
                 closable={false}
                 maskClosable
             >

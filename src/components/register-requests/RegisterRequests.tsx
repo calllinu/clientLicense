@@ -7,7 +7,7 @@ import {
     useDeclineRequestMutation,
     useGetRequestsByAdminQuery,
 } from "../../services/requestsApi.tsx";
-import {RegistrationRequest} from "../../interfaces/RequestsApi.tsx";
+import {RegistrationRequest} from "../../interfaces/RegistrationRequest.tsx";
 import {ColumnsType} from 'antd/es/table';
 import {Subsidiary} from "../../interfaces/SubsidiaryInterfaces.tsx";
 
@@ -32,6 +32,7 @@ const RegistrationRequests: React.FC = () => {
         },
         [declineRequest, refetch]
     );
+
 
     const columns: ColumnsType<RegistrationRequest> = useMemo(() => [
         {
@@ -123,6 +124,7 @@ const RegistrationRequests: React.FC = () => {
                     columns={columns}
                     dataSource={tableData}
                     rowKey="requestId"
+                    scroll={{x: true}}
                 />
             </div>
         </div>
