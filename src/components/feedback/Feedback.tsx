@@ -10,6 +10,8 @@ import {initialValues} from "./utils/initialValues.tsx";
 import {validationSchema} from "./utils/validationSchema.tsx";
 import {WorkTime} from "../../interfaces/WorktimeEnum.tsx";
 import {useCheckNullFieldsQuery} from "../../services/employeeApi.tsx";
+import {FactorsWorkplaceSafetyInterface} from "../../interfaces/FactorsWorkplaceSafetyInterface.tsx";
+import {DangerTypeInterface} from "../../interfaces/DangerTypeInterface.tsx";
 
 const SurveyForm: React.FC = () => {
     const handleSubmit = (values: Feedback) => {
@@ -63,6 +65,23 @@ const SurveyForm: React.FC = () => {
                                             </Field>
                                             {touched.engagement && errors.engagement && (
                                                 <div className={styles.error}>{errors.engagement}</div>
+                                            )}
+                                        </div>
+                                    </Col>
+
+                                    <Col span={24}>
+                                        <div className={styles.formItem}>
+                                            <label>What type of risk factors do you consider you are most exposed to for
+                                                your activity?</label>
+                                            <Field as={Select} name="dangerType">
+                                                {Object.values(DangerTypeInterface).map((value) => (
+                                                    <Select.Option key={value} value={value}>
+                                                        {value}
+                                                    </Select.Option>
+                                                ))}
+                                            </Field>
+                                            {touched.dangerType && errors.dangerType && (
+                                                <div className={styles.error}>{errors.dangerType}</div>
                                             )}
                                         </div>
                                     </Col>
@@ -133,6 +152,23 @@ const SurveyForm: React.FC = () => {
                                             </Field>
                                             {touched.timeExposeDanger && errors.timeExposeDanger && (
                                                 <div className={styles.error}>{errors.timeExposeDanger}</div>
+                                            )}
+                                        </div>
+                                    </Col>
+
+                                    <Col span={24}>
+                                        <div className={styles.formItem}>
+                                            <label>What factors do you consider to influence compliance with workplace
+                                                safety measures?</label>
+                                            <Field as={Select} name="factorsWorkplaceSafety">
+                                                {Object.values(FactorsWorkplaceSafetyInterface).map((value) => (
+                                                    <Select.Option key={value} value={value}>
+                                                        {value}
+                                                    </Select.Option>
+                                                ))}
+                                            </Field>
+                                            {touched.factorsWorkplaceSafety && errors.factorsWorkplaceSafety && (
+                                                <div className={styles.error}>{errors.factorsWorkplaceSafety}</div>
                                             )}
                                         </div>
                                     </Col>
