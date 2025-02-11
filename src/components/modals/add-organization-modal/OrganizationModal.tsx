@@ -1,14 +1,14 @@
-import { Modal, Form, Input, Button, Select } from 'antd';
+import {Button, Form, Input, Modal, Select} from 'antd';
 import {Formik, FormikHelpers, FormikProps} from 'formik';
-import { useAddOrganizationMutation } from "../../../services/organizationApi.tsx";
-import { validationSchema } from "./utils/validationSchema.tsx";
+import {useAddOrganizationMutation} from "../../../services/organizationApi.tsx";
+import {validationSchema} from "./utils/validationSchema.tsx";
 import styles from './organization-modal.module.scss';
-import { OrganizationInitialValues } from "../../../interfaces/OrganizationInitialValues.tsx";
-import { Industry } from "../../../interfaces/IndustryInterfaces.tsx";
-import { formatIndustry } from "./utils/industryUtils.tsx";
+import {OrganizationInitialValues} from "../../../interfaces/OrganizationInitialValues.tsx";
+import {Industry} from "../../../interfaces/enums/IndustryInterfaces.tsx";
+import {formatIndustry} from "./utils/industryUtils.tsx";
 import {useCallback, useMemo, useRef} from "react";
 
-const { Option } = Select;
+const {Option} = Select;
 
 interface OrganizationModalProps {
     visible: boolean;
@@ -16,7 +16,7 @@ interface OrganizationModalProps {
     refetch: () => void;
 }
 
-const OrganizationModal: React.FC<OrganizationModalProps> = ({ visible, onCancel, refetch }) => {
+const OrganizationModal: React.FC<OrganizationModalProps> = ({visible, onCancel, refetch}) => {
     const [addOrganization] = useAddOrganizationMutation();
     const formikRef = useRef<FormikProps<OrganizationInitialValues> | null>(null);
     const initialValues = useMemo((): OrganizationInitialValues => ({
@@ -48,7 +48,7 @@ const OrganizationModal: React.FC<OrganizationModalProps> = ({ visible, onCancel
         ))
     ), []);
 
-    const handleClose = useCallback(()  => {
+    const handleClose = useCallback(() => {
         if (formikRef.current) {
             formikRef.current.resetForm();
         }
@@ -69,7 +69,7 @@ const OrganizationModal: React.FC<OrganizationModalProps> = ({ visible, onCancel
                 validationSchema={validationSchema}
                 onSubmit={handleAddOrganization}
             >
-                {({ values, errors, touched, handleChange, handleBlur, handleSubmit, setFieldValue }) => (
+                {({values, errors, touched, handleChange, handleBlur, handleSubmit, setFieldValue}) => (
                     <Form layout="vertical" onFinish={handleSubmit}>
                         <Form.Item
                             label="Organization Code"

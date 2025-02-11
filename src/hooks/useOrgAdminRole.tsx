@@ -1,5 +1,5 @@
 import {useMemo} from 'react';
-import {Role} from "../interfaces/RoleEnum.tsx";
+import {Role} from "../interfaces/enums/RoleEnum.tsx";
 
 const useOrgAdminRole = () => {
     return useMemo(() => {

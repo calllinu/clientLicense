@@ -1,4 +1,4 @@
-import {Industry} from "./IndustryInterfaces.tsx";
+import {Industry} from "./enums/IndustryInterfaces.tsx";
 import {Subsidiary} from "./SubsidiaryInterfaces.tsx";
 import {UserResponse} from "./UserInterfaces.tsx";
 

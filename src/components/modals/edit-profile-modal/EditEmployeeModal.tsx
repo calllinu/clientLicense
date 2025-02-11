@@ -6,7 +6,7 @@ import {validationSchema} from "./utils/validationSchema.tsx";
 import {ProfileValues} from "../../../interfaces/ProfileValues.tsx";
 import useInitialValuesUpdateProfile from "./utils/useInitialValuesUpdateProfile.tsx";
 import {Employee} from "../../../interfaces/EmployeeInterfaces.tsx";
-import {Qualification} from "../../../interfaces/Qualification.tsx";
+import {Qualification} from "../../../interfaces/enums/Qualification.tsx";
 import {formatQualification} from "../../profile/utils/qualificationUtils.tsx";
 import dayjs from "dayjs";
 

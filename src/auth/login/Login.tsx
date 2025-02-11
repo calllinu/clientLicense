@@ -7,7 +7,7 @@ import {Link, useNavigate} from "react-router-dom";
 import {useAuthenticateUserMutation} from "../../services/userApi.tsx";
 import {LoginSchema} from "./utils/validationSchema.tsx";
 import {initialValues} from "./utils/initialValues.tsx";
-import {Role} from "../../interfaces/RoleEnum.tsx";
+import {Role} from "../../interfaces/enums/RoleEnum.tsx";
 
 interface FormValues {
     email: string;

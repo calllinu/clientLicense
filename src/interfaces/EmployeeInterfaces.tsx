@@ -2,7 +2,7 @@ import {User} from "./UserInterfaces.tsx";
 import {Subsidiary} from "./SubsidiaryInterfaces.tsx";
 import {FeedbackInterface} from "./FeedbackInterfaces.tsx";
 import {Organization} from "./OrganizationInterfaces.tsx";
-import {Qualification} from "./Qualification.tsx";
+import {Qualification} from "./enums/Qualification.tsx";
 
 
 export interface Employee {

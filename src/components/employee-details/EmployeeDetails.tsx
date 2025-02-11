@@ -3,7 +3,7 @@ import {Button, Table} from "antd";
 import {useLocation} from "react-router-dom";
 import styles from './employee-details.module.scss';
 import {Employee} from "../../interfaces/EmployeeInterfaces.tsx";
-import {Qualification} from "../../interfaces/Qualification";
+import {Qualification} from "../../interfaces/enums/Qualification.tsx";
 import {useDeleteEmployeeMutation, useGetEmployeeAtSubsidiaryQuery} from "../../services/employeeApi.tsx";
 import {useCallback, useState} from "react";
 import ConfirmDeleteModal from "../modals/confirm-delete-modal/ConfirmDeleteModal.tsx";

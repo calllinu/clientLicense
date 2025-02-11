@@ -1,5 +1,5 @@
 import {Employee} from "../../../../interfaces/EmployeeInterfaces.tsx";
-import {Qualification} from "../../../../interfaces/Qualification.tsx";
+import {Qualification} from "../../../../interfaces/enums/Qualification.tsx";
 
 const useInitialValuesUpdateProfile = (employee: Employee | null) => ({
     fullName: employee?.fullName || '',

@@ -4,7 +4,7 @@ import {Formik} from "formik";
 import dayjs from "dayjs";
 import styles from "./Profile.module.scss";
 import {validationSchema} from "./utils/validationSchema";
-import {Qualification} from "../../interfaces/Qualification";
+import {Qualification} from "../../interfaces/enums/Qualification.tsx";
 import useInitialValues from "./utils/useInitialValues";
 import {formatQualification} from "./utils/qualificationUtils";
 import useOrgAdminRole from "../../hooks/useOrgAdminRole";

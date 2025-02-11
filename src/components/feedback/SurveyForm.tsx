@@ -4,14 +4,14 @@ import {Button, Card, Col, Radio, Row, Select, Spin, Tooltip} from "antd";
 import {motion} from "framer-motion";
 import styles from "./feedback.module.scss";
 import {FeedbackInterface} from "../../interfaces/FeedbackInterfaces.tsx";
-import {Confirmation} from "../../interfaces/ConfirmationEnum.tsx";
-import {Engagement} from "../../interfaces/EngagementEnum.tsx";
+import {Confirmation} from "../../interfaces/enums/ConfirmationEnum.tsx";
+import {Engagement} from "../../interfaces/enums/EngagementEnum.tsx";
 import {initialValues} from "./utils/initialValues.tsx";
 import {validationSchema} from "./utils/validationSchema.tsx";
-import {WorkTime} from "../../interfaces/WorktimeEnum.tsx";
+import {WorkTime} from "../../interfaces/enums/WorktimeEnum.tsx";
 import {useCheckNullFieldsQuery, useGetEmployeeByUserIdQuery} from "../../services/employeeApi.tsx";
-import {FactorsWorkplaceSafetyInterface} from "../../interfaces/FactorsWorkplaceSafetyInterface.tsx";
-import {DangerTypeInterface} from "../../interfaces/DangerTypeInterface.tsx";
+import {FactorsWorkplaceSafetyInterface} from "../../interfaces/enums/FactorsWorkplaceSafetyInterface.tsx";
+import {DangerTypeInterface} from "../../interfaces/enums/DangerTypeInterface.tsx";
 import {useAddEmployeeFeedbackMutation} from "../../services/feedbackApi.tsx";
 
 const SurveyForm: React.FC = () => {

@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import {Industry} from "../../../../interfaces/IndustryInterfaces.tsx";
+import {Industry} from "../../../../interfaces/enums/IndustryInterfaces.tsx";
 
 export const validationSchema = Yup.object().shape({
     organizationCode: Yup.string().required('Organization code is required'),

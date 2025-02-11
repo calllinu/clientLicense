@@ -1,4 +1,4 @@
-import {Qualification} from "./Qualification.tsx";
+import {Qualification} from "./enums/Qualification.tsx";
 
 export interface ProfileValues {
     fullName: string;

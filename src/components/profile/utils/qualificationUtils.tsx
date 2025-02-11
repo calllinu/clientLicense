@@ -1,4 +1,4 @@
-import {Qualification} from "../../../interfaces/Qualification.tsx";
+import {Qualification} from "../../../interfaces/enums/Qualification.tsx";
 
 export const formatQualification = (qualification: Qualification | null): string => {
     switch (qualification) {
