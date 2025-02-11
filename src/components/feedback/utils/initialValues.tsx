@@ -1,12 +1,13 @@
-import {Feedback} from "../../../interfaces/FeedbackInterfaces.tsx";
+import {FeedbackInterface} from "../../../interfaces/FeedbackInterfaces.tsx";
 
-export const initialValues: Feedback = {
-    feedBackId: 0,
+export const initialValues: FeedbackInterface = {
     confirmationSalary: undefined,
     engagement: undefined,
     confirmationOvertime: undefined,
     confirmationEquipmentAdequate: undefined,
     confirmationSafetyMeasures: undefined,
     confirmationProtectionMeasures: undefined,
-    timeExposeDanger: undefined
+    workTime: undefined,
+    dangerType: undefined,
+    factorsWorkplaceSafety: undefined,
 };

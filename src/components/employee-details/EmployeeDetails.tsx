@@ -111,8 +111,6 @@ const EmployeeDetails = () => {
         },
     ];
 
-    console.log(employeeToEdit)
-
     return (
         <div className={styles.employeeContainer}>
             <h2>Employees at {subsidiaryCode}</h2>

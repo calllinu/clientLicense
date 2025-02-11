@@ -9,11 +9,11 @@ import Navbar from "../nav-bar/Navbar.tsx";
 import Footer from "../footer/Footer.tsx";
 import styles from './dasboard.module.scss';
 import Profile from "../profile/Profile.tsx";
-import Feedback from "../feedback/Feedback.tsx";
 import useOrgAdminRole from "../../hooks/useOrgAdminRole.tsx";
 import useOwnerRole from "../../hooks/useOwnerRole.tsx";
 import {useGetSubsidiariesForOrganizationQuery} from "../../services/organizationApi.tsx";
 import SubsidiaryForOrganization from "../subsidiaries/SubsidiaryForOrganization.tsx";
+import SurveyForm from "../feedback/SurveyForm.tsx";
 
 
 const {Content} = Layout;
@@ -152,7 +152,7 @@ const Dashboard = () => {
     const handleContentSwitch = useCallback((contentType: string) => {
         setActiveContent(contentType);
     }, []);
-    
+
 
     return (
         <Layout className={styles.dashboardLayout}>
@@ -165,7 +165,7 @@ const Dashboard = () => {
                     {activeContent === 'requests' && <RegisterRequests/>}
                     {activeContent === 'organizations' && <Organizations/>}
                     {activeContent === 'profile' && <Profile/>}
-                    {activeContent === 'feedback' && <Feedback/>}
+                    {activeContent === 'feedback' && <SurveyForm/>}
                     {
                         activeContent === 'subsidiaries' && (
                             <SubsidiaryForOrganization

@@ -1,6 +1,6 @@
 import {User} from "./UserInterfaces.tsx";
 import {Subsidiary} from "./SubsidiaryInterfaces.tsx";
-import {Feedback} from "./FeedbackInterfaces.tsx";
+import {FeedbackInterface} from "./FeedbackInterfaces.tsx";
 import {Organization} from "./OrganizationInterfaces.tsx";
 import {Qualification} from "./Qualification.tsx";
 
@@ -15,7 +15,7 @@ export interface Employee {
     yearsOfExperience?: number;
     subsidiary?: Subsidiary;
     user?: User;
-    feedback?: Feedback;
+    feedback?: FeedbackInterface;
 }
 
 export interface EmployeeResponse {
@@ -29,7 +29,7 @@ export interface EmployeeResponse {
     organization: Organization;
     subsidiary: Subsidiary;
     user?: User;
-    feedback?: Feedback;
+    feedback?: FeedbackInterface;
 }
 
 export interface UpdateEmployeeRequest {

@@ -4,6 +4,7 @@ import {organizationApi} from './organizationApi.tsx';
 import {subsidiaryApi} from "./subsidiaryApi.tsx";
 import {employeeApi} from "./employeeApi.tsx";
 import {registrationRequestsApi} from "./requestsApi.tsx";
+import {feedbackApi} from "./feedbackApi.tsx";
 
 export const store = configureStore({
     reducer: {
@@ -12,13 +13,15 @@ export const store = configureStore({
         [subsidiaryApi.reducerPath]: subsidiaryApi.reducer,
         [employeeApi.reducerPath]: employeeApi.reducer,
         [registrationRequestsApi.reducerPath]: registrationRequestsApi.reducer,
+        [feedbackApi.reducerPath]: feedbackApi.reducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat(userApi.middleware,
             organizationApi.middleware,
             subsidiaryApi.middleware,
             employeeApi.middleware,
-            registrationRequestsApi.middleware),
+            registrationRequestsApi.middleware,
+            feedbackApi.middleware),
 });
 
 export type AppDispatch = typeof store.dispatch;

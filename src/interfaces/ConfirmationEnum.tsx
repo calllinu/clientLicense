@@ -1,4 +1,4 @@
 export enum Confirmation {
-    YES = 'Yes',
-    NO = 'No',
+    YES = 'YES',
+    NO = 'NO',
 }

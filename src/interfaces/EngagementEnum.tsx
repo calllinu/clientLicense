@@ -1,5 +1,5 @@
 export enum Engagement {
-    PHYSICALLY = 'Physically',
-    MENTALLY = 'Mentally',
-    PHYSICALLY_AND_MENTALLY = 'Physically and Mentally',
+    PHYSICALLY = 'PHYSICALLY',
+    MENTALLY = 'MENTALLY',
+    PHYSICALLY_AND_MENTALLY = 'PHYSICALLY_AND_MENTALLY',
 }
