@@ -2,6 +2,7 @@ import {Confirmation} from "./enums/ConfirmationEnum.tsx";
 import {Engagement} from "./enums/EngagementEnum.tsx";
 import {DangerTypeInterface} from "./enums/DangerTypeInterface.tsx";
 import {FactorsWorkplaceSafetyInterface} from "./enums/FactorsWorkplaceSafetyInterface.tsx";
+import {Employee} from "./EmployeeInterfaces.tsx";
 
 export interface FeedbackInterface {
     confirmationSalary?: Confirmation;
@@ -13,4 +14,5 @@ export interface FeedbackInterface {
     workTime?: string;
     dangerType?: DangerTypeInterface;
     factorsWorkplaceSafety?: FactorsWorkplaceSafetyInterface;
+    employee?: Employee;
 }

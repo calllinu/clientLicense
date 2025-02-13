@@ -36,3 +36,8 @@ export interface UpdateEmployeeRequest {
     userId?: number;
     employee?: Employee;
 }
+
+export interface EmployeeDetailsResponse {
+    employee: EmployeeResponse;
+    hasNullFields: boolean;
+}

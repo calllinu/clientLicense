@@ -1,10 +1,48 @@
-import {Button, Space, Table} from 'antd';
-import {DeleteOutlined, EditOutlined} from '@ant-design/icons';
+import {Table} from 'antd';
 import styles from './data-content.module.scss';
-import {DataFeedback, TransformedEntry, transformEntries} from "../../interfaces/DataInterfaces.tsx";
+import {TransformedEntry} from "../../interfaces/DataInterfaces.tsx";
+import {FeedbackInterface} from "../../interfaces/FeedbackInterfaces.tsx";
 
-const TableContent = ({dummyEntries}: { dummyEntries: DataFeedback[] }) => {
-    const transformedEntries: TransformedEntry[] = transformEntries(dummyEntries);
+interface DataContentProps {
+    subsidiaryCode: string;
+    country: string;
+    city: string;
+    address: string;
+    fullName: string;
+    dateOfBirth?: Date;
+    dateOfHiring?: Date;
+    personalNumber?: string;
+    feedback: FeedbackInterface;
+}
+
+const TableContent = ({data}: { data: DataContentProps[] }) => {
+
+    function transformUnderscoreText(value: string | undefined): string | undefined {
+        if (!value) return undefined;
+        return value
+            .split('_')
+            .map((word, index) => index === 0 ? word.charAt(0).toUpperCase() + word.slice(1).toLowerCase() : word.toLowerCase())
+            .join(' ');
+    }
+
+    const transformedData: TransformedEntry[] = data.map((entry) => ({
+        subsidiaryCode: entry.subsidiaryCode,
+        country: entry.country,
+        city: entry.city,
+        fullName: entry.fullName,
+        dateOfBirth: entry.dateOfBirth,
+        dateOfHiring: entry.dateOfHiring,
+        personalNumber: entry.personalNumber,
+        confirmationEquipmentAdequate: transformUnderscoreText(entry.feedback.confirmationEquipmentAdequate),
+        confirmationOvertime: transformUnderscoreText(entry.feedback.confirmationOvertime),
+        confirmationProtectionMeasures: transformUnderscoreText(entry.feedback.confirmationProtectionMeasures),
+        confirmationSafetyMeasures: transformUnderscoreText(entry.feedback.confirmationSafetyMeasures),
+        confirmationSalary: transformUnderscoreText(entry.feedback.confirmationSalary),
+        dangerType: transformUnderscoreText(entry.feedback.dangerType),
+        engagement: transformUnderscoreText(entry.feedback.engagement),
+        factorsWorkplaceSafety: transformUnderscoreText(entry.feedback.factorsWorkplaceSafety),
+        workTime: transformUnderscoreText(entry.feedback.workTime),
+    }));
 
     const columns = [
         {
@@ -13,16 +51,38 @@ const TableContent = ({dummyEntries}: { dummyEntries: DataFeedback[] }) => {
             render: (_: unknown, __: TransformedEntry, index: number) => index + 1,
         },
         {
-            title: 'Organization',
-            dataIndex: 'organization',
+            title: 'Subsidiary Code',
+            dataIndex: 'subsidiaryCode',
         },
         {
-            title: 'Employee CNP',
-            dataIndex: 'cnp',
+            title: 'Country',
+            dataIndex: 'country',
+        },
+        {
+            title: 'City',
+            dataIndex: 'city',
+        },
+        {
+            title: 'Full Name',
+            dataIndex: 'fullName',
+        },
+        {
+            title: 'Date of Birth',
+            dataIndex: 'dateOfBirth',
+            render: (date: string | undefined) => date ? new Date(date).toLocaleDateString() : '-',
+        },
+        {
+            title: 'Date of Hiring',
+            dataIndex: 'dateOfHiring',
+            render: (date: string | undefined) => date ? new Date(date).toLocaleDateString() : '-',
+        },
+        {
+            title: 'Personal Number',
+            dataIndex: 'personalNumber',
         },
         {
             title: 'Satisfy Salary',
-            dataIndex: 'salary',
+            dataIndex: 'confirmationSalary',
         },
         {
             title: 'Type of Engagement',
@@ -30,32 +90,31 @@ const TableContent = ({dummyEntries}: { dummyEntries: DataFeedback[] }) => {
         },
         {
             title: 'Working Overtime',
-            dataIndex: 'overtime',
+            dataIndex: 'confirmationOvertime',
         },
         {
             title: 'Protective equipment is adequate?',
-            dataIndex: 'equipment',
+            dataIndex: 'confirmationEquipmentAdequate',
         },
         {
             title: 'Safety measures are clear?',
-            dataIndex: 'safety',
+            dataIndex: 'confirmationSafetyMeasures',
         },
         {
             title: 'Protection measures were applied?',
-            dataIndex: 'protection',
+            dataIndex: 'confirmationProtectionMeasures',
         },
         {
-            title: 'Times Exposed to Danger (hours)',
-            dataIndex: 'dangerTimes',
+            title: 'Danger Type',
+            dataIndex: 'dangerType',
         },
         {
-            title: 'Actions',
-            render: () => (
-                <Space>
-                    <Button type="text" icon={<EditOutlined/>} className={styles.actionIcon} title="Edit"/>
-                    <Button type="text" icon={<DeleteOutlined/>} className={styles.actionIcon} title="Delete"/>
-                </Space>
-            ),
+            title: 'Factors Workplace Safety',
+            dataIndex: 'factorsWorkplaceSafety',
+        },
+        {
+            title: 'Work Time',
+            dataIndex: 'workTime',
         },
     ];
 
@@ -63,8 +122,8 @@ const TableContent = ({dummyEntries}: { dummyEntries: DataFeedback[] }) => {
         <div className={styles.tableContent}>
             <Table
                 columns={columns}
-                dataSource={transformedEntries}
-                rowKey="id"
+                dataSource={transformedData}
+                rowKey="subsidiaryCode"
                 pagination={{pageSize: 20}}
                 className={styles.table}
             />

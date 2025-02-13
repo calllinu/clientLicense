@@ -9,7 +9,7 @@ import {Engagement} from "../../interfaces/enums/EngagementEnum.tsx";
 import {initialValues} from "./utils/initialValues.tsx";
 import {validationSchema} from "./utils/validationSchema.tsx";
 import {WorkTime} from "../../interfaces/enums/WorktimeEnum.tsx";
-import {useCheckNullFieldsQuery, useGetEmployeeByUserIdQuery} from "../../services/employeeApi.tsx";
+import {useGetEmployeeByUserIdQuery} from "../../services/employeeApi.tsx";
 import {FactorsWorkplaceSafetyInterface} from "../../interfaces/enums/FactorsWorkplaceSafetyInterface.tsx";
 import {DangerTypeInterface} from "../../interfaces/enums/DangerTypeInterface.tsx";
 import {useAddEmployeeFeedbackMutation} from "../../services/feedbackApi.tsx";
@@ -53,7 +53,7 @@ const SurveyForm: React.FC = () => {
                         workTime: timeExposeDangerFormatted
                     };
                     await addEmployeeFeedback({
-                        employeeId: employee.employeeId,
+                        employeeId: employee.employee.employeeId,
                         feedback: formattedValues,
                     }).unwrap().then(() => {
                         refetch();
@@ -67,8 +67,6 @@ const SurveyForm: React.FC = () => {
         [addEmployeeFeedback, employee]
     );
 
-    const hasNullFields = useCheckNullFieldsQuery(sessionStorage.getItem('userId') as unknown as number);
-
     if (isEmployeeLoading) {
         return (
             <div className={styles.surveyForm}>
@@ -79,7 +77,7 @@ const SurveyForm: React.FC = () => {
 
     return (
         <div className={styles.surveyForm}>
-            {employee?.feedback ? (
+            {employee?.employee.feedback ? (
                 <div className={styles.thankYouMessage}>
                     <motion.div
                         initial={{opacity: 0, y: 20}}
@@ -265,12 +263,12 @@ const SurveyForm: React.FC = () => {
                                     </Row>
 
                                     <Tooltip
-                                        title={hasNullFields.data ? "Please fill in your profile data, or wait that other details to be filled by your Organization's Admin." : ""}>
+                                        title={employee?.hasNullFields && "Please fill in your profile data, or wait that other details to be filled by your Organization's Admin."}>
                                         <Button
                                             type="primary"
                                             htmlType="submit"
                                             className={styles.submitButton}
-                                            disabled={hasNullFields.data}
+                                            disabled={employee?.hasNullFields}
                                         >
                                             Submit
                                         </Button>

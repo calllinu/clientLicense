@@ -16,7 +16,7 @@ const {Option} = Select;
 const Profile = () => {
     const userId = parseInt(sessionStorage.getItem("userId") || "0", 10);
     const {data: employeeData, refetch} = useGetEmployeeByUserIdQuery(userId);
-    const initialValues = useInitialValues(employeeData);
+    const initialValues = useInitialValues(employeeData?.employee);
     const isAdmin = useOrgAdminRole();
 
     const [updateEmployee, {isLoading: isUpdating}] = useUpdateEmployeeMutation();
@@ -29,6 +29,8 @@ const Profile = () => {
             })),
         []
     );
+
+    console.log(employeeData)
 
     const handleSubmit = useCallback(
         async (values: ProfileValues) => {
