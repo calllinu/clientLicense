@@ -1,29 +1,10 @@
-import {Table} from 'antd';
+import {Table, Tooltip} from 'antd';
 import styles from './data-content.module.scss';
-import {TransformedEntry} from "../../interfaces/DataInterfaces.tsx";
-import {FeedbackInterface} from "../../interfaces/FeedbackInterfaces.tsx";
+import {TransformedEntry} from "../../interfaces/TableFeedbacksInterface.tsx";
+import {transformData} from "../../interfaces/TransformData.tsx";
+import {SubsidiariesFeedbacks} from "../../interfaces/FeedbackInterfaces.tsx";
 
-interface DataContentProps {
-    subsidiaryCode: string;
-    country: string;
-    city: string;
-    address: string;
-    fullName: string;
-    dateOfBirth?: Date;
-    dateOfHiring?: Date;
-    personalNumber?: string;
-    feedback: FeedbackInterface;
-}
-
-const TableContent = ({data}: { data: DataContentProps[] }) => {
-
-    function transformUnderscoreText(value: string | undefined): string | undefined {
-        if (!value) return undefined;
-        return value
-            .split('_')
-            .map((word, index) => index === 0 ? word.charAt(0).toUpperCase() + word.slice(1).toLowerCase() : word.toLowerCase())
-            .join(' ');
-    }
+const TableContent = ({data}: { data: SubsidiariesFeedbacks[] }) => {
 
     const transformedData: TransformedEntry[] = data.map((entry) => ({
         subsidiaryCode: entry.subsidiaryCode,
@@ -33,15 +14,15 @@ const TableContent = ({data}: { data: DataContentProps[] }) => {
         dateOfBirth: entry.dateOfBirth,
         dateOfHiring: entry.dateOfHiring,
         personalNumber: entry.personalNumber,
-        confirmationEquipmentAdequate: transformUnderscoreText(entry.feedback.confirmationEquipmentAdequate),
-        confirmationOvertime: transformUnderscoreText(entry.feedback.confirmationOvertime),
-        confirmationProtectionMeasures: transformUnderscoreText(entry.feedback.confirmationProtectionMeasures),
-        confirmationSafetyMeasures: transformUnderscoreText(entry.feedback.confirmationSafetyMeasures),
-        confirmationSalary: transformUnderscoreText(entry.feedback.confirmationSalary),
-        dangerType: transformUnderscoreText(entry.feedback.dangerType),
-        engagement: transformUnderscoreText(entry.feedback.engagement),
-        factorsWorkplaceSafety: transformUnderscoreText(entry.feedback.factorsWorkplaceSafety),
-        workTime: transformUnderscoreText(entry.feedback.workTime),
+        confirmationEquipmentAdequate: transformData(entry.feedback.confirmationEquipmentAdequate),
+        confirmationOvertime: transformData(entry.feedback.confirmationOvertime),
+        confirmationProtectionMeasures: transformData(entry.feedback.confirmationProtectionMeasures),
+        confirmationSafetyMeasures: transformData(entry.feedback.confirmationSafetyMeasures),
+        confirmationSalary: transformData(entry.feedback.confirmationSalary),
+        dangerType: transformData(entry.feedback.dangerType),
+        engagement: transformData(entry.feedback.engagement),
+        factorsWorkplaceSafety: transformData(entry.feedback.factorsWorkplaceSafety),
+        workTime: transformData(entry.feedback.workTime),
     }));
 
     const columns = [
@@ -51,34 +32,29 @@ const TableContent = ({data}: { data: DataContentProps[] }) => {
             render: (_: unknown, __: TransformedEntry, index: number) => index + 1,
         },
         {
-            title: 'Subsidiary Code',
-            dataIndex: 'subsidiaryCode',
-        },
-        {
-            title: 'Country',
-            dataIndex: 'country',
-        },
-        {
-            title: 'City',
-            dataIndex: 'city',
-        },
-        {
             title: 'Full Name',
             dataIndex: 'fullName',
-        },
-        {
-            title: 'Date of Birth',
-            dataIndex: 'dateOfBirth',
-            render: (date: string | undefined) => date ? new Date(date).toLocaleDateString() : '-',
-        },
-        {
-            title: 'Date of Hiring',
-            dataIndex: 'dateOfHiring',
-            render: (date: string | undefined) => date ? new Date(date).toLocaleDateString() : '-',
-        },
-        {
-            title: 'Personal Number',
-            dataIndex: 'personalNumber',
+            render: (_: unknown, record: TransformedEntry) => (
+                <Tooltip
+                    title={
+                        <div className={styles.tooltipContent}>
+                            <div><span>Subsidiary Code:</span> {record.subsidiaryCode}</div>
+                            <div><span>Country:</span> {record.country}</div>
+                            <div><span>City:</span> {record.city}</div>
+                            <div>
+                                <span>Date of Birth:</span> {record.dateOfBirth ? new Date(record.dateOfBirth).toLocaleDateString() : '-'}
+                            </div>
+                            <div>
+                                <span>Date of Hiring:</span> {record.dateOfHiring ? new Date(record.dateOfHiring).toLocaleDateString() : '-'}
+                            </div>
+                            <div><span>Personal Number:</span> {record.personalNumber}</div>
+                        </div>
+                    }
+                    overlayClassName={styles.customTooltip}
+                >
+                    <span className={styles.fullName}>{record.fullName}</span>
+                </Tooltip>
+            ),
         },
         {
             title: 'Satisfy Salary',
@@ -89,7 +65,7 @@ const TableContent = ({data}: { data: DataContentProps[] }) => {
             dataIndex: 'engagement',
         },
         {
-            title: 'Working Overtime',
+            title: 'Do you work overtime?',
             dataIndex: 'confirmationOvertime',
         },
         {
@@ -105,15 +81,15 @@ const TableContent = ({data}: { data: DataContentProps[] }) => {
             dataIndex: 'confirmationProtectionMeasures',
         },
         {
-            title: 'Danger Type',
+            title: 'What type of danger are you most exposed to?',
             dataIndex: 'dangerType',
         },
         {
-            title: 'Factors Workplace Safety',
+            title: 'Who is responsible for workplace safety?',
             dataIndex: 'factorsWorkplaceSafety',
         },
         {
-            title: 'Work Time',
+            title: 'How much time are you exposed to unsafe conditions?',
             dataIndex: 'workTime',
         },
     ];

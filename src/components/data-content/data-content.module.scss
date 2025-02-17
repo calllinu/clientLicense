@@ -5,6 +5,11 @@
   :global .ant-table {
     overflow-x: auto !important;
   }
+
+  .pagination {
+    display: flex;
+    justify-content: flex-end;
+  }
 }
 
 .tableRow {
@@ -35,3 +40,49 @@
     color: #92613A !important;
   }
 }
+
+.tooltipContent {
+  background: white;
+  border-radius: 8px;
+  padding: 10px;
+  color: #333;
+  font-size: 14px;
+  min-width: 200px;
+
+  div {
+    margin-bottom: 5px;
+  }
+
+  span {
+    font-weight: 600;
+    color: #555;
+    margin-right: 5px;
+  }
+}
+
+.fullName {
+  cursor: pointer;
+  text-decoration: underline;
+  color: #0073e6;
+}
+
+.customTooltip {
+  .ant-tooltip-inner {
+    background: white;
+    color: black;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+  }
+
+  .ant-tooltip-arrow {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .tableContent {
+    padding: 0rem;
+  }
+}
+

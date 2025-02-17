@@ -2,7 +2,7 @@ import React, {useCallback} from "react";
 import {Field, Form, Formik} from "formik";
 import {Button, Card, Col, Radio, Row, Select, Spin, Tooltip} from "antd";
 import {motion} from "framer-motion";
-import styles from "./feedback.module.scss";
+import styles from "./survey-form.module.scss";
 import {FeedbackInterface} from "../../interfaces/FeedbackInterfaces.tsx";
 import {Confirmation} from "../../interfaces/enums/ConfirmationEnum.tsx";
 import {Engagement} from "../../interfaces/enums/EngagementEnum.tsx";
@@ -15,6 +15,7 @@ import {DangerTypeInterface} from "../../interfaces/enums/DangerTypeInterface.ts
 import {useAddEmployeeFeedbackMutation} from "../../services/feedbackApi.tsx";
 
 const SurveyForm: React.FC = () => {
+    const [addEmployeeFeedback] = useAddEmployeeFeedbackMutation();
 
     const formatValue = (value: string): string => {
         return value
@@ -41,7 +42,6 @@ const SurveyForm: React.FC = () => {
         refetch,
         isLoading: isEmployeeLoading
     } = useGetEmployeeByUserIdQuery(sessionStorage.getItem('userId') as unknown as number);
-    const [addEmployeeFeedback] = useAddEmployeeFeedbackMutation();
 
     const handleSubmit = useCallback(
         async (values: FeedbackInterface) => {

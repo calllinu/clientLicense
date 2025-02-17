@@ -1,5 +1,5 @@
 import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react';
-import {FeedbackInterface} from "../interfaces/FeedbackInterfaces.tsx";
+import {FeedbackInterface, FeedbackPageableInterface} from "../interfaces/FeedbackInterfaces.tsx";
 
 
 export const feedbackApi = createApi({
@@ -13,9 +13,19 @@ export const feedbackApi = createApi({
                 body: feedback,
             }),
         }),
+        getAllFeedbacksPageable: builder.query<FeedbackPageableInterface, { page: number; size: number }>({
+            query: ({page, size}) => ({
+                url: '/pageable-all',
+                params: {
+                    page,
+                    size
+                },
+            }),
+        }),
     }),
 });
 
 export const {
     useAddEmployeeFeedbackMutation,
+    useGetAllFeedbacksPageableQuery,
 } = feedbackApi;
