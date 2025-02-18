@@ -1,0 +1,23 @@
+.mainContainer {
+  padding-left: 4rem;
+  padding-right: 4rem;
+
+  .firstRow {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 1rem;
+
+    .text {
+      font-size: 1.2rem;
+    }
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .mainContainer {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+

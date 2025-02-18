@@ -56,6 +56,12 @@ export const organizationApi = createApi({
                 method: 'GET',
             }),
         }),
+        getAllOrganizationsCode: builder.query<string[], void>({
+            query: () => ({
+                url: '/get-all-organization-names',
+                method: 'GET',
+            }),
+        }),
     }),
 });
 
@@ -66,4 +72,5 @@ export const {
     useGetAllOrganizationsPageableQuery,
     useGetAllOrganizationsQuery,
     useGetSubsidiariesForOrganizationQuery,
+    useGetAllOrganizationsCodeQuery,
 } = organizationApi;

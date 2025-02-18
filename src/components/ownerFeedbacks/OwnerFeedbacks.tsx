@@ -1,22 +1,24 @@
 import {Pagination, Table, Tooltip} from 'antd';
 import styles from './../data-content/data-content.module.scss';
 import {OwnerFeedbacksTransformedEntry} from "../../interfaces/TableFeedbacksInterface.tsx";
-import {FeedbackPageableInterface} from "../../interfaces/FeedbackInterfaces.tsx";
-import {transformData} from "../../interfaces/TransformData.tsx";
+import {transformData, transformWorktime} from "../../interfaces/TransformData.tsx";
+import {useGetAllFeedbacksPageableQuery} from "../../services/feedbackApi.tsx";
+import {useCallback, useState} from "react";
 
-interface OwnerFeedbacksProps {
-    content: FeedbackPageableInterface;
-    isLoading: boolean;
-    onHandlePageChange: (page: number, pageSize: number) => void;
-}
+const OwnerFeedbacks = () => {
+    const [pagination, setPagination] = useState({current: 1, pageSize: 20});
 
-const OwnerFeedbacks = ({
-                            content,
-                            isLoading,
-                            onHandlePageChange
-                        }: OwnerFeedbacksProps) => {
+    const handlePageChange = useCallback((page: number, pageSize: number) => {
+        setPagination({current: page, pageSize});
+    }, []);
 
-    const transformedData: OwnerFeedbacksTransformedEntry[] = content.feedbacks.map((entry) => ({
+    const {data: surveyContent, isLoading: isLoadingFeedbacks} = useGetAllFeedbacksPageableQuery({
+        page: pagination.current - 1,
+        size: pagination.pageSize,
+    });
+
+    const transformedData: OwnerFeedbacksTransformedEntry[] | undefined = surveyContent?.feedbacks.map((entry, index) => ({
+        feedbackId: entry.feedbackId,
         organizationCode: entry.employeeDetails.organizationDetails.organizationCode,
         organizationName: entry.employeeDetails.organizationDetails.name,
         industry: transformData(entry.employeeDetails.organizationDetails.industry),
@@ -32,72 +34,42 @@ const OwnerFeedbacks = ({
         dangerType: transformData(entry.feedback.dangerType),
         engagement: transformData(entry.feedback.engagement),
         factorsWorkplaceSafety: transformData(entry.feedback.factorsWorkplaceSafety),
-        workTime: transformData(entry.feedback.workTime),
+        workTime: transformWorktime(entry.feedback.workTime),
+        index: (pagination.current - 1) * pagination.pageSize + index + 1,
     }));
 
     const columns = [
+        {title: 'Nr.', dataIndex: 'index'},
         {
-            title: 'Nr.',
-            dataIndex: 'index',
-            render: (_: unknown, __: OwnerFeedbacksTransformedEntry, index: number) => index + 1,
-        },
-        {
-            title: 'Subsidiary Code',
-            dataIndex: 'subsidiaryCode',
+            title: 'Organization Code',
+            dataIndex: 'organizationCode',
             render: (_: unknown, record: OwnerFeedbacksTransformedEntry) => (
                 <Tooltip
                     title={
                         <div className={styles.tooltipContent}>
-                            <div><span>Organization Code:</span> {record.organizationCode}</div>
                             <div><span>Organization Name:</span> {record.organizationName}</div>
                             <div><span>Industry:</span> {record.industry}</div>
+                            <div><span>Subsidiary Code:</span> {record.subsidiaryCode}</div>
                             <div><span>Subsidiary Country:</span> {record.subsidiaryCountry}</div>
                             <div><span>Subsidiary City:</span> {record.subsidiaryCity}</div>
                             <div><span>Subsidiary Address:</span> {record.subsidiaryAddress}</div>
                         </div>
                     }
-                    overlayClassName={styles.customTooltip}
+                    classNames={{root: styles.customTooltip}}
                 >
-                    <span className={styles.fullName}>{record.subsidiaryCode}</span>
+                    <span className={styles.fullName}>{record.organizationCode}</span>
                 </Tooltip>
             ),
         },
-        {
-            title: 'Satisfy Salary',
-            dataIndex: 'confirmationSalary',
-        },
-        {
-            title: 'Type of Engagement',
-            dataIndex: 'engagement',
-        },
-        {
-            title: 'Do you work overtime?',
-            dataIndex: 'confirmationOvertime',
-        },
-        {
-            title: 'Protective equipment is adequate?',
-            dataIndex: 'confirmationEquipmentAdequate',
-        },
-        {
-            title: 'Safety measures are clear?',
-            dataIndex: 'confirmationSafetyMeasures',
-        },
-        {
-            title: 'Protection measures were applied?',
-            dataIndex: 'confirmationProtectionMeasures',
-        },
-        {
-            title: 'What type of danger are you most exposed to?',
-            dataIndex: 'dangerType',
-        },
-        {
-            title: 'Who is responsible for workplace safety?',
-            dataIndex: 'factorsWorkplaceSafety',
-        },
-        {
-            title: 'How much time are you exposed to unsafe conditions?',
-            dataIndex: 'workTime',
-        },
+        {title: 'Satisfy Salary', dataIndex: 'confirmationSalary'},
+        {title: 'Type of Engagement', dataIndex: 'engagement'},
+        {title: 'Do you work overtime?', dataIndex: 'confirmationOvertime'},
+        {title: 'Protective equipment is adequate?', dataIndex: 'confirmationEquipmentAdequate'},
+        {title: 'Safety measures are clear?', dataIndex: 'confirmationSafetyMeasures'},
+        {title: 'Protection measures were applied?', dataIndex: 'confirmationProtectionMeasures'},
+        {title: 'What type of danger are you most exposed to?', dataIndex: 'dangerType'},
+        {title: 'Who is responsible for workplace safety?', dataIndex: 'factorsWorkplaceSafety'},
+        {title: 'How much time are you exposed to unsafe conditions?', dataIndex: 'workTime'},
     ];
 
     return (
@@ -105,16 +77,16 @@ const OwnerFeedbacks = ({
             <Table
                 columns={columns}
                 dataSource={transformedData}
-                rowKey={(record: OwnerFeedbacksTransformedEntry) => `${record.subsidiaryCode}-${record.organizationCode}`}
+                rowKey={(record: OwnerFeedbacksTransformedEntry) => `${record.feedbackId}`}
                 className={styles.table}
-                loading={isLoading}
+                loading={isLoadingFeedbacks}
                 pagination={false}
             />
             <Pagination
-                current={content.currentPage}
-                total={content.totalItems}
-                pageSize={20}
-                onChange={onHandlePageChange}
+                current={pagination.current}
+                total={surveyContent?.totalItems}
+                pageSize={pagination.pageSize}
+                onChange={handlePageChange}
                 className={styles.pagination}
             />
         </div>

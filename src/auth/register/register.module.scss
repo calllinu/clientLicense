@@ -139,8 +139,8 @@
   }
 }
 
-.error{
-    color: var(--error-red);
+.error {
+  color: var(--error-red);
 }
 
 .rightContainer {
@@ -149,9 +149,9 @@
   display: flex;
   padding: 20rem 10rem;
   width: 60%;
-  height: 100%;
+  height: 110vh;
 
-  .createAccountContainer{
+  .createAccountContainer {
     display: flex;
     text-align: center;
     padding: 1rem;
@@ -161,7 +161,7 @@
     justify-content: right;
   }
 
-  .createAccount{
+  .createAccount {
     display: flex;
     justify-content: right;
     font-size: 3rem;
@@ -172,15 +172,16 @@
     width: 100%;
   }
 
-  .companyText{
+  .companyText {
     display: flex;
     font-size: 2rem;
     padding: 0 1rem;
     justify-content: right;
   }
 }
-@media screen and (max-width: 768px){
-  .rightContainer{
+
+@media screen and (max-width: 768px) {
+  .rightContainer {
     display: none;
   }
 }

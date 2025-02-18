@@ -1,11 +1,8 @@
 export interface TransformedEntry {
+    feedbackId: number;
     subsidiaryCode?: string;
     country?: string;
     city?: string;
-    fullName?: string;
-    dateOfBirth?: Date;
-    dateOfHiring?: Date;
-    personalNumber?: string;
     confirmationEquipmentAdequate?: string;
     confirmationOvertime?: string;
     confirmationProtectionMeasures?: string;
@@ -18,6 +15,7 @@ export interface TransformedEntry {
 }
 
 export interface OwnerFeedbacksTransformedEntry {
+    feedbackId: number;
     organizationCode: string;
     organizationName?: string
     industry?: string

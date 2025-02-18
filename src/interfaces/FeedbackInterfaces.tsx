@@ -5,6 +5,7 @@ import {FactorsWorkplaceSafetyInterface} from "./enums/FactorsWorkplaceSafetyInt
 import {Employee} from "./EmployeeInterfaces.tsx";
 
 export interface FeedbackInterface {
+    feedbackId: number;
     confirmationSalary?: Confirmation;
     engagement?: Engagement;
     confirmationOvertime?: Confirmation;
@@ -38,6 +39,7 @@ interface EmployeeDetails {
 interface FeedbackDetails {
     feedback: FeedbackInterface;
     employeeDetails: EmployeeDetails;
+    feedbackId: number;
 }
 
 export interface FeedbackPageableInterface {
@@ -52,9 +54,5 @@ export interface SubsidiariesFeedbacks {
     country: string;
     city: string;
     address: string;
-    fullName: string;
-    dateOfBirth?: Date;
-    dateOfHiring?: Date;
-    personalNumber?: string;
     feedback: FeedbackInterface;
 }

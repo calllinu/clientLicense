@@ -22,10 +22,17 @@ export const feedbackApi = createApi({
                 },
             }),
         }),
+        getFeedbacksForOrganization: builder.query<FeedbackInterface[], { organizationCode: string }>({
+            query: ({organizationCode}) => ({
+                url: `/get-organization-feedbacks/${organizationCode}`,
+                method: 'GET',
+            }),
+        }),
     }),
 });
 
 export const {
     useAddEmployeeFeedbackMutation,
     useGetAllFeedbacksPageableQuery,
+    useGetFeedbacksForOrganizationQuery,
 } = feedbackApi;

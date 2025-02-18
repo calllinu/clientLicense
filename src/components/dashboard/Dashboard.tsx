@@ -16,7 +16,6 @@ import SurveyForm from "../feedback/SurveyForm.tsx";
 import {Subsidiary} from "../../interfaces/SubsidiaryInterfaces.tsx";
 import {FeedbackInterface} from "../../interfaces/FeedbackInterfaces.tsx";
 import DataContent from "../data-content/DataContent.tsx";
-import {useGetAllFeedbacksPageableQuery} from "../../services/feedbackApi.tsx";
 import OwnerFeedbacks from "../ownerFeedbacks/OwnerFeedbacks.tsx";
 
 
@@ -27,19 +26,10 @@ const Dashboard = () => {
     const isOwner = useOwnerRole();
     const handleLogout = useLogout();
     const [activeContent, setActiveContent] = useState(isOrgAdmin || isOwner ? 'data' : 'feedback');
-    const [pagination, setPagination] = useState({current: 1, pageSize: 20});
     const userId = Number(sessionStorage.getItem("userId"));
     const {data: subsidiariesForOrganization, refetch} = useGetSubsidiariesForOrganizationQuery(userId);
-    const {data: surveyContent, isLoading: isLoadingFeedbacks} = useGetAllFeedbacksPageableQuery({
-        page: pagination.current - 1,
-        size: pagination.pageSize,
-    });
 
     const validFeedbacks = getValidFeedbacks(subsidiariesForOrganization?.subsidiaries ?? []);
-
-    const handlePageChange = useCallback((page: number, pageSize: number) => {
-        setPagination({current: page, pageSize});
-    }, []);
 
 
     const handleContentSwitch = useCallback((contentType: string) => {
@@ -56,16 +46,10 @@ const Dashboard = () => {
                     country: subsidiary.country,
                     city: subsidiary.city,
                     address: subsidiary.address,
-                    fullName: employee.fullName,
-                    dateOfBirth: employee.dateOfBirth,
-                    dateOfHiring: employee.dateOfHiring,
-                    personalNumber: employee.employeeCNP,
                     feedback: employee.feedback as FeedbackInterface
                 }))
         );
     }
-
-    console.log(surveyContent?.feedbacks);
 
     return (
         <Layout className={styles.dashboardLayout}>
@@ -74,17 +58,7 @@ const Dashboard = () => {
             <Layout className={styles.tableContent}>
                 <Content key={activeContent}>
                     {activeContent === 'data' && (!isOwner ? <DataContent data={validFeedbacks}/> :
-                            <OwnerFeedbacks
-                                content={{
-                                    feedbacks: surveyContent?.feedbacks ?? [],
-                                    currentPage: surveyContent?.currentPage ?? 0,
-                                    totalItems: surveyContent?.totalItems ?? 0,
-                                    totalPages: surveyContent?.totalPages ?? 0
-                                }}
-                                isLoading={isLoadingFeedbacks}
-                                onHandlePageChange={handlePageChange}
-                            />
-
+                            <OwnerFeedbacks/>
                     )}
                     {activeContent === 'statistics' && <Statistics/>}
                     {activeContent === 'requests' && <RegisterRequests/>}
