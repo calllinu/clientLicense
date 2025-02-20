@@ -1,6 +1,5 @@
 import {useCallback, useState} from 'react';
 import {Layout} from 'antd';
-import Statistics from "../statistics/Statistics.tsx";
 import useLogout from "../../auth/authHooks/useLogOut.tsx";
 import RegisterRequests from "../register-requests/RegisterRequests.tsx";
 import Organizations from "../organizations/Organizations.tsx";
@@ -17,6 +16,8 @@ import {Subsidiary} from "../../interfaces/SubsidiaryInterfaces.tsx";
 import {FeedbackInterface} from "../../interfaces/FeedbackInterfaces.tsx";
 import DataContent from "../data-content/DataContent.tsx";
 import OwnerFeedbacks from "../ownerFeedbacks/OwnerFeedbacks.tsx";
+import StatisticsContentOwner from "../statistics/owner-stats/StatisticsContentOwner.tsx";
+import StatisticsContentOrgAdmin from "../statistics/org-admin-stats/StatisticsContentOrgAdmin.tsx";
 
 
 const {Content} = Layout;
@@ -60,7 +61,9 @@ const Dashboard = () => {
                     {activeContent === 'data' && (!isOwner ? <DataContent data={validFeedbacks}/> :
                             <OwnerFeedbacks/>
                     )}
-                    {activeContent === 'statistics' && <Statistics/>}
+                    {activeContent === 'statistics' && (isOwner ? <StatisticsContentOwner/> :
+                            <StatisticsContentOrgAdmin/>
+                    )}
                     {activeContent === 'requests' && <RegisterRequests/>}
                     {activeContent === 'organizations' && <Organizations/>}
                     {activeContent === 'profile' && <Profile/>}
