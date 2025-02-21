@@ -3,6 +3,7 @@ export interface TransformedEntry {
     subsidiaryCode?: string;
     country?: string;
     city?: string;
+    address?: string;
     confirmationEquipmentAdequate?: string;
     confirmationOvertime?: string;
     confirmationProtectionMeasures?: string;

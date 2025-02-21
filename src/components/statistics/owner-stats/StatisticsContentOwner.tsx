@@ -119,7 +119,7 @@ const StatisticsContentOwner = () => {
 
             <Row gutter={20} style={{marginTop: 20}}>
                 {fieldConfigs.map(({key, label, type}) => (
-                    <Col span={8} key={key}>
+                    <Col lg={8} md={12} xs={24} key={key}>
                         <Button onClick={() => toggleChartType(key)}>Toggle {chartTypes[key]} chart</Button>
                         <ReactApexChart
                             options={{

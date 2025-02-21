@@ -46,7 +46,7 @@ const TableContent = ({data}: { data: SubsidiariesFeedbacks[] }) => {
                             </div>
                         </div>
                     }
-                    overlayClassName={styles.customTooltip}
+                    classNames={{root: styles.customTooltip}}
                 >
                     <span className={styles.fullName}>{record.subsidiaryCode}</span>
                 </Tooltip>
@@ -95,7 +95,7 @@ const TableContent = ({data}: { data: SubsidiariesFeedbacks[] }) => {
             <Table
                 columns={columns}
                 dataSource={transformedData}
-                rowKey={(record: TransformedEntry) => record.feedbackId}
+                rowKey={(__, index = 0) => index.toString()}
                 pagination={{
                     current: pagination.current,
                     pageSize: pagination.pageSize,

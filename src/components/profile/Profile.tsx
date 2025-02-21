@@ -30,8 +30,6 @@ const Profile = () => {
         []
     );
 
-    console.log(employeeData)
-
     const handleSubmit = useCallback(
         async (values: ProfileValues) => {
             const {fullName, dateOfBirth, dateOfHiring, employeeCNP, qualification} = values;

@@ -86,7 +86,7 @@ const SurveyForm: React.FC = () => {
                     >
                         <Card
                             title="Thank You!"
-                            bordered={false}
+                            variant={undefined}
                             className={styles.card}
                         >
                             <p className={styles.message}>You have already completed the survey. Thank you for your

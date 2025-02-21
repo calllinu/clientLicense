@@ -29,9 +29,7 @@ const Dashboard = () => {
     const [activeContent, setActiveContent] = useState(isOrgAdmin || isOwner ? 'data' : 'feedback');
     const userId = Number(sessionStorage.getItem("userId"));
     const {data: subsidiariesForOrganization, refetch} = useGetSubsidiariesForOrganizationQuery(userId);
-
     const validFeedbacks = getValidFeedbacks(subsidiariesForOrganization?.subsidiaries ?? []);
-
 
     const handleContentSwitch = useCallback((contentType: string) => {
         setActiveContent(contentType);
