@@ -28,8 +28,13 @@ const Dashboard = () => {
     const handleLogout = useLogout();
     const [activeContent, setActiveContent] = useState(isOrgAdmin || isOwner ? 'data' : 'feedback');
     const userId = Number(sessionStorage.getItem("userId"));
-    const {data: subsidiariesForOrganization, refetch} = useGetSubsidiariesForOrganizationQuery(userId);
+    const {
+        data: subsidiariesForOrganization,
+        refetch,
+        isLoading: isLoadingData
+    } = useGetSubsidiariesForOrganizationQuery(userId);
     const validFeedbacks = getValidFeedbacks(subsidiariesForOrganization?.subsidiaries ?? []);
+    const feedbacksForOrgAdmin = getValidFeedbacksForOrgAdmin(subsidiariesForOrganization?.subsidiaries ?? []);
 
     const handleContentSwitch = useCallback((contentType: string) => {
         setActiveContent(contentType);
@@ -50,17 +55,32 @@ const Dashboard = () => {
         );
     }
 
+    function getValidFeedbacksForOrgAdmin(subsidiaries: Subsidiary[]): FeedbackInterface[] {
+        return subsidiaries.flatMap(subsidiary =>
+            subsidiary.employees
+                .filter(employee => employee.feedback !== null && employee.employeeId !== undefined)
+                .map(employee => employee.feedback as FeedbackInterface)
+        );
+    }
+
+
     return (
         <Layout className={styles.dashboardLayout}>
             <Navbar handleContentSwitch={handleContentSwitch} handleLogout={handleLogout}/>
 
             <Layout className={styles.tableContent}>
                 <Content key={activeContent}>
-                    {activeContent === 'data' && (!isOwner ? <DataContent data={validFeedbacks}/> :
-                            <OwnerFeedbacks/>
+                    {activeContent === 'data' && (!isOwner ? <OwnerFeedbacks/> :
+                            <DataContent
+                                data={validFeedbacks}
+                                isLoading={isLoadingData}
+                            />
                     )}
                     {activeContent === 'statistics' && (isOwner ? <StatisticsContentOwner/> :
-                            <StatisticsContentOrgAdmin/>
+                            <StatisticsContentOrgAdmin
+                                feedbacks={feedbacksForOrgAdmin}
+                                isLoading={isLoadingData}
+                            />
                     )}
                     {activeContent === 'requests' && <RegisterRequests/>}
                     {activeContent === 'organizations' && <Organizations/>}

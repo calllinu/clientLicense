@@ -5,7 +5,12 @@ import {TransformedEntry} from "../../interfaces/TableFeedbacksInterface.tsx";
 import {transformData, transformWorktime} from "../../interfaces/TransformData.tsx";
 import {SubsidiariesFeedbacks} from "../../interfaces/FeedbackInterfaces.tsx";
 
-const TableContent = ({data}: { data: SubsidiariesFeedbacks[] }) => {
+interface TableContentProps {
+    data: SubsidiariesFeedbacks[];
+    isLoading: boolean;
+}
+
+const TableContent = ({data, isLoading}: TableContentProps) => {
     const [pagination, setPagination] = useState({current: 1, pageSize: 20});
 
     const transformedData: TransformedEntry[] = data.map((entry) => ({
@@ -27,9 +32,7 @@ const TableContent = ({data}: { data: SubsidiariesFeedbacks[] }) => {
     const columns = [
         {
             title: "Nr.",
-            dataIndex: "index",
-            render: (_: unknown, __: TransformedEntry, index: number) =>
-                index + 1 + (pagination.current - 1) * pagination.pageSize,
+            dataIndex: "feedbackId",
         },
         {
             title: "Subsidiary Code",
@@ -94,13 +97,14 @@ const TableContent = ({data}: { data: SubsidiariesFeedbacks[] }) => {
         <div className={styles.tableContent}>
             <Table
                 columns={columns}
-                dataSource={transformedData}
-                rowKey={(__, index = 0) => index.toString()}
+                dataSource={transformedData.length > 0 ? transformedData : []}
+                rowKey={(record) => record.feedbackId}
                 pagination={{
                     current: pagination.current,
                     pageSize: pagination.pageSize,
                     onChange: (page, pageSize) => setPagination({current: page, pageSize}),
                 }}
+                loading={isLoading}
                 className={styles.table}
             />
         </div>
