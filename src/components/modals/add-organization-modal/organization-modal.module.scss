@@ -20,5 +20,15 @@
   .ant-select {
     width: 100%;
   }
+
+  .errorColumn {
+    display: flex;
+    justify-content: center;
+    padding-bottom: 1rem;
+
+    .error {
+      color: var(--error-red);
+    }
+  }
 }
 

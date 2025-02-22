@@ -1,5 +1,5 @@
 import {useCallback, useMemo, useState} from "react";
-import {ErrorMessage, Field, Form, Formik, FormikHelpers} from "formik";
+import {ErrorMessage, Field, Form, Formik} from "formik";
 import {Button, Col, Input, Row, Spin} from "antd";
 import {EyeInvisibleOutlined, EyeOutlined, UserOutlined} from "@ant-design/icons";
 import styles from './login.module.scss';
@@ -19,7 +19,7 @@ const Login = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const navigate = useNavigate();
     const [authenticateUser] = useAuthenticateUserMutation();
-
+    const [serverError, setServerError] = useState<string | null>(null);
     const togglePasswordVisibility = useCallback(() => {
         setShowPassword((prevShowPassword) => !prevShowPassword);
     }, []);
@@ -28,8 +28,9 @@ const Login = () => {
     const memoizedValidationSchema = useMemo(() => LoginSchema, []);
 
     const handleSubmit = useCallback(
-        async (values: FormValues, {setErrors}: FormikHelpers<FormValues>) => {
+        async (values: FormValues) => {
             setLoading(true);
+            setServerError(null);
             try {
                 const response = await authenticateUser({
                     email: values.email,
@@ -44,19 +45,9 @@ const Login = () => {
                 if (response.role === Role.ORG_ADMIN || response.role === Role.OWNER || response.role === Role.EMPLOYEE) {
                     navigate("/dashboard");
                 }
-            } catch (error: unknown) {
+            } catch (error) {
                 console.log(error);
-                if (error instanceof Error) {
-                    if (error.message === "User not found") {
-                        setErrors({email: "User not found. Please register."});
-                    } else if (error.message === "Invalid credentials") {
-                        setErrors({password: "Invalid password. Please try again."});
-                    } else {
-                        console.error("Login failed:", error);
-                    }
-                } else {
-                    console.error("Unknown error:", error);
-                }
+                setServerError("Invalid email or password");
             } finally {
                 setLoading(false);
             }
@@ -127,6 +118,10 @@ const Login = () => {
                                         variant="borderless"
                                     />
                                     <ErrorMessage name="password" component="div" className={styles.error}/>
+                                </Col>
+
+                                <Col className={styles.errorColumn}>
+                                    {serverError && <div className={styles.error}>{serverError}</div>}
                                 </Col>
 
                                 <Col className={styles.button} span={24}>

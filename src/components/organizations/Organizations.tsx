@@ -13,12 +13,12 @@ import {useGetAllOrganizationsPageableQuery, useRemoveOrganizationMutation} from
 import OrganizationModal from "../modals/add-organization-modal/OrganizationModal.tsx";
 import SubsidiaryModal from "../modals/add-subsidiary-modal/SubsidiaryModal.tsx";
 import {OrganizationResponse, OrganizationUpdateRequest} from "../../interfaces/OrganizationInterfaces.tsx";
-import {formatIndustry} from "../modals/add-organization-modal/utils/industryUtils.tsx";
 import SubsidiariesSection from "../subsidiary-section/SubsidiarySection.tsx";
 import styles from './organization.module.scss';
 import ConfirmDeleteModal from "../modals/confirm-delete-modal/ConfirmDeleteModal.tsx";
 import EditOrganizationModal from "../modals/edit-organization-info-modal/EditOrganizationModal.tsx";
 import Search from "antd/es/input/Search";
+import {transformData} from "../../interfaces/TransformData.tsx";
 
 const Organizations = () => {
     const [pagination, setPagination] = useState({current: 1, pageSize: 20});
@@ -133,7 +133,7 @@ const Organizations = () => {
                     <div className={styles.industry}>
                         <div className={styles.industryInfo}>
                             <PartitionOutlined/>
-                            <strong>Industry: </strong> {formatIndustry(org.industry)}
+                            <strong>Industry: </strong> {transformData(org.industry)}
                         </div>
                         <div className={styles.industryInfo}>
                             <UserOutlined/>

@@ -147,9 +147,10 @@
   background-color: var(--blue-medium);
   color: var(--neutral-white);
   display: flex;
-  padding: 20rem 10rem;
+  padding: 27rem 10rem;
   width: 60%;
-  height: 110vh;
+  min-height: 100vh;
+  height: auto;
 
   .createAccountContainer {
     display: flex;

@@ -1,12 +1,12 @@
-import { Modal, Form, Input, Button } from 'antd';
+import {Button, Form, Input, Modal} from 'antd';
 import {Formik, FormikHelpers, FormikProps} from 'formik';
 import {useUpdateOrganizationMutation} from "../../../services/organizationApi.tsx";
 import styles from './../add-organization-modal/organization-modal.module.scss'
 import {useCallback, useRef} from "react";
 import useInitialValuesEditOrganizationModal from "./utils/useInitialValues.tsx";
 import {OrganizationUpdateRequest} from "../../../interfaces/OrganizationInterfaces.tsx";
-import {formatIndustry} from "../add-organization-modal/utils/industryUtils.tsx";
 import {validationSchema} from "./utils/validationSchema.tsx";
+import {transformData} from "../../../interfaces/TransformData.tsx";
 
 interface OrganizationModalProps {
     visible: boolean;
@@ -15,10 +15,10 @@ interface OrganizationModalProps {
     organization: OrganizationUpdateRequest | null;
 }
 
-const EditOrganizationModal: React.FC<OrganizationModalProps> = ({ visible, onCancel, refetch, organization }) => {
+const EditOrganizationModal: React.FC<OrganizationModalProps> = ({visible, onCancel, refetch, organization}) => {
     const [updateOrganization] = useUpdateOrganizationMutation();
     const formikRef = useRef<FormikProps<OrganizationUpdateRequest> | null>(null);
-    const initialValues = useInitialValuesEditOrganizationModal({ organization });
+    const initialValues = useInitialValuesEditOrganizationModal({organization});
 
     const handleUpdateOrganization = useCallback(
         async (values: OrganizationUpdateRequest, actions: FormikHelpers<OrganizationUpdateRequest>) => {
@@ -38,7 +38,7 @@ const EditOrganizationModal: React.FC<OrganizationModalProps> = ({ visible, onCa
         [updateOrganization, organization, onCancel, refetch]
     );
 
-    const handleClose = useCallback(()  => {
+    const handleClose = useCallback(() => {
         if (formikRef.current) {
             formikRef.current.resetForm();
         }
@@ -61,7 +61,7 @@ const EditOrganizationModal: React.FC<OrganizationModalProps> = ({ visible, onCa
                 onSubmit={handleUpdateOrganization}
                 enableReinitialize={true}
             >
-                {({ values, errors, touched, handleChange, handleBlur, handleSubmit }) => (
+                {({values, errors, touched, handleChange, handleBlur, handleSubmit}) => (
                     <Form layout="vertical" onFinish={handleSubmit}>
                         <Form.Item
                             label="Organization Id"
@@ -114,7 +114,7 @@ const EditOrganizationModal: React.FC<OrganizationModalProps> = ({ visible, onCa
                             <Input
                                 name="industry"
                                 placeholder="Select industry"
-                                value={formatIndustry(values.industry ?? null)}
+                                value={transformData(values.industry)}
                                 disabled={true}
                             />
                         </Form.Item>

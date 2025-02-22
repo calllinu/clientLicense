@@ -28,7 +28,7 @@ const Register = () => {
     const [createUser] = useCreateUserMutation();
     const [selectedOrganization, setSelectedOrganization] = useState<number | null>(null);
     const [selectedSubsidiary, setSelectedSubsidiary] = useState<number | null>(null);
-
+    const [serverError, setServerError] = useState<string | null>(null);
     const {data: organizations, isError: isOrgError} = useGetAllOrganizationsQuery();
 
     const selectedOrganizationSubsidiaries = useMemo(() => {
@@ -45,6 +45,7 @@ const Register = () => {
 
     const handleSubmit = async (values: FormValues, {resetForm}: { resetForm: () => void }) => {
         setLoading(true);
+        setServerError(null);
         try {
             await createUser({
                 username: values.username,
@@ -57,6 +58,7 @@ const Register = () => {
             navigate("/login");
         } catch (error) {
             console.error("Failed to create account:", error);
+            setServerError("An unexpected error occurred. Please try again.");
         } finally {
             setLoading(false);
         }
@@ -206,6 +208,9 @@ const Register = () => {
                                         )}
                                     </Select>
                                     <ErrorMessage name="selectedSubsidiary" component="div" className={styles.error}/>
+                                </Col>
+                                <Col>
+                                    {serverError && <div className={styles.error}>{serverError}</div>}
                                 </Col>
 
                                 <Col className={styles.button}>

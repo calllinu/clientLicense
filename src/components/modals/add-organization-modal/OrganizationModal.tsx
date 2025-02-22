@@ -1,12 +1,12 @@
-import {Button, Form, Input, Modal, Select} from 'antd';
+import {Button, Col, Form, Input, Modal, Select} from 'antd';
 import {Formik, FormikHelpers, FormikProps} from 'formik';
 import {useAddOrganizationMutation} from "../../../services/organizationApi.tsx";
 import {validationSchema} from "./utils/validationSchema.tsx";
 import styles from './organization-modal.module.scss';
 import {OrganizationInitialValues} from "../../../interfaces/OrganizationInitialValues.tsx";
 import {Industry} from "../../../interfaces/enums/IndustryInterfaces.tsx";
-import {formatIndustry} from "./utils/industryUtils.tsx";
-import {useCallback, useMemo, useRef} from "react";
+import {useCallback, useMemo, useRef, useState} from "react";
+import {transformData} from "../../../interfaces/TransformData.tsx";
 
 const {Option} = Select;
 
@@ -19,6 +19,8 @@ interface OrganizationModalProps {
 const OrganizationModal: React.FC<OrganizationModalProps> = ({visible, onCancel, refetch}) => {
     const [addOrganization] = useAddOrganizationMutation();
     const formikRef = useRef<FormikProps<OrganizationInitialValues> | null>(null);
+    const [serverError, setServerError] = useState<string | null>(null);
+
     const initialValues = useMemo((): OrganizationInitialValues => ({
         organizationCode: '',
         name: '',
@@ -28,13 +30,15 @@ const OrganizationModal: React.FC<OrganizationModalProps> = ({visible, onCancel,
 
     const handleAddOrganization = useCallback(
         async (values: OrganizationInitialValues, actions: FormikHelpers<OrganizationInitialValues>) => {
+            setServerError(null);
             try {
                 await addOrganization(values).unwrap();
                 refetch();
                 onCancel();
-                actions.resetForm();
+                actions.resetForm({values: initialValues});
             } catch (error) {
                 console.error("Error adding organization:", error);
+                setServerError("Error adding organization, unique organization code needed");
             }
         },
         [addOrganization, onCancel, refetch]
@@ -43,7 +47,7 @@ const OrganizationModal: React.FC<OrganizationModalProps> = ({visible, onCancel,
     const industryOptions = useMemo(() => (
         Object.values(Industry).map((industry) => (
             <Option key={industry} value={industry}>
-                {formatIndustry(industry)}
+                {transformData(industry)}
             </Option>
         ))
     ), []);
@@ -53,10 +57,13 @@ const OrganizationModal: React.FC<OrganizationModalProps> = ({visible, onCancel,
             formikRef.current.resetForm();
         }
         onCancel();
-    }, []);
+        setServerError(null);
+    }, [onCancel, initialValues]);
+
 
     return (
         <Modal
+            key={visible ? "open" : "closed"}
             title="Add New Organization"
             open={visible}
             onCancel={handleClose}
@@ -122,11 +129,16 @@ const OrganizationModal: React.FC<OrganizationModalProps> = ({visible, onCancel,
                             <Select
                                 placeholder="Select an industry"
                                 value={values.industry}
-                                onChange={(value) => setFieldValue('industry', value)}
+                                onChange={(value) => setFieldValue("industry", value)}
+                                allowClear
                             >
                                 {industryOptions}
                             </Select>
                         </Form.Item>
+
+                        <Col className={styles.errorColumn}>
+                            {serverError && <div className={styles.error}>{serverError}</div>}
+                        </Col>
 
                         <Form.Item>
                             <Button type="primary" htmlType="submit">

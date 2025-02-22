@@ -125,6 +125,12 @@ Input {
   border-color: var(--error-red);
 }
 
+.errorColumn {
+  display: flex;
+  justify-content: center;
+  padding-bottom: 1rem;
+}
+
 .error {
   color: var(--error-red);
   font-size: .9rem;
