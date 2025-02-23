@@ -15,6 +15,7 @@ const useLogout = () => {
                 sessionStorage.removeItem('accessToken');
                 sessionStorage.removeItem('refreshToken');
                 sessionStorage.removeItem('role');
+                sessionStorage.removeItem('userId');
                 navigate('/login');
             });
         } catch (error) {

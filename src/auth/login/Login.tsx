@@ -8,6 +8,8 @@ import {useAuthenticateUserMutation} from "../../services/userApi.tsx";
 import {LoginSchema} from "./utils/validationSchema.tsx";
 import {initialValues} from "./utils/initialValues.tsx";
 import {Role} from "../../interfaces/enums/RoleEnum.tsx";
+import ChangePasswordModal from "../../components/modals/change-password-modal/ChangePasswordModal.tsx";
+
 
 interface FormValues {
     email: string;
@@ -17,9 +19,11 @@ interface FormValues {
 const Login = () => {
     const [showPassword, setShowPassword] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
+    const [serverError, setServerError] = useState<string | null>(null);
+    const [isModalVisible, setIsModalVisible] = useState<boolean>(false); // State to control modal visibility
     const navigate = useNavigate();
     const [authenticateUser] = useAuthenticateUserMutation();
-    const [serverError, setServerError] = useState<string | null>(null);
+
     const togglePasswordVisibility = useCallback(() => {
         setShowPassword((prevShowPassword) => !prevShowPassword);
     }, []);
@@ -54,6 +58,15 @@ const Login = () => {
         },
         [authenticateUser, navigate]
     );
+
+    // Handle modal visibility
+    const showModal = () => {
+        setIsModalVisible(true);
+    };
+
+    const hideModal = () => {
+        setIsModalVisible(false);
+    };
 
     return (
         <Row className={styles.container}>
@@ -140,11 +153,19 @@ const Login = () => {
                                         <div className={styles.title}>Sign Up</div>
                                     </Link>
                                 </Col>
+
+                                <Col className={styles.forgotPassword} span={24}>
+                                    <Button type="link" onClick={showModal}>
+                                        Forgot Password?
+                                    </Button>
+                                </Col>
                             </Form>
                         )}
                     </Formik>
                 </Row>
             </Col>
+
+            <ChangePasswordModal visible={isModalVisible} onCancel={hideModal}/>
         </Row>
     );
 };
