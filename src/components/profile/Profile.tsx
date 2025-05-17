@@ -1,4 +1,4 @@
-import {useCallback, useMemo} from "react";
+import {useCallback, useMemo, useState} from "react";
 import {Avatar, Button, Card, Col, DatePicker, Divider, Input, Row, Select} from "antd";
 import {Formik} from "formik";
 import dayjs from "dayjs";
@@ -21,6 +21,7 @@ const Profile = () => {
     const isAdmin = useOrgAdminRole();
 
     const [updateEmployee, {isLoading: isUpdating}] = useUpdateEmployeeMutation();
+    const [updateSuccess, setUpdateSuccess] = useState(false);
 
     const qualificationOptions = useMemo(
         () =>
@@ -38,6 +39,8 @@ const Profile = () => {
             try {
                 await updateEmployee({userId: userId, employee}).unwrap();
                 refetch();
+                setUpdateSuccess(true);
+                setTimeout(() => setUpdateSuccess(false), 3000);
             } catch (error) {
                 console.error("Error updating profile:", error);
             }
@@ -124,6 +127,14 @@ const Profile = () => {
                                     </Select>
                                     {errors.qualification && touched.qualification &&
                                         <div className={styles.error}>{errors.qualification}</div>}
+                                </Col>
+                                <Col>
+                                    {updateSuccess && (
+                                        <div className={styles.successMessage}
+                                             style={{marginBottom: 16, color: "green"}}>
+                                            Your profile has been successfully updated!
+                                        </div>
+                                    )}
                                 </Col>
                                 <Col span={24}>
                                     <Button type="primary" htmlType="submit" loading={isUpdating}
