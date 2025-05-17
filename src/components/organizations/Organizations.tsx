@@ -1,4 +1,4 @@
-import {Button, Col, Collapse, Pagination, Row, Space, Spin} from 'antd';
+import {Button, Col, Collapse, notification, Pagination, Row, Space, Spin} from 'antd';
 import {useCallback, useMemo, useState} from 'react';
 import {
     DeleteOutlined,
@@ -7,6 +7,7 @@ import {
     NodeIndexOutlined,
     PartitionOutlined,
     PlusOutlined,
+    RadarChartOutlined,
     UserOutlined
 } from '@ant-design/icons';
 import {useGetAllOrganizationsPageableQuery, useRemoveOrganizationMutation} from "../../services/organizationApi.tsx";
@@ -19,6 +20,7 @@ import ConfirmDeleteModal from "../modals/confirm-delete-modal/ConfirmDeleteModa
 import EditOrganizationModal from "../modals/edit-organization-info-modal/EditOrganizationModal.tsx";
 import Search from "antd/es/input/Search";
 import {transformData} from "../../interfaces/TransformData.tsx";
+import {usePredictWorkAccidentMutation} from "../../services/predictionApi.tsx";
 
 const Organizations = () => {
     const [pagination, setPagination] = useState({current: 1, pageSize: 20});
@@ -95,6 +97,50 @@ const Organizations = () => {
         []
     );
 
+    const [predictWorkAccident] = usePredictWorkAccidentMutation();
+
+    const handlePredictRiskForOrganization = useCallback(async (org: OrganizationResponse) => {
+        const feedbacks = org.subsidiaries.flatMap(sub =>
+            sub.employees
+                ?.filter(emp => emp.feedback && emp.employeeId !== undefined)
+                .map(emp => {
+                    const fb = emp.feedback!;
+                    return [
+                        emp.employeeId,
+                        fb.satisfactionLevel,
+                        fb.lastEvaluation,
+                        fb.numberProject,
+                        fb.averageMonthlyHours,
+                        fb.timeSpendCompany,
+                        fb.workAccident,
+                        fb.promotionLast5years,
+                        fb.department,
+                        fb.salary
+                    ];
+                }) ?? []
+        );
+
+        if (feedbacks.length === 0) {
+            notification.warning({message: `No feedback data available for ${org.name}`});
+            return;
+        }
+
+        try {
+            const result = await predictWorkAccident({features: feedbacks}).unwrap();
+            notification.success({
+                message: `Prediction for ${org.name}`,
+                description: `Risk Score: ${result.risk_score.toFixed(4)}`
+            });
+        } catch (error) {
+            console.error('Prediction failed:', error);
+            notification.error({
+                message: 'Prediction Error',
+                description: `Failed to predict for ${org.name}`
+            });
+        }
+    }, [predictWorkAccident]);
+
+
     const organizationCollapseItems = useMemo(() => {
         return organizationData?.data?.slice()
             .sort((a: OrganizationResponse, b: OrganizationResponse) => a.name.localeCompare(b.name))
@@ -104,6 +150,15 @@ const Organizations = () => {
                     <div className={styles.panelHeader}>
                         <span>{`${org.organizationCode} - ${org.name}`}</span>
                         <Space>
+                            <Button
+                                icon={<RadarChartOutlined/>}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handlePredictRiskForOrganization(org);
+                                }}
+                            >
+                                Predict Risk
+                            </Button>
                             <Button
                                 icon={<PlusOutlined/>}
                                 onClick={(e) => {
