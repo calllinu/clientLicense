@@ -4,7 +4,7 @@ import {OTPRequest, OTPVerification, PasswordReset} from "../interfaces/authOTP.
 
 export const userApi = createApi({
     reducerPath: 'userApi',
-    baseQuery: fetchBaseQuery({baseUrl: 'http://localhost:8080'}),
+    baseQuery: fetchBaseQuery({baseUrl: 'http://localhost:9090'}),
     endpoints: (builder) => ({
         createUser: builder.mutation<void, User>({
             query: (user) => ({

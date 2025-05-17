@@ -9,7 +9,7 @@ import {SubsidiaryForOrganizationObject} from "../interfaces/SubsidiaryForOrgani
 
 export const organizationApi = createApi({
     reducerPath: 'organizationApi',
-    baseQuery: fetchBaseQuery({baseUrl: 'http://localhost:8080/organizations'}),
+    baseQuery: fetchBaseQuery({baseUrl: 'http://localhost:9090/organizations'}),
     endpoints: (builder) => ({
         addOrganization: builder.mutation<void, OrganizationAddRequest>({
             query: (organization) => ({

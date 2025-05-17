@@ -3,7 +3,7 @@ import {SubsidiaryRequest, SubsidiaryResponse, SubsidiaryUpdateRequest} from "..
 
 export const subsidiaryApi = createApi({
     reducerPath: 'subsidiaryApi',
-    baseQuery: fetchBaseQuery({baseUrl: 'http://localhost:8080/subsidiaries'}), // The base URL for the subsidiary-section endpoints
+    baseQuery: fetchBaseQuery({baseUrl: 'http://localhost:9090/subsidiaries'}),
     endpoints: (builder) => ({
         addSubsidiary: builder.mutation<SubsidiaryResponse, SubsidiaryRequest>({
             query: (subsidiary) => ({

@@ -24,13 +24,13 @@ export interface OwnerFeedbacksTransformedEntry {
     subsidiaryCountry?: string
     subsidiaryCity?: string
     subsidiaryAddress?: string
-    confirmationEquipmentAdequate?: string;
-    confirmationOvertime?: string;
-    confirmationProtectionMeasures?: string;
-    confirmationSafetyMeasures?: string;
-    confirmationSalary?: string;
-    dangerType?: string;
-    engagement?: string;
-    factorsWorkplaceSafety?: string;
-    workTime?: string;
+    satisfactionLevel?: number;
+    lastEvaluation?: number;
+    numberProject?: number;
+    averageMonthlyHours?: number;
+    timeSpendCompany?: number;
+    workAccident?: string;
+    promotionLast5years?: string;
+    department?: string;
+    salary?: string;
 }

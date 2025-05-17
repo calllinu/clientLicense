@@ -4,7 +4,7 @@ import {FeedbackInterface, FeedbackPageableInterface} from "../interfaces/Feedba
 
 export const feedbackApi = createApi({
     reducerPath: 'feedbackApi',
-    baseQuery: fetchBaseQuery({baseUrl: 'http://localhost:8080/feedback'}),
+    baseQuery: fetchBaseQuery({baseUrl: 'http://localhost:9090/feedback'}),
     endpoints: (builder) => ({
         addEmployeeFeedback: builder.mutation<void, { employeeId: number, feedback: FeedbackInterface }>({
             query: ({employeeId, feedback}) => ({

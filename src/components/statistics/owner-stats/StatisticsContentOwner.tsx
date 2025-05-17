@@ -11,7 +11,6 @@ const {Option} = Select;
 const StatisticsContentOwner = () => {
     const {data: organizationsCodes, isLoading: orgLoading} = useGetAllOrganizationsCodeQuery();
     const [selectedOrgCode, setSelectedOrgCode] = useState<string | null>(organizationsCodes ? organizationsCodes[0] : null);
-
     useEffect(() => {
         if (organizationsCodes?.length && !selectedOrgCode) {
             setSelectedOrgCode(organizationsCodes[0]);

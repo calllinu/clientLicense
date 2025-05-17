@@ -11,13 +11,15 @@ import useOrgAdminRole from "../../hooks/useOrgAdminRole.tsx";
 import useOwnerRole from "../../hooks/useOwnerRole.tsx";
 import {useGetSubsidiariesForOrganizationQuery} from "../../services/organizationApi.tsx";
 import SubsidiaryForOrganization from "../subsidiaries/SubsidiaryForOrganization.tsx";
-import SurveyForm from "../feedback/SurveyForm.tsx";
+// import SurveyForm from "../feedback/SurveyForm.tsx";
 import {Subsidiary} from "../../interfaces/SubsidiaryInterfaces.tsx";
 import {FeedbackInterface} from "../../interfaces/FeedbackInterfaces.tsx";
 import DataContent from "../data-content/DataContent.tsx";
-import OwnerFeedbacks from "../ownerFeedbacks/OwnerFeedbacks.tsx";
+// import OwnerFeedbacks from "../ownerFeedbacks/OwnerFeedbacks.tsx";
 import StatisticsContentOwner from "../statistics/owner-stats/StatisticsContentOwner.tsx";
 import StatisticsContentOrgAdmin from "../statistics/org-admin-stats/StatisticsContentOrgAdmin.tsx";
+import OwnerFeedbacks from "../ownerFeedbacks/OwnerFeedbacks.tsx";
+import SurveyForm from "../feedback/SurveyForm.tsx";
 
 
 const {Content} = Layout;
@@ -40,18 +42,11 @@ const Dashboard = () => {
         setActiveContent(contentType);
     }, []);
 
-    function getValidFeedbacks(subsidiaries: Subsidiary[]) {
+    function getValidFeedbacks(subsidiaries: Subsidiary[]): FeedbackInterface[] {
         return subsidiaries.flatMap(subsidiary =>
             subsidiary.employees
                 .filter(employee => employee.feedback !== null && employee.employeeId !== undefined)
-                .map(employee => ({
-                    subsidiaryId: subsidiary.subsidiaryId,
-                    subsidiaryCode: subsidiary.subsidiaryCode,
-                    country: subsidiary.country,
-                    city: subsidiary.city,
-                    address: subsidiary.address,
-                    feedback: employee.feedback as FeedbackInterface
-                }))
+                .map(employee => employee.feedback as FeedbackInterface)
         );
     }
 
@@ -70,7 +65,7 @@ const Dashboard = () => {
 
             <Layout className={styles.tableContent}>
                 <Content key={activeContent}>
-                    {activeContent === 'data' && (!isOwner ? <OwnerFeedbacks/> :
+                    {activeContent === 'data' && (isOwner ? <OwnerFeedbacks/> :
                             <DataContent
                                 data={validFeedbacks}
                                 isLoading={isLoadingData}

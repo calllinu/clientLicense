@@ -104,7 +104,7 @@ const Profile = () => {
                                     </div>
                                 </Col>
 
-                                <Col xs={24} md={12}>
+                                <Col span={24}>
                                     <div className={styles.formItem}>
                                         <label htmlFor="dateOfBirth" className={styles.label}>
                                             Date of Birth
@@ -127,7 +127,7 @@ const Profile = () => {
                                     </div>
                                 </Col>
 
-                                <Col xs={24} md={12}>
+                                <Col span={24}>
                                     <div className={styles.formItem}>
                                         <label htmlFor="dateOfHiring" className={styles.label}>
                                             Date of Hiring
@@ -151,7 +151,7 @@ const Profile = () => {
                                     </div>
                                 </Col>
 
-                                <Col xs={24} md={12}>
+                                <Col span={24}>
                                     <div className={styles.formItem}>
                                         <label htmlFor="qualification" className={styles.label}>
                                             Qualification
@@ -177,7 +177,7 @@ const Profile = () => {
                                     </div>
                                 </Col>
 
-                                <Col xs={24} md={12}>
+                                <Col span={24}>
                                     <div className={styles.formItem}>
                                         <label htmlFor="yearsOfExperience" className={styles.label}>
                                             Years of Experience
@@ -195,7 +195,7 @@ const Profile = () => {
                                     )}
                                 </Col>
 
-                                <Col xs={24} md={12}>
+                                <Col span={24}>
                                     <div className={styles.formItem}>
                                         <label htmlFor="selectedOrganization" className={styles.label}>
                                             Organization
@@ -211,7 +211,7 @@ const Profile = () => {
                                     </div>
                                 </Col>
 
-                                <Col xs={24} md={12}>
+                                <Col span={24}>
                                     <div className={styles.formItem}>
                                         <label htmlFor="selectedSubsidiary" className={styles.label}>
                                             Subsidiary

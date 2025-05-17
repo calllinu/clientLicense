@@ -1,69 +1,29 @@
-import {Confirmation} from "../../../interfaces/enums/ConfirmationEnum.tsx";
-import {DangerTypeInterface} from "../../../interfaces/enums/DangerTypeInterface.tsx";
-import {FactorsWorkplaceSafetyInterface} from "../../../interfaces/enums/FactorsWorkplaceSafetyInterface.tsx";
-import {WorkTime} from "../../../interfaces/enums/WorktimeEnum.tsx";
-import {Engagement} from "../../../interfaces/enums/EngagementEnum.tsx";
-import {transformData} from "../../../interfaces/TransformData.tsx";
-import {FeedbackInterface} from "../../../interfaces/FeedbackInterfaces.tsx";
-
 export const fieldConfigs = [
-    {key: 'confirmationEquipmentAdequate', label: 'Is the equipment adequate?', type: Confirmation},
-    {key: 'confirmationOvertime', label: 'Do you work overtime?', type: Confirmation},
-    {key: 'confirmationSafetyMeasures', label: 'Are safety measures adequate?', type: Confirmation},
-    {key: 'dangerType', label: 'What type of danger do you face?', type: DangerTypeInterface},
-    {
-        key: 'factorsWorkplaceSafety',
-        label: 'What factors affect workplace safety?',
-        type: FactorsWorkplaceSafetyInterface
-    },
-    {key: 'workTime', label: 'What is your exposure time to danger?', type: WorkTime},
-    {key: 'confirmationProtectionMeasures', label: 'Are protection measures adequate?', type: Confirmation},
-    {key: 'confirmationSalary', label: 'Are you satisfied with your salary?', type: Confirmation},
-    {key: 'engagement', label: 'What is your engagement level?', type: Engagement}
+    {key: 'satisfactionLevel', label: 'How satisfied are you with your job?', type: 'numeric'},
+    {key: 'lastEvaluation', label: 'What was your score on your last performance evaluation?', type: 'numeric'},
+    {key: 'numberProject', label: 'How many projects are you currently working on?', type: 'numeric'},
+    {key: 'averageMonthlyHours', label: 'How many hours do you work per month on average?', type: 'numeric'},
+    {key: 'timeSpendCompany', label: 'How many years have you been with the company?', type: 'numeric'},
+    {key: 'workAccident', label: 'Have you ever had a work-related accident?', isYesNo: true, type: 'boolean'},
+    {key: 'promotionLast5years', label: 'Have you been promoted in the last 5 years?', isYesNo: true, type: 'boolean'},
+    {key: 'department', label: 'Which department do you work in?', type: 'categorical'},
+    {key: 'salary', label: 'How would you describe your salary level?', type: 'categorical'},
 ];
 
-export const colors =
-    [
-        '#775DD0',
-        '#008FFB',
-        '#00E396',
-        '#FEB019',
-        '#FF4560',
-        '#D10CE8',
-        '#546E7A',
-        '#26a69a'
-    ];
+export const colors = [
+    '#1F77B4',
+    '#5DADE2',
+    '#85C1E9',
+    '#16A085',
+    '#1ABC9C',
+    '#48C9B0'
+];
 
-export const generateChartData = (
-    feedbacksForOrganization: FeedbackInterface[] | undefined,
-    field: keyof FeedbackInterface,
-    enumType: string[],
-    transformFn?: (value: string | undefined) => string | undefined,
-    isYesNo = false
-) => {
-    if (!feedbacksForOrganization) return [];
-
-    if (isYesNo) {
-        const yesCount = feedbacksForOrganization.filter((entry) => entry[field] === 'YES').length;
-        const noCount = feedbacksForOrganization.filter((entry) => entry[field] === 'NO').length;
-        return [{name: 'Yes', data: [yesCount]}, {name: 'No', data: [noCount]}];
-    }
-
-    const categoryCounts = enumType.reduce((acc: Record<string, number>, category: string) => {
-        const transformedCategory = transformFn ? transformFn(category) : category;
-        const fieldValue = feedbacksForOrganization.filter((entry) => {
-            const transformedValue = transformFn ? transformFn(String(entry[field])) : String(entry[field]);
-            return transformedValue === transformedCategory;
-        });
-        acc[transformedCategory || category] = fieldValue.length;
-        return acc;
-    }, {});
-
-    return Object.keys(categoryCounts).map((category) => {
-        const label = transformData(category) || category;
-        return {
-            name: label,
-            data: [categoryCounts[category]],
-        };
-    });
+export const formatBoolean = (value?: number) => {
+    if (value === 1) return "Yes";
+    if (value === 0) return "No";
+    return "Unknown";
 };
+
+
+

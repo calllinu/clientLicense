@@ -1,95 +1,83 @@
-import {Table, Tooltip} from "antd";
+import {Table} from "antd";
 import {useState} from "react";
 import styles from "./data-content.module.scss";
-import {TransformedEntry} from "../../interfaces/TableFeedbacksInterface.tsx";
-import {transformData, transformWorktime} from "../../interfaces/TransformData.tsx";
-import {SubsidiariesFeedbacks} from "../../interfaces/FeedbackInterfaces.tsx";
+import {FeedbackInterface} from "../../interfaces/FeedbackInterfaces";
+import {transformData} from "../../interfaces/TransformData";
+import {getDepartmentDisplayName} from "../statistics/utils/chartUtils.tsx";
+import {formatBoolean} from "../statistics/utils/fieldConfigs.tsx";
 
 interface TableContentProps {
-    data: SubsidiariesFeedbacks[];
+    data: FeedbackInterface[];
     isLoading: boolean;
 }
 
 const TableContent = ({data, isLoading}: TableContentProps) => {
     const [pagination, setPagination] = useState({current: 1, pageSize: 20});
 
-    const transformedData: TransformedEntry[] = data.map((entry) => ({
-        feedbackId: entry.feedback.feedbackId,
-        subsidiaryCode: entry.subsidiaryCode,
-        country: entry.country,
-        city: entry.city,
-        confirmationEquipmentAdequate: transformData(entry.feedback.confirmationEquipmentAdequate),
-        confirmationOvertime: transformData(entry.feedback.confirmationOvertime),
-        confirmationProtectionMeasures: transformData(entry.feedback.confirmationProtectionMeasures),
-        confirmationSafetyMeasures: transformData(entry.feedback.confirmationSafetyMeasures),
-        confirmationSalary: transformData(entry.feedback.confirmationSalary),
-        dangerType: transformData(entry.feedback.dangerType),
-        engagement: transformData(entry.feedback.engagement),
-        factorsWorkplaceSafety: transformData(entry.feedback.factorsWorkplaceSafety),
-        workTime: transformWorktime(entry.feedback.workTime),
+    const transformedData = data.map((entry) => ({
+        key: entry.feedbackId,
+        feedbackId: entry.feedbackId,
+        satisfactionLevel: entry.satisfactionLevel?.toFixed(2) ?? "N/A",
+        lastEvaluation: entry.lastEvaluation?.toFixed(2) ?? "N/A",
+        numberProject: entry.numberProject ?? "N/A",
+        averageMonthlyHours: entry.averageMonthlyHours ?? "N/A",
+        timeSpendCompany: entry.timeSpendCompany ?? "N/A",
+        workAccident: formatBoolean(entry.workAccident),
+        promotionLast5years: formatBoolean(entry.promotionLast5years),
+        department: entry.department ? getDepartmentDisplayName(entry.department) : "Unknown",
+        salary: entry.salary ? transformData(entry.salary) : "Unknown",
     }));
 
     const columns = [
         {
-            title: "Nr.",
+            title: "ID",
             dataIndex: "feedbackId",
+            key: "feedbackId",
         },
         {
-            title: "Subsidiary Code",
-            dataIndex: "subsidiaryCode",
-            render: (_: unknown, record: TransformedEntry) => (
-                <Tooltip
-                    title={
-                        <div className={styles.tooltipContent}>
-                            <div>
-                                <span>Country:</span> {record.country}
-                            </div>
-                            <div>
-                                <span>City:</span> {record.city}
-                            </div>
-                        </div>
-                    }
-                    classNames={{root: styles.customTooltip}}
-                >
-                    <span className={styles.fullName}>{record.subsidiaryCode}</span>
-                </Tooltip>
-            ),
+            title: "How satisfied are you with your job?",
+            dataIndex: "satisfactionLevel",
+            key: "satisfactionLevel",
         },
         {
-            title: "Satisfy Salary",
-            dataIndex: "confirmationSalary",
+            title: "What was your score on your last performance evaluation?",
+            dataIndex: "lastEvaluation",
+            key: "lastEvaluation",
         },
         {
-            title: "Type of Engagement",
-            dataIndex: "engagement",
+            title: "How many projects are you currently working on?",
+            dataIndex: "numberProject",
+            key: "numberProject",
         },
         {
-            title: "Do you work overtime?",
-            dataIndex: "confirmationOvertime",
+            title: "How many hours do you work per month on average?",
+            dataIndex: "averageMonthlyHours",
+            key: "averageMonthlyHours",
         },
         {
-            title: "Protective equipment is adequate?",
-            dataIndex: "confirmationEquipmentAdequate",
+            title: "How many years have you been with the company?",
+            dataIndex: "timeSpendCompany",
+            key: "timeSpendCompany",
         },
         {
-            title: "Safety measures are clear?",
-            dataIndex: "confirmationSafetyMeasures",
+            title: "Have you ever had a work-related accident?",
+            dataIndex: "workAccident",
+            key: "workAccident",
         },
         {
-            title: "Protection measures were applied?",
-            dataIndex: "confirmationProtectionMeasures",
+            title: "Have you been promoted in the last 5 years?",
+            dataIndex: "promotionLast5years",
+            key: "promotionLast5years",
         },
         {
-            title: "What type of danger are you most exposed to?",
-            dataIndex: "dangerType",
+            title: "Which department do you work in?",
+            dataIndex: "department",
+            key: "department",
         },
         {
-            title: "Who is responsible for workplace safety?",
-            dataIndex: "factorsWorkplaceSafety",
-        },
-        {
-            title: "How much time are you exposed to unsafe conditions?",
-            dataIndex: "workTime",
+            title: "How would you describe your salary level?",
+            dataIndex: "salary",
+            key: "salary",
         },
     ];
 
@@ -97,8 +85,7 @@ const TableContent = ({data, isLoading}: TableContentProps) => {
         <div className={styles.tableContent}>
             <Table
                 columns={columns}
-                dataSource={transformedData.length > 0 ? transformedData : []}
-                rowKey={(record) => record.feedbackId}
+                dataSource={transformedData}
                 pagination={{
                     current: pagination.current,
                     pageSize: pagination.pageSize,

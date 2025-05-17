@@ -3,7 +3,7 @@ import {EmployeeDetailsResponse, EmployeeResponse, UpdateEmployeeRequest} from "
 
 export const employeeApi = createApi({
     reducerPath: 'employeeApi',
-    baseQuery: fetchBaseQuery({baseUrl: 'http://localhost:8080/employees'}),
+    baseQuery: fetchBaseQuery({baseUrl: 'http://localhost:9090/employees'}),
     endpoints: (builder) => ({
         getEmployeeByUserId: builder.query<EmployeeDetailsResponse, number>({
             query: (userId) => ({

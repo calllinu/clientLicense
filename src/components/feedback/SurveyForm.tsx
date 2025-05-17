@@ -1,70 +1,63 @@
 import React, {useCallback} from "react";
-import {Field, Form, Formik} from "formik";
-import {Button, Card, Col, Radio, Row, Select, Spin, Tooltip} from "antd";
+import {Form, Formik} from "formik";
+import {Button, Card, Col, InputNumber, Row, Select, Slider, Spin, Tooltip,} from "antd";
 import {motion} from "framer-motion";
 import styles from "./survey-form.module.scss";
 import {FeedbackInterface} from "../../interfaces/FeedbackInterfaces.tsx";
-import {Confirmation} from "../../interfaces/enums/ConfirmationEnum.tsx";
-import {Engagement} from "../../interfaces/enums/EngagementEnum.tsx";
-import {initialValues} from "./utils/initialValues.tsx";
-import {validationSchema} from "./utils/validationSchema.tsx";
-import {WorkTime} from "../../interfaces/enums/WorktimeEnum.tsx";
 import {useGetEmployeeByUserIdQuery} from "../../services/employeeApi.tsx";
-import {FactorsWorkplaceSafetyInterface} from "../../interfaces/enums/FactorsWorkplaceSafetyInterface.tsx";
-import {DangerTypeInterface} from "../../interfaces/enums/DangerTypeInterface.tsx";
 import {useAddEmployeeFeedbackMutation} from "../../services/feedbackApi.tsx";
+import {
+    departmentDisplayMap,
+    Departments,
+    transformDepartmentValue,
+} from "../../interfaces/enums/DepartmentsInterface.tsx";
+import {Salary} from "../../interfaces/enums/SalaryInterface.tsx";
+import {validationSchema} from "./utils/validationSchema.tsx";
 
 const SurveyForm: React.FC = () => {
     const [addEmployeeFeedback] = useAddEmployeeFeedbackMutation();
-
-    const formatValue = (value: string): string => {
-        return value
-            .split('_')
-            .map((word, index) => {
-                if (index === 0) {
-                    return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-                }
-                return word.toLowerCase();
-            })
-            .join(' ');
-    };
-
-    const workTimeMap: Record<string, string> = {
-        'MORE_THAN_ONE_HOUR': '>1h',
-        'ONE_TWO_HOURS': '1-2h',
-        'TWO_FOUR_HOURS': '2-4h',
-        'FOUR_SIX_HOURS': '4-6h',
-        'FULL_TIME': 'Full time',
-    };
-
     const {
         data: employee,
         refetch,
-        isLoading: isEmployeeLoading
-    } = useGetEmployeeByUserIdQuery(sessionStorage.getItem('userId') as unknown as number);
+        isLoading: isEmployeeLoading,
+    } = useGetEmployeeByUserIdQuery(
+        sessionStorage.getItem("userId") as unknown as number
+    );
 
     const handleSubmit = useCallback(
         async (values: FeedbackInterface) => {
             try {
                 if (employee) {
-                    const timeExposeDangerFormatted = (Object.keys(workTimeMap).find(key => workTimeMap[key] === values.workTime) || values.workTime) as WorkTime;
                     const formattedValues = {
                         ...values,
-                        workTime: timeExposeDangerFormatted
+                        satisfactionLevel: values.satisfactionLevel
+                            ? Number((values.satisfactionLevel / 10).toFixed(2))
+                            : undefined,
+                        lastEvaluation: values.lastEvaluation
+                            ? Number((values.lastEvaluation / 10).toFixed(2))
+                            : undefined,
+                        promotionLast5years: values.promotionLast5years === 1 ? 1 : 0,
+                        workAccident: values.workAccident === 1 ? 1 : 0,
+                        department: transformDepartmentValue(
+                            values.department as Departments
+                        ),
+                        salary: values.salary?.toLowerCase(),
                     };
+
                     await addEmployeeFeedback({
                         employeeId: employee.employee.employeeId,
                         feedback: formattedValues,
-                    }).unwrap().then(() => {
-                        refetch();
-                    });
+                    })
+                        .unwrap()
+                        .then(() => {
+                            refetch();
+                        });
                 }
-
             } catch (error) {
                 console.error("Error adding feedback:", error);
             }
         },
-        [addEmployeeFeedback, employee]
+        [addEmployeeFeedback, employee, refetch]
     );
 
     if (isEmployeeLoading) {
@@ -84,13 +77,11 @@ const SurveyForm: React.FC = () => {
                         animate={{opacity: 1, y: 0}}
                         transition={{duration: 0.5}}
                     >
-                        <Card
-                            title="Thank You!"
-                            variant={undefined}
-                            className={styles.card}
-                        >
-                            <p className={styles.message}>You have already completed the survey. Thank you for your
-                                feedback!</p>
+                        <Card title="Thank You!" className={styles.card}>
+                            <p className={styles.message}>
+                                You have already completed the survey. Thank you for your
+                                feedback!
+                            </p>
                         </Card>
                     </motion.div>
                 </div>
@@ -100,179 +91,190 @@ const SurveyForm: React.FC = () => {
                     animate={{opacity: 1, y: 0}}
                     transition={{duration: 0.5}}
                 >
-                    <Card
-                        title="Employee Safety & Satisfaction Survey"
-                        bordered={false}
-                        className={styles.card}
-                    >
+                    <Card title="Employee Feedback Survey" variant={"borderless"} className={styles.card}>
                         <Formik
-                            initialValues={initialValues}
+                            initialValues={{} as FeedbackInterface}
                             validationSchema={validationSchema}
                             onSubmit={handleSubmit}
                         >
-                            {({handleSubmit, setFieldValue, errors, touched}) => (
+                            {({handleSubmit, setFieldValue, values, errors, touched}) => (
                                 <Form onSubmit={handleSubmit} className={styles.form}>
                                     <Row gutter={[16, 24]}>
                                         <Col span={24}>
-                                            <div className={styles.formItem}>
-                                                <label>Is the salary satisfactory for you?</label>
-                                                <Field as={Radio.Group} name="confirmationSalary">
-                                                    <Radio value={Confirmation.YES}>Yes</Radio>
-                                                    <Radio value={Confirmation.NO}>No</Radio>
-                                                </Field>
-                                                {touched.confirmationSalary && errors.confirmationSalary && (
-                                                    <div className={styles.error}>{errors.confirmationSalary}</div>
-                                                )}
-                                            </div>
+                                            <label>How satisfied are you with your job?</label>
+                                            <Slider
+                                                min={0}
+                                                max={10}
+                                                step={0.1}
+                                                value={values.satisfactionLevel}
+                                                onChange={(val) => setFieldValue("satisfactionLevel", val)}
+                                            />
+                                            <InputNumber
+                                                min={0}
+                                                max={10}
+                                                step={0.1}
+                                                value={values.satisfactionLevel}
+                                                onChange={(val) => setFieldValue("satisfactionLevel", val)}
+                                                style={{marginLeft: 16}}
+                                            />
+                                            {touched.satisfactionLevel && errors.satisfactionLevel && (
+                                                <div className={styles.error}>{errors.satisfactionLevel}</div>
+                                            )}
                                         </Col>
 
                                         <Col span={24}>
-                                            <div className={styles.formItem}>
-                                                <label>What type of engagement is required?</label>
-                                                <Select
-                                                    id="engagement"
-                                                    onChange={(value) => setFieldValue("engagement", value)}
-                                                >
-                                                    {Object.values(Engagement).map((value) => (
-                                                        <Select.Option key={value} value={value}>
-                                                            {formatValue(value)}
-                                                        </Select.Option>
-                                                    ))}
-                                                </Select>
-                                                {touched.engagement && errors.engagement && (
-                                                    <div className={styles.error}>{errors.engagement}</div>
-                                                )}
-                                            </div>
+                                            <label>What was your score on your last performance evaluation?</label>
+                                            <Slider
+                                                min={0}
+                                                max={10}
+                                                step={0.1}
+                                                value={values.lastEvaluation}
+                                                onChange={(val) => setFieldValue("lastEvaluation", val)}
+                                            />
+                                            <InputNumber
+                                                min={0}
+                                                max={10}
+                                                step={0.1}
+                                                value={values.lastEvaluation}
+                                                onChange={(val) => setFieldValue("lastEvaluation", val)}
+                                                style={{marginLeft: 16}}
+                                            />
+                                            {touched.lastEvaluation && errors.lastEvaluation && (
+                                                <div className={styles.error}>{errors.lastEvaluation}</div>
+                                            )}
                                         </Col>
 
                                         <Col span={24}>
-                                            <div className={styles.formItem}>
-                                                <label>What type of risk factors do you consider you are most exposed to
-                                                    for
-                                                    your activity?</label>
-                                                <Select
-                                                    id="dangerType"
-                                                    onChange={(value) => setFieldValue("dangerType", value)}
-                                                >
-                                                    {Object.values(DangerTypeInterface).map((value) => (
-                                                        <Select.Option key={value} value={value}>
-                                                            {formatValue(value)}
-                                                        </Select.Option>
-                                                    ))}
-                                                </Select>
-                                                {touched.dangerType && errors.dangerType && (
-                                                    <div className={styles.error}>{errors.dangerType}</div>
-                                                )}
-                                            </div>
+                                            <label>How many projects are you currently working on?</label>
+                                            <InputNumber
+                                                min={0}
+                                                value={values.numberProject}
+                                                onChange={(val) => setFieldValue("numberProject", val)}
+                                                style={{width: "100%"}}
+                                            />
+                                            {touched.numberProject && errors.numberProject && (
+                                                <div className={styles.error}>{errors.numberProject}</div>
+                                            )}
                                         </Col>
 
                                         <Col span={24}>
-                                            <div className={styles.formItem}>
-                                                <label>Do you work overtime?</label>
-                                                <Field as={Radio.Group} name="confirmationOvertime">
-                                                    <Radio value={Confirmation.YES}>Yes</Radio>
-                                                    <Radio value={Confirmation.NO}>No</Radio>
-                                                </Field>
-                                                {touched.confirmationOvertime && errors.confirmationOvertime && (
-                                                    <div className={styles.error}>{errors.confirmationOvertime}</div>
-                                                )}
-                                            </div>
+                                            <label>How many hours do you work per month on average?</label>
+                                            <InputNumber
+                                                min={0}
+                                                value={values.averageMonthlyHours}
+                                                onChange={(val) => setFieldValue("averageMonthlyHours", val)}
+                                                style={{width: "100%"}}
+                                            />
+                                            {touched.averageMonthlyHours && errors.averageMonthlyHours && (
+                                                <div className={styles.error}>{errors.averageMonthlyHours}</div>
+                                            )}
                                         </Col>
 
                                         <Col span={24}>
-                                            <div className={styles.formItem}>
-                                                <label>Is the protective equipment adequate?</label>
-                                                <Field as={Radio.Group} name="confirmationEquipmentAdequate">
-                                                    <Radio value={Confirmation.YES}>Yes</Radio>
-                                                    <Radio value={Confirmation.NO}>No</Radio>
-                                                </Field>
-                                                {touched.confirmationEquipmentAdequate && errors.confirmationEquipmentAdequate && (
-                                                    <div
-                                                        className={styles.error}>{errors.confirmationEquipmentAdequate}</div>
-                                                )}
-                                            </div>
-                                        </Col>
-
-                                        <Col span={24}>
-                                            <div className={styles.formItem}>
-                                                <label>Were safety measures applied?</label>
-                                                <Field as={Radio.Group} name="confirmationSafetyMeasures">
-                                                    <Radio value={Confirmation.YES}>Yes</Radio>
-                                                    <Radio value={Confirmation.NO}>No</Radio>
-                                                </Field>
-                                                {touched.confirmationSafetyMeasures && errors.confirmationSafetyMeasures && (
-                                                    <div
-                                                        className={styles.error}>{errors.confirmationSafetyMeasures}</div>
-                                                )}
-                                            </div>
-                                        </Col>
-
-                                        <Col span={24}>
-                                            <div className={styles.formItem}>
-                                                <label>Are protection measures clear?</label>
-                                                <Field as={Radio.Group} name="confirmationProtectionMeasures">
-                                                    <Radio value={Confirmation.YES}>Yes</Radio>
-                                                    <Radio value={Confirmation.NO}>No</Radio>
-                                                </Field>
-                                                {touched.confirmationProtectionMeasures && errors.confirmationProtectionMeasures && (
-                                                    <div
-                                                        className={styles.error}>{errors.confirmationProtectionMeasures}</div>
-                                                )}
-                                            </div>
-                                        </Col>
-
-                                        <Col span={24}>
-                                            <div className={styles.formItem}>
-                                                <label>How much time are you exposed to danger?</label>
-                                                <Select
-                                                    id="workTime"
-                                                    onChange={(value) => setFieldValue("workTime", value)}
-                                                >
-                                                    {Object.values(WorkTime).map((value) => (
-                                                        <Select.Option key={value} value={value}>
-                                                            {value}
-                                                        </Select.Option>
-                                                    ))}
-                                                </Select>
-                                                {touched.workTime && errors.workTime && (
-                                                    <div className={styles.error}>{errors.workTime}</div>
-                                                )}
-                                            </div>
-                                        </Col>
-
-                                        <Col span={24}>
-                                            <div className={styles.formItem}>
-                                                <label>What factors do you consider to influence compliance with
-                                                    workplace
-                                                    safety measures?</label>
-                                                <Select
-                                                    id="factorsWorkplaceSafety"
-                                                    onChange={(value) => setFieldValue("factorsWorkplaceSafety", value)}
-                                                >
-                                                    {Object.values(FactorsWorkplaceSafetyInterface).map((value) => (
-                                                        <Select.Option key={value} value={value}>
-                                                            {formatValue(value)}
-                                                        </Select.Option>
-                                                    ))}
-                                                </Select>
-                                                {touched.factorsWorkplaceSafety && errors.factorsWorkplaceSafety && (
-                                                    <div className={styles.error}>{errors.factorsWorkplaceSafety}</div>
-                                                )}
-                                            </div>
+                                            <label>How many years have you been with the company?</label>
+                                            <InputNumber
+                                                min={0}
+                                                value={values.timeSpendCompany}
+                                                onChange={(val) => setFieldValue("timeSpendCompany", val)}
+                                                style={{width: "100%"}}
+                                            />
+                                            {touched.timeSpendCompany && errors.timeSpendCompany && (
+                                                <div className={styles.error}>{errors.timeSpendCompany}</div>
+                                            )}
                                         </Col>
                                     </Row>
 
-                                    <Tooltip
-                                        title={employee?.hasNullFields && "Please fill in your profile data, or wait that other details to be filled by your Organization's Admin."}>
-                                        <Button
-                                            type="primary"
-                                            htmlType="submit"
-                                            className={styles.submitButton}
-                                            disabled={employee?.hasNullFields}
+                                    <Row gutter={[16, 24]} style={{marginTop: 24}}>
+                                        <Col span={24}>
+                                            <label>Have you been promoted in the last 5 years?</label>
+                                            <Select
+                                                onChange={(val) =>
+                                                    setFieldValue("promotionLast5years", parseInt(val))
+                                                }
+                                                style={{width: "100%"}}
+                                                value={values.promotionLast5years?.toString()}
+                                            >
+                                                <Select.Option value="1">Yes</Select.Option>
+                                                <Select.Option value="0">No</Select.Option>
+                                            </Select>
+                                            {touched.promotionLast5years && errors.promotionLast5years && (
+                                                <div className={styles.error}>{errors.promotionLast5years}</div>
+                                            )}
+                                        </Col>
+
+                                        <Col span={24}>
+                                            <label>Have you ever had a work-related accident?</label>
+                                            <Select
+                                                onChange={(val) =>
+                                                    setFieldValue("workAccident", parseInt(val))
+                                                }
+                                                style={{width: "100%"}}
+                                                value={values.workAccident?.toString()}
+                                            >
+                                                <Select.Option value="1">Yes</Select.Option>
+                                                <Select.Option value="0">No</Select.Option>
+                                            </Select>
+                                            {touched.workAccident && errors.workAccident && (
+                                                <div className={styles.error}>{errors.workAccident}</div>
+                                            )}
+                                        </Col>
+
+                                        <Col span={24}>
+                                            <label>Which department do you work in?</label>
+                                            <Row>
+                                                <Select
+                                                    onChange={(val) => setFieldValue("department", val)}
+                                                    value={values.department}
+                                                    style={{width: "100%"}}
+                                                >
+                                                    {Object.keys(departmentDisplayMap).map((key) => (
+                                                        <Select.Option key={key} value={key}>
+                                                            {departmentDisplayMap[key]}
+                                                        </Select.Option>
+                                                    ))}
+                                                </Select>
+                                                {touched.department && errors.department && (
+                                                    <div className={styles.error}>{errors.department}</div>
+                                                )}
+                                            </Row>
+                                        </Col>
+
+                                        <Col span={24}>
+                                            <label>How would you describe your salary level?</label>
+                                            <Select
+                                                onChange={(val) => setFieldValue("salary", val)}
+                                                value={values.salary}
+                                                style={{width: "100%"}}
+                                            >
+                                                {Object.values(Salary).map((val) => (
+                                                    <Select.Option key={val.toLowerCase()} value={val.toLowerCase()}>
+                                                        {val}
+                                                    </Select.Option>
+                                                ))}
+                                            </Select>
+                                            {touched.salary && errors.salary && (
+                                                <div className={styles.error}>{errors.salary}</div>
+                                            )}
+                                        </Col>
+                                    </Row>
+                                    <Col className={styles.submitContainer} span={24}>
+                                        <Tooltip
+                                            title={
+                                                employee?.hasNullFields &&
+                                                "Please fill in your profile data, or wait for it to be filled by your Organization's Admin."
+                                            }
                                         >
-                                            Submit
-                                        </Button>
-                                    </Tooltip>
+                                            <Button
+                                                type="primary"
+                                                htmlType="submit"
+                                                className={styles.submitButton}
+                                                disabled={employee?.hasNullFields}
+                                            >
+                                                Submit
+                                            </Button>
+                                        </Tooltip>
+                                    </Col>
+
                                 </Form>
                             )}
                         </Formik>

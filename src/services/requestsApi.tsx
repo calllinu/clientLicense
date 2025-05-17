@@ -3,7 +3,7 @@ import {RegistrationRequest} from "../interfaces/RegistrationRequest.tsx";
 
 export const registrationRequestsApi = createApi({
     reducerPath: 'registrationRequestsApi',
-    baseQuery: fetchBaseQuery({baseUrl: 'http://localhost:8080/registration-requests'}),
+    baseQuery: fetchBaseQuery({baseUrl: 'http://localhost:9090/registration-requests'}),
     endpoints: (builder) => ({
         getRequestsByAdmin: builder.query<RegistrationRequest[], number>({
             query: (adminId) => `/admin/${adminId}`,

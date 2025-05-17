@@ -1,9 +1,11 @@
 import {Pagination, Table, Tooltip} from 'antd';
 import styles from './../data-content/data-content.module.scss';
 import {OwnerFeedbacksTransformedEntry} from "../../interfaces/TableFeedbacksInterface.tsx";
-import {transformData, transformWorktime} from "../../interfaces/TransformData.tsx";
+import {transformData} from "../../interfaces/TransformData.tsx";
 import {useGetAllFeedbacksPageableQuery} from "../../services/feedbackApi.tsx";
 import {useCallback, useState} from "react";
+import {formatBoolean} from "../statistics/utils/fieldConfigs.tsx";
+import {getDepartmentDisplayName} from "../statistics/utils/chartUtils.tsx";
 
 const OwnerFeedbacks = () => {
     const [pagination, setPagination] = useState({current: 1, pageSize: 20});
@@ -26,23 +28,24 @@ const OwnerFeedbacks = () => {
         subsidiaryCountry: entry.employeeDetails.subsidiaryDetails.country,
         subsidiaryCity: entry.employeeDetails.subsidiaryDetails.city,
         subsidiaryAddress: entry.employeeDetails.subsidiaryDetails.address,
-        confirmationEquipmentAdequate: transformData(entry.feedback.confirmationEquipmentAdequate),
-        confirmationOvertime: transformData(entry.feedback.confirmationOvertime),
-        confirmationProtectionMeasures: transformData(entry.feedback.confirmationProtectionMeasures),
-        confirmationSafetyMeasures: transformData(entry.feedback.confirmationSafetyMeasures),
-        confirmationSalary: transformData(entry.feedback.confirmationSalary),
-        dangerType: transformData(entry.feedback.dangerType),
-        engagement: transformData(entry.feedback.engagement),
-        factorsWorkplaceSafety: transformData(entry.feedback.factorsWorkplaceSafety),
-        workTime: transformWorktime(entry.feedback.workTime),
+        satisfactionLevel: entry.feedback.satisfactionLevel ? parseFloat(entry.feedback.satisfactionLevel.toFixed(2)) : undefined,
+        lastEvaluation: entry.feedback.lastEvaluation ? parseFloat(entry.feedback.lastEvaluation.toFixed(2)) : undefined,
+        numberProject: entry.feedback.numberProject,
+        averageMonthlyHours: entry.feedback.averageMonthlyHours,
+        timeSpendCompany: entry.feedback.timeSpendCompany,
+        workAccident: formatBoolean(entry.feedback.workAccident),
+        promotionLast5years: formatBoolean(entry.feedback.promotionLast5years),
+        department: entry.feedback.department ? getDepartmentDisplayName(entry.feedback.department) : "Unknown",
+        salary: entry.feedback.salary ? transformData(entry.feedback.salary) : "Unknown",
         index: (pagination.current - 1) * pagination.pageSize + index + 1,
     }));
 
     const columns = [
-        {title: 'Nr.', dataIndex: 'index'},
+        {title: 'Nr.', dataIndex: 'index', key: 'index'},
         {
             title: 'Organization Code',
             dataIndex: 'organizationCode',
+            key: 'organizationCode',
             render: (_: unknown, record: OwnerFeedbacksTransformedEntry) => (
                 <Tooltip
                     title={
@@ -61,15 +64,31 @@ const OwnerFeedbacks = () => {
                 </Tooltip>
             ),
         },
-        {title: 'Satisfy Salary', dataIndex: 'confirmationSalary'},
-        {title: 'Type of Engagement', dataIndex: 'engagement'},
-        {title: 'Do you work overtime?', dataIndex: 'confirmationOvertime'},
-        {title: 'Protective equipment is adequate?', dataIndex: 'confirmationEquipmentAdequate'},
-        {title: 'Safety measures are clear?', dataIndex: 'confirmationSafetyMeasures'},
-        {title: 'Protection measures were applied?', dataIndex: 'confirmationProtectionMeasures'},
-        {title: 'What type of danger are you most exposed to?', dataIndex: 'dangerType'},
-        {title: 'Who is responsible for workplace safety?', dataIndex: 'factorsWorkplaceSafety'},
-        {title: 'How much time are you exposed to unsafe conditions?', dataIndex: 'workTime'},
+        {title: 'How satisfied are you with your job?', dataIndex: 'satisfactionLevel', key: 'satisfactionLevel'},
+        {
+            title: 'What was your score on your last performance evaluation?',
+            dataIndex: 'lastEvaluation',
+            key: 'lastEvaluation'
+        },
+        {title: 'How many projects are you currently working on?', dataIndex: 'numberProject', key: 'numberProject'},
+        {
+            title: 'How many hours do you work per month on average?',
+            dataIndex: 'averageMonthlyHours',
+            key: 'averageMonthlyHours'
+        },
+        {
+            title: 'How many years have you been with the company?',
+            dataIndex: 'timeSpendCompany',
+            key: 'timeSpendCompany'
+        },
+        {title: 'Have you ever had a work-related accident?', dataIndex: 'workAccident', key: 'workAccident'},
+        {
+            title: 'Have you been promoted in the last 5 years?',
+            dataIndex: 'promotionLast5years',
+            key: 'promotionLast5years'
+        },
+        {title: 'Which department do you work in?', dataIndex: 'department', key: 'department'},
+        {title: 'How would you describe your salary level?', dataIndex: 'salary', key: 'salary'},
     ];
 
     return (
@@ -77,7 +96,7 @@ const OwnerFeedbacks = () => {
             <Table
                 columns={columns}
                 dataSource={transformedData}
-                rowKey={(record: OwnerFeedbacksTransformedEntry) => `${record.feedbackId}`}
+                rowKey="feedbackId"
                 className={styles.table}
                 loading={isLoadingFeedbacks}
                 pagination={false}
