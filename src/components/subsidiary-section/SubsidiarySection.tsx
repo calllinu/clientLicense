@@ -68,45 +68,48 @@ const SubsidiariesSection = ({subsidiaries, refetch}: SubsidiariesSectionProps) 
 
     return (
         <div className={styles.subsidiariesContainer}>
-            {subsidiaries.map((sub: Subsidiary) => (
-                <div
-                    key={sub.subsidiaryId}
-                    className={styles.subsidiaryCard}
-                    onClick={() => navigateToSubsidiary(sub)}
-                >
-                    <div className={styles.cardContent}>
-                        <div className={styles.subItem}>
-                            <BarcodeOutlined/> <strong>Subsidiary Code:</strong> {sub.subsidiaryCode}
+            {subsidiaries
+                .slice()
+                .sort((a, b) => a.country.localeCompare(b.country))
+                .map((sub: Subsidiary) => (
+                    <div
+                        key={sub.subsidiaryId}
+                        className={styles.subsidiaryCard}
+                        onClick={() => navigateToSubsidiary(sub)}
+                    >
+                        <div className={styles.cardContent}>
+                            <div className={styles.subItem}>
+                                <BarcodeOutlined/> <strong>Subsidiary Code:</strong> {sub.subsidiaryCode}
+                            </div>
+                            <div className={styles.subItem}>
+                                <EnvironmentOutlined/> <strong>City:</strong> {sub.city}
+                            </div>
+                            <div className={styles.subItem}>
+                                <HomeOutlined/> <strong>Street:</strong> {sub.address}
+                            </div>
+                            <div className={styles.subItem}>
+                                <GlobalOutlined/> <strong>Country:</strong> {sub.country}
+                            </div>
+                            <Space className={styles.cardActions}>
+                                <Button
+                                    icon={<EditOutlined/>}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        showEditModal(sub);
+                                    }}
+                                />
+                                <Button
+                                    icon={<DeleteOutlined/>}
+                                    danger
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        showDeleteModal(sub);
+                                    }}
+                                />
+                            </Space>
                         </div>
-                        <div className={styles.subItem}>
-                            <EnvironmentOutlined/> <strong>City:</strong> {sub.city}
-                        </div>
-                        <div className={styles.subItem}>
-                            <HomeOutlined/> <strong>Street:</strong> {sub.address}
-                        </div>
-                        <div className={styles.subItem}>
-                            <GlobalOutlined/> <strong>Country:</strong> {sub.country}
-                        </div>
-                        <Space className={styles.cardActions}>
-                            <Button
-                                icon={<EditOutlined/>}
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    showEditModal(sub);
-                                }}
-                            />
-                            <Button
-                                icon={<DeleteOutlined/>}
-                                danger
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    showDeleteModal(sub);
-                                }}
-                            />
-                        </Space>
                     </div>
-                </div>
-            ))}
+                ))}
 
             <ConfirmDeleteModal
                 isVisible={isDeleteModalVisible}

@@ -11,11 +11,9 @@ import useOrgAdminRole from "../../hooks/useOrgAdminRole.tsx";
 import useOwnerRole from "../../hooks/useOwnerRole.tsx";
 import {useGetSubsidiariesForOrganizationQuery} from "../../services/organizationApi.tsx";
 import SubsidiaryForOrganization from "../subsidiaries/SubsidiaryForOrganization.tsx";
-// import SurveyForm from "../feedback/SurveyForm.tsx";
 import {Subsidiary} from "../../interfaces/SubsidiaryInterfaces.tsx";
 import {FeedbackInterface} from "../../interfaces/FeedbackInterfaces.tsx";
 import DataContent from "../data-content/DataContent.tsx";
-// import OwnerFeedbacks from "../ownerFeedbacks/OwnerFeedbacks.tsx";
 import StatisticsContentOwner from "../statistics/owner-stats/StatisticsContentOwner.tsx";
 import StatisticsContentOrgAdmin from "../statistics/org-admin-stats/StatisticsContentOrgAdmin.tsx";
 import OwnerFeedbacks from "../ownerFeedbacks/OwnerFeedbacks.tsx";
@@ -90,7 +88,6 @@ const Dashboard = () => {
                             />
                         )
                     }
-
                 </Content>
             </Layout>
             <Footer/>

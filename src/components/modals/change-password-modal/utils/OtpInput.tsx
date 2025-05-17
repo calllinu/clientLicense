@@ -5,6 +5,7 @@ import styles from './../change-password.module.scss';
 const OtpInput = ({otp, onOtpChange}: { otp: string[]; onOtpChange: (otp: string[]) => void }) => {
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
         const value = e.target.value;
+        if (!/^\d*$/.test(value)) return;
         if (value.length > 1) return;
         otp[index] = value;
         onOtpChange([...otp]);

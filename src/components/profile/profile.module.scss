@@ -1,19 +1,42 @@
-.profileContainer {
-  width: 100%;
-  max-width: 50rem;
-  margin: 20px auto;
-  padding: 20px;
-  border: 1px solid #f0f0f0;
-  border-radius: 8px;
-  min-height: calc(100vh - 400px);
-  font-size: 1.2rem;
-  box-shadow: 0 0 10px 5px var(--shadow-color);
+.profileLayout {
+  display: flex;
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 2rem;
   background-color: var(--neutral-white);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+  border-radius: 1rem;
+  flex-wrap: wrap;
 }
 
-.profileTitle {
+.profileCard {
+  flex: 1;
+  max-width: 350px;
   text-align: center;
-  font-size: 2rem;
+  padding: 2rem;
+  background-color: #fafafa;
+  border-radius: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.avatar {
+  margin-bottom: 1rem;
+}
+
+.name {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.formContainer {
+  flex: 2;
+  min-width: 300px;
+}
+
+.formTitle {
+  font-size: 1.75rem;
+  font-weight: 600;
   margin-bottom: 1rem;
 }
 
@@ -23,95 +46,22 @@
   gap: 1rem;
 }
 
-.formItem {
-  margin-bottom: 20px;
-
-  .select, .input {
-    width: 100%;
-    height: 3rem;
-    font-size: 1rem;
-    padding: 0.5rem;
-  }
-
-  label {
-    font-size: 1rem;
-    margin-bottom: 0.5rem;
-    display: block;
-  }
-}
-
-.buttonsContainer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 1rem;
-  justify-content: center;
-}
-
-.submitButton, .logoutButton {
-  width: 100%;
-  max-width: 400px;
-  font-size: 1.1rem;
-  border-radius: 0.8rem;
-  padding: 1.5rem;
-}
-
 .submitButton {
+  width: 100%;
+  height: 3rem;
+  font-size: 1.1rem;
+  border-radius: 0.5rem;
   background-color: var(--blue-medium);
-  color: var(--neutral-white);
+  color: white;
   border: none;
 
   &:hover {
-    background-color: var(--blue-dark) !important;
+    background-color: var(--blue-dark);
   }
 }
 
 .error {
   color: var(--error-red);
-}
-
-.logoutButton {
-  border: 1px solid var(--blue-medium);
-  background-color: var(--neutral-white);
-  color: var(--blue-medium);
-
-  &:hover {
-    background-color: var(--blue-light);
-    color: var(--neutral-white);
-  }
-}
-
-@media (max-width: 768px) {
-  .profileContainer {
-    width: 100%;
-    padding: 1rem;
-  }
-
-  .form {
-    gap: 0.5rem;
-  }
-
-  .formItem {
-    margin-bottom: 1rem;
-
-    .select, .input {
-      font-size: 0.9rem;
-      height: 2.5rem;
-    }
-
-    label {
-      font-size: 0.9rem;
-    }
-  }
-
-  .submitButton, .logoutButton {
-    width: 100%;
-    max-width: 100%;
-    font-size: 0.9rem;
-  }
-
-  .profileTitle {
-    font-size: 1.5rem;
-  }
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
 }

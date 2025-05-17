@@ -1,5 +1,6 @@
-import {Button, Col, Drawer, Menu, Row} from "antd";
+import {Button, Col, Drawer, Menu, Row} from 'antd';
 import {
+    ArrowLeftOutlined,
     BarChartOutlined,
     CloseOutlined,
     CommentOutlined,
@@ -9,26 +10,31 @@ import {
     ShopOutlined,
     UsergroupAddOutlined,
     UserOutlined,
-} from "@ant-design/icons";
-import styles from "./Navbar.module.scss";
-import {useCallback, useMemo, useState} from "react";
-import {useMediaQuery} from "react-responsive";
-import useOrgAdminRole from "../../hooks/useOrgAdminRole.tsx";
-import useOwnerRole from "../../hooks/useOwnerRole.tsx";
+} from '@ant-design/icons';
+import styles from './Navbar.module.scss';
+import {useCallback, useMemo, useState} from 'react';
+import {useMediaQuery} from 'react-responsive';
+import {useNavigate} from 'react-router-dom';
+import useOrgAdminRole from '../../hooks/useOrgAdminRole.tsx';
+import useOwnerRole from '../../hooks/useOwnerRole.tsx';
 
+interface NavbarProps {
+    handleContentSwitch: (contentType: string) => void;
+    handleLogout: () => void;
+    isDashboard?: boolean;
+}
 
 const Navbar = ({
                     handleContentSwitch,
                     handleLogout,
-                }: {
-    handleContentSwitch: (contentType: string) => void;
-    handleLogout: () => void;
-}) => {
+                    isDashboard = true,
+                }: NavbarProps) => {
     const [drawerVisible, setDrawerVisible] = useState(false);
     const [dashboardSubMenuVisible, setDashboardSubMenuVisible] = useState(false);
-    const isMobile = useMediaQuery({query: "(max-width: 768px)"});
+    const isMobile = useMediaQuery({query: '(max-width: 768px)'});
     const isOrgAdmin = useOrgAdminRole();
     const isOwner = useOwnerRole();
+    const navigate = useNavigate();
 
     const openDrawer = useCallback(() => {
         setDrawerVisible(true);
@@ -46,20 +52,20 @@ const Navbar = ({
     const dashboardMenuItems = useMemo(() => {
         const items = [
             {
-                key: "data",
+                key: 'data',
                 icon: <DatabaseOutlined/>,
-                label: "Data",
+                label: 'Data',
                 onClick: () => {
-                    handleContentSwitch("data");
+                    handleContentSwitch('data');
                     closeDrawer();
                 },
             },
             {
-                key: "statistics",
+                key: 'statistics',
                 icon: <BarChartOutlined/>,
-                label: "Statistics",
+                label: 'Statistics',
                 onClick: () => {
-                    handleContentSwitch("statistics");
+                    handleContentSwitch('statistics');
                     closeDrawer();
                 },
             },
@@ -67,11 +73,11 @@ const Navbar = ({
 
         if (isOwner) {
             items.push({
-                key: "organizations",
+                key: 'organizations',
                 icon: <ShopOutlined/>,
-                label: "Organizations",
+                label: 'Organizations',
                 onClick: () => {
-                    handleContentSwitch("organizations");
+                    handleContentSwitch('organizations');
                     closeDrawer();
                 },
             });
@@ -80,20 +86,20 @@ const Navbar = ({
         if (isOrgAdmin) {
             items.push(
                 {
-                    key: "requests",
+                    key: 'requests',
                     icon: <UsergroupAddOutlined/>,
-                    label: "Requests",
+                    label: 'Requests',
                     onClick: () => {
-                        handleContentSwitch("requests");
+                        handleContentSwitch('requests');
                         closeDrawer();
                     },
                 },
                 {
-                    key: "subsidiaries",
+                    key: 'subsidiaries',
                     icon: <ShopOutlined/>,
-                    label: "Subsidiaries",
+                    label: 'Subsidiaries',
                     onClick: () => {
-                        handleContentSwitch("subsidiaries");
+                        handleContentSwitch('subsidiaries');
                         closeDrawer();
                     },
                 }
@@ -103,10 +109,30 @@ const Navbar = ({
         return items;
     }, [handleContentSwitch, closeDrawer, isOwner, isOrgAdmin]);
 
+    const simpleMenuItems = useMemo(() => [
+        {
+            key: 'back',
+            icon: <ArrowLeftOutlined/>,
+            label: 'Back to Dashboard',
+            onClick: () => {
+                navigate('/dashboard');
+                closeDrawer();
+            },
+        },
+        {
+            key: 'logout',
+            icon: <LogoutOutlined/>,
+            label: 'Logout',
+            onClick: () => {
+                handleLogout();
+                closeDrawer();
+            },
+        },
+    ], [navigate, handleLogout, closeDrawer]);
 
     return (
         <header className={styles.navbar}>
-            <Row align="middle" justify="space-between" style={{width: "100%"}}>
+            <Row align="middle" justify="space-between" style={{width: '100%'}}>
                 <Col>
                     <div className={styles.logo}>
                         <span>SafetyNet AI</span>
@@ -115,7 +141,7 @@ const Navbar = ({
 
                 <Col className={styles.navItems}>
                     <Row align="middle" gutter={20}>
-                        {(isOrgAdmin || isOwner) && (
+                        {isDashboard && (isOrgAdmin || isOwner) && (
                             <Col>
                                 <Button
                                     className={`${styles.navButton} ${styles.dashboardButton}`}
@@ -126,27 +152,39 @@ const Navbar = ({
                                 </Button>
                             </Col>
                         )}
-
-                        <Col>
-                            <Button
-                                className={`${styles.navButton} ${styles.feedbackButton}`}
-                                icon={<CommentOutlined/>}
-                                onClick={() => handleContentSwitch("feedback")}
-                            >
-                                Feedback
-                            </Button>
-                        </Col>
-
-                        <Col>
-                            <Button
-                                className={`${styles.navButton} ${styles.profileButton}`}
-                                icon={<UserOutlined/>}
-                                onClick={() => handleContentSwitch("profile")}
-                            >
-                                Profile
-                            </Button>
-                        </Col>
-
+                        {!isDashboard && (
+                            <Col>
+                                <Button
+                                    className={`${styles.navButton}`}
+                                    icon={<ArrowLeftOutlined/>}
+                                    onClick={() => navigate('/dashboard')}
+                                >
+                                    Back to Dashboard
+                                </Button>
+                            </Col>
+                        )}
+                        {isDashboard && (
+                            <Col>
+                                <Button
+                                    className={`${styles.navButton} ${styles.feedbackButton}`}
+                                    icon={<CommentOutlined/>}
+                                    onClick={() => handleContentSwitch('feedback')}
+                                >
+                                    Feedback
+                                </Button>
+                            </Col>
+                        )}
+                        {isDashboard && (
+                            <Col>
+                                <Button
+                                    className={`${styles.navButton} ${styles.profileButton}`}
+                                    icon={<UserOutlined/>}
+                                    onClick={() => handleContentSwitch('profile')}
+                                >
+                                    Profile
+                                </Button>
+                            </Col>
+                        )}
                         <Col>
                             <Button
                                 className={`${styles.navButton} ${styles.logoutButton}`}
@@ -171,7 +209,7 @@ const Navbar = ({
                         <CloseOutlined className={styles.closeIcon} onClick={closeDrawer}/>
                     </div>
                 }
-                placement={isMobile ? "top" : "left"}
+                placement={isMobile ? 'top' : 'left'}
                 open={drawerVisible}
                 onClose={closeDrawer}
                 width="400px"
@@ -181,7 +219,7 @@ const Navbar = ({
             >
                 {isMobile ? (
                     <div>
-                        {(isOrgAdmin || isOwner) && (
+                        {isDashboard && (isOrgAdmin || isOwner) && (
                             <Button
                                 className={`${styles.navButton} ${styles.drawerButton}`}
                                 icon={<MenuOutlined/>}
@@ -190,37 +228,49 @@ const Navbar = ({
                                 Dashboard
                             </Button>
                         )}
-
-                        {dashboardSubMenuVisible && (
+                        {!isDashboard && (
+                            <Button
+                                className={`${styles.navButton} ${styles.drawerButton}`}
+                                icon={<ArrowLeftOutlined/>}
+                                onClick={() => {
+                                    navigate('/dashboard');
+                                    closeDrawer();
+                                }}
+                            >
+                                Back to Dashboard
+                            </Button>
+                        )}
+                        {dashboardSubMenuVisible && isDashboard && (
                             <Menu
                                 items={dashboardMenuItems}
                                 onClick={(e) => handleContentSwitch(e.key)}
                                 mode="vertical"
                             />
                         )}
-
-                        <Button
-                            className={`${styles.navButton} ${styles.drawerButton}`}
-                            icon={<CommentOutlined/>}
-                            onClick={() => {
-                                handleContentSwitch("feedback");
-                                closeDrawer();
-                            }}
-                        >
-                            Feedback
-                        </Button>
-
-                        <Button
-                            className={`${styles.navButton} ${styles.drawerButton}`}
-                            icon={<UserOutlined/>}
-                            onClick={() => {
-                                handleContentSwitch("profile");
-                                closeDrawer();
-                            }}
-                        >
-                            Profile
-                        </Button>
-
+                        {isDashboard && (
+                            <Button
+                                className={`${styles.navButton} ${styles.drawerButton}`}
+                                icon={<CommentOutlined/>}
+                                onClick={() => {
+                                    handleContentSwitch('feedback');
+                                    closeDrawer();
+                                }}
+                            >
+                                Feedback
+                            </Button>
+                        )}
+                        {isDashboard && (
+                            <Button
+                                className={`${styles.navButton} ${styles.drawerButton}`}
+                                icon={<UserOutlined/>}
+                                onClick={() => {
+                                    handleContentSwitch('profile');
+                                    closeDrawer();
+                                }}
+                            >
+                                Profile
+                            </Button>
+                        )}
                         <Button
                             className={`${styles.navButton} ${styles.drawerButton}`}
                             icon={<LogoutOutlined/>}
@@ -234,8 +284,10 @@ const Navbar = ({
                     </div>
                 ) : (
                     <Menu
-                        items={dashboardMenuItems}
-                        onClick={(e) => handleContentSwitch(e.key)}
+                        items={isDashboard ? dashboardMenuItems : simpleMenuItems}
+                        onClick={(e) => {
+                            if (isDashboard) handleContentSwitch(e.key);
+                        }}
                         mode="vertical"
                     />
                 )}

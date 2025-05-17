@@ -132,13 +132,13 @@ const ChangePasswordModal = ({visible, onCancel}: { visible: boolean; onCancel: 
             ) : (
                 <div>
                     <Formik
-                        initialValues={{password: newPassword}}
+                        initialValues={{password: "", confirmPassword: ""}}
                         validationSchema={validationSchema}
                         onSubmit={handleChangePassword}
                     >
-                        {({setFieldValue, errors, touched}) => (
+                        {({setFieldValue, errors, touched, isValid, dirty}) => (
                             <Form>
-                                <div>
+                                <div className={styles.newPassword}>
                                     <Field
                                         name="password"
                                         type="password"
@@ -154,10 +154,22 @@ const ChangePasswordModal = ({visible, onCancel}: { visible: boolean; onCancel: 
                                         <div className={styles.error}>{errors.password}</div>
                                     )}
                                 </div>
+                                <div className={styles.newPassword}>
+                                    <Field
+                                        name="confirmPassword"
+                                        type="password"
+                                        as={Input.Password}
+                                        placeholder="Confirm new password"
+                                    />
+                                    {errors.confirmPassword && touched.confirmPassword && (
+                                        <div className={styles.error}>{errors.confirmPassword}</div>
+                                    )}
+                                </div>
                                 {errorMessage && <div className={styles.error}>{errorMessage}</div>}
                                 <Button
                                     type="primary"
-                                    onClick={handleChangePassword}
+                                    htmlType="submit"
+                                    disabled={!isValid || !dirty || loading}
                                     style={{marginTop: "10px"}}
                                 >
                                     {loading ? <Spin/> : "Reset Password"}
