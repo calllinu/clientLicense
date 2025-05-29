@@ -47,3 +47,4 @@ export const validationSchema = Yup.object().shape({
             "Please select a valid Salary"
         ),
 });
+

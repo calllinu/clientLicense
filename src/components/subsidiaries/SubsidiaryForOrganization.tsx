@@ -62,7 +62,7 @@ const SubsidiaryForOrganization = ({subsidiaries, organizationId, refetch}: Subs
             const result = await predictWorkAccident({features: feedbacks}).unwrap();
             notification.success({
                 message: 'Prediction Complete',
-                description: `Predicted Risk Score: ${result.risk_score.toFixed(4)}`
+                description: `Risk Score: ${(result.risk_score * 100).toFixed(2)}%`
             });
         } catch (error) {
             console.error('Prediction failed:', error);
@@ -102,7 +102,7 @@ const SubsidiaryForOrganization = ({subsidiaries, organizationId, refetch}: Subs
             const result = await predictWorkAccident({features: feedbacks}).unwrap();
             notification.success({
                 message: `Prediction for ${subsidiary.subsidiaryCode}`,
-                description: `Risk Score: ${result.risk_score.toFixed(4)}`
+                description: `Risk Score: ${(result.risk_score * 100).toFixed(2)}%`
             });
         } catch (error) {
             console.error('Prediction failed:', error);

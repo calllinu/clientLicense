@@ -96,8 +96,11 @@ const SurveyForm: React.FC = () => {
                             initialValues={{} as FeedbackInterface}
                             validationSchema={validationSchema}
                             onSubmit={handleSubmit}
+                            validateOnChange={true}
+                            validateOnBlur={true}
+                            validateOnMount={true}
                         >
-                            {({handleSubmit, setFieldValue, values, errors, touched}) => (
+                            {({handleSubmit, setFieldValue, values, errors, touched, isValid}) => (
                                 <Form onSubmit={handleSubmit} className={styles.form}>
                                     <Row gutter={[16, 24]}>
                                         <Col span={24}>
@@ -114,8 +117,10 @@ const SurveyForm: React.FC = () => {
                                                 max={10}
                                                 step={0.1}
                                                 value={values.satisfactionLevel}
+                                                name="satisfactionLevel"
                                                 onChange={(val) => setFieldValue("satisfactionLevel", val)}
                                                 style={{marginLeft: 16}}
+                                                type={"number"}
                                             />
                                             {touched.satisfactionLevel && errors.satisfactionLevel && (
                                                 <div className={styles.error}>{errors.satisfactionLevel}</div>
@@ -138,6 +143,7 @@ const SurveyForm: React.FC = () => {
                                                 value={values.lastEvaluation}
                                                 onChange={(val) => setFieldValue("lastEvaluation", val)}
                                                 style={{marginLeft: 16}}
+                                                type={"number"}
                                             />
                                             {touched.lastEvaluation && errors.lastEvaluation && (
                                                 <div className={styles.error}>{errors.lastEvaluation}</div>
@@ -149,8 +155,10 @@ const SurveyForm: React.FC = () => {
                                             <InputNumber
                                                 min={0}
                                                 value={values.numberProject}
+                                                name={"numberProject"}
                                                 onChange={(val) => setFieldValue("numberProject", val)}
                                                 style={{width: "100%"}}
+                                                type={"number"}
                                             />
                                             {touched.numberProject && errors.numberProject && (
                                                 <div className={styles.error}>{errors.numberProject}</div>
@@ -164,6 +172,7 @@ const SurveyForm: React.FC = () => {
                                                 value={values.averageMonthlyHours}
                                                 onChange={(val) => setFieldValue("averageMonthlyHours", val)}
                                                 style={{width: "100%"}}
+                                                type={"number"}
                                             />
                                             {touched.averageMonthlyHours && errors.averageMonthlyHours && (
                                                 <div className={styles.error}>{errors.averageMonthlyHours}</div>
@@ -177,6 +186,7 @@ const SurveyForm: React.FC = () => {
                                                 value={values.timeSpendCompany}
                                                 onChange={(val) => setFieldValue("timeSpendCompany", val)}
                                                 style={{width: "100%"}}
+                                                type={"number"}
                                             />
                                             {touched.timeSpendCompany && errors.timeSpendCompany && (
                                                 <div className={styles.error}>{errors.timeSpendCompany}</div>
@@ -260,21 +270,23 @@ const SurveyForm: React.FC = () => {
                                     <Col className={styles.submitContainer} span={24}>
                                         <Tooltip
                                             title={
-                                                employee?.hasNullFields &&
-                                                "Please fill in your profile data, or wait for it to be filled by your Organization's Admin."
+                                                !isValid
+                                                    ? "Please complete all required fields in the survey."
+                                                    : employee?.hasNullFields
+                                                        ? "Please fill in your profile data, or wait for it to be filled by your Organization's Admin."
+                                                        : ""
                                             }
                                         >
                                             <Button
                                                 type="primary"
                                                 htmlType="submit"
                                                 className={styles.submitButton}
-                                                disabled={employee?.hasNullFields}
+                                                disabled={!isValid || employee?.hasNullFields}
                                             >
                                                 Submit
                                             </Button>
                                         </Tooltip>
                                     </Col>
-
                                 </Form>
                             )}
                         </Formik>

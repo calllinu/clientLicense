@@ -129,7 +129,7 @@ const Organizations = () => {
             const result = await predictWorkAccident({features: feedbacks}).unwrap();
             notification.success({
                 message: `Prediction for ${org.name}`,
-                description: `Risk Score: ${result.risk_score.toFixed(4)}`
+                description: `Risk Score: ${(result.risk_score * 100).toFixed(2)}%`
             });
         } catch (error) {
             console.error('Prediction failed:', error);
