@@ -26,13 +26,14 @@ const TableContent = ({data, isLoading}: TableContentProps) => {
         promotionLast5years: formatBoolean(entry.promotionLast5years),
         department: entry.department ? getDepartmentDisplayName(entry.department) : "Unknown",
         salary: entry.salary ? transformData(entry.salary) : "Unknown",
+        index: (pagination.current - 1) * pagination.pageSize + data.indexOf(entry) + 1,
     }));
 
     const columns = [
         {
-            title: "ID",
-            dataIndex: "feedbackId",
-            key: "feedbackId",
+            title: "Nr.",
+            dataIndex: "index",
+            key: "index",
         },
         {
             title: "How satisfied are you with your job?",

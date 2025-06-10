@@ -13,6 +13,20 @@
   justify-content: space-between;
   align-items: center;
   font-size: 1rem;
+
+  .edit {
+    gap: .4rem;
+  }
+
+  @media screen and (max-width: 768px) {
+    .actions {
+      flex-direction: column;
+
+      .edit {
+        gap: 1.25rem;
+      }
+    }
+  }
 }
 
 :global {

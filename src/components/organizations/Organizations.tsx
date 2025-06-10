@@ -149,38 +149,42 @@ const Organizations = () => {
                 label: (
                     <div className={styles.panelHeader}>
                         <span>{`${org.organizationCode} - ${org.name}`}</span>
-                        <Space>
-                            <Button
-                                icon={<RadarChartOutlined/>}
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    handlePredictRiskForOrganization(org);
-                                }}
-                            >
-                                Predict Risk
-                            </Button>
-                            <Button
-                                icon={<PlusOutlined/>}
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    showSubsidiaryModal(org.organizationId);
-                                }}
-                            />
-                            <Button
-                                icon={<EditOutlined/>}
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    showEditOrgModal(org);
-                                }}
-                            />
-                            <Button
-                                icon={<DeleteOutlined/>}
-                                danger
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleDeleteClick(org);
-                                }}
-                            />
+                        <Space className={styles.actions}>
+                            <Row>
+                                <Button
+                                    icon={<RadarChartOutlined/>}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        handlePredictRiskForOrganization(org);
+                                    }}
+                                >
+                                    Predict Risk
+                                </Button>
+                            </Row>
+                            <Row className={styles.edit}>
+                                <Button
+                                    icon={<PlusOutlined/>}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        showSubsidiaryModal(org.organizationId);
+                                    }}
+                                />
+                                <Button
+                                    icon={<EditOutlined/>}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        showEditOrgModal(org);
+                                    }}
+                                />
+                                <Button
+                                    icon={<DeleteOutlined/>}
+                                    danger
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleDeleteClick(org);
+                                    }}
+                                />
+                            </Row>
                         </Space>
                     </div>
                 ),

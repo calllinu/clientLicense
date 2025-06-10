@@ -114,7 +114,7 @@ const EditOrganizationModal: React.FC<OrganizationModalProps> = ({visible, onCan
                             <Input
                                 name="industry"
                                 placeholder="Select industry"
-                                value={transformData(values.industry)}
+                                value={values.industry ? transformData(values.industry) : ''}
                                 disabled={true}
                             />
                         </Form.Item>
